@@ -1,4 +1,4 @@
-![alt text](https://github.com/jackw1111/3d-graphics-project/master/engine.png?raw=true)
+![alt text](https://github.com/jackw1111/3d-graphics-project/blob/master/engine.png?raw=true)
 Features:
 
 - Deferred 3D renderer (C++11, Python3, OpenGL3.3), built on Intel 3000 iGPU (bottom 2% GPU on userbenchmark.com) so compatible and performant across many GPUs
