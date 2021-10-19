@@ -1,0 +1,11 @@
+sudo apt-get install libassimp-dev -y
+sudo apt-get install libboost-python-dev -y
+sudo apt-get install libglfw3-dev -y
+sudo apt-get install libopenal-dev -y
+sudo apt-get install libaudio-dev -y
+sudo apt-get install python3-opengl -y
+sudo apt-get install make -y
+sudo apt-get install g++ -y
+sudo apt-get install libglm-dev -y
+sudo apt-get install libfreetype6-dev -y
+sudo apt-get install doxygen -y

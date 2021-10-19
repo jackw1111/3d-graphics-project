@@ -1,0 +1,13 @@
+#version 330 core
+layout (location = 0) in vec3 aPos;
+
+out vec3 TexCoords;
+uniform mat4 MVP;
+
+void main()
+{
+    TexCoords = aPos;
+    vec4 pos = MVP * vec4(aPos, 1.0);
+    pos.w = 0.0;
+    gl_Position = pos;
+}  
