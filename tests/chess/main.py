@@ -1,25 +1,20 @@
 import sys
-sys.path.append("../../engine/bin")
-sys.path.append("../../engine/utils")
+sys.path.append("/home/me/Documents/3d-graphics-project/engine/bin")
+sys.path.append("/home/me/Documents/3d-graphics-project/engine/utils")
+from console import *
 from engine.graphics import *
+from collisions2 import *
 from keys import *
 from player import *
 import random
 import time
 import math
-import queue
 from OpenGL.GL import *
 from sunfish import *
 from threading import Thread
 
 WIDTH = 800
 HEIGHT = 600
-
-import random
-import time
-
-SOLVED_CUBE_STR = "WWWWWWWWWRRRBBBOOOGGGRRRBBBOOOGGGRRRBBBOOOGGGYYYYYYYYY"
-MOVES = ["Li", "Ri", "Ui", "Di", "Fi", "Bi", "Mi", "Ei", "Si", "L", "R", "U", "D", "F", "B", "M", "E", "S"]
 
 seed = 42 #54071 #random.randrange(0, 100, 1)
 print (seed)
@@ -32,40 +27,144 @@ def get_position(mat1):
     v4 = mat1[3]
     return vec3(v4.x, v4.y, v4.z)
 
-class Piece():
-
-    def __init__(self):
-        self.outlined = False
-        self.colour = "silver"
-        self.model = StaticModel()
-    def loadModel(self, file):
-        self.model.loadModel(file)
-
-    def Draw(self, shader):
-        self.model.Draw(shader)
-
 class App(Application):
-    player = Player()
-    camera = Camera(vec3(0.0, 0.0, 10.0), vec3(0.0, 0.0, -1.0), vec3(0.0, 1.0, 0.0), -90.0, 0.0)
-    model = mat4(1.0)
-    view = lookAt(vec3(0.0, 0.0, 10.0), vec3(0.0, 0.0, -1.0), vec3(0.0, 1.0, 0.0))
 
-    projection = mat4(1.0)
-    deltaTime = 0.0
-    lastFrame = 0.0
-    currentFrame = 0.0
+    def initialize_board(self):
 
-    debug_shader = StaticShader()
-    debug_line = StaticModel()
+        counter = 0
 
-    sky_box = Skybox()
-    sky_box_shader = StaticShader()
+        # draw pieces
+        for i in range(8):
+            tmp_model = AnimatedObject("./data/pawn2.dae")
+            tmp_model.id = counter
+            counter+=1
+            tmp_transform = translate(mat4(1.0), vec3(-14.0 + 4.0 * i, 0.0, -10.0))
+            tmp_transform = rotate(tmp_transform, math.radians(-90.0), vec3(1,0,0))
+
+            tmp_model.model_matrix = tmp_transform
+            self.all_blocks.append(tmp_model)
+            self.all_blocks_transforms.append(tmp_transform)
+            self.all_blocks[len(self.all_blocks)-1].outlined = False
+        for i in range(8):
+            tmp_model = AnimatedObject("./data/pawn1.dae")
+            tmp_model.id = counter
+            counter+=1
+            tmp_transform = translate(mat4(1.0), vec3(-14.0 + 4.0 * i, 0.0, 10.0))
+            tmp_transform = rotate(tmp_transform, math.radians(-90.0), vec3(1,0,0))
+
+            tmp_model.model_matrix = tmp_transform
+            self.all_blocks.append(tmp_model)
+            self.all_blocks_transforms.append(tmp_transform)
+            self.all_blocks[len(self.all_blocks)-1].outlined = False
 
 
-    selection_box = StaticModel()
-    selection_box_shader = StaticShader()
-    angle = camera.Yaw
-    scamble_moves = ''
+        for i in range(2):
+            for j in range(2):
+                tmp_model = AnimatedObject("./data/rook" + str(2-i) + ".dae")
+                tmp_model.id = counter
+                counter+=1
+                tmp_transform = mat4(1.0)
+                k = 0.0
+                if (i == 1):
+                    k = 14.0
+                else:
+                    k = -14.0
+                tmp_transform = translate(tmp_transform, vec3(-14.0 + 4.0 * 7 * j, 0.0, k))
+                tmp_transform = rotate(tmp_transform, math.radians(-90.0), vec3(1,0,0))
+
+                tmp_model.model_matrix = tmp_transform
+                self.all_blocks.append(tmp_model)
+                self.all_blocks_transforms.append(tmp_transform)
+                self.all_blocks[len(self.all_blocks)-1].outlined = False
+
+
+        for i in range(2):
+            for j in range(2):
+                tmp_model = AnimatedObject("./data/knight" + str(2-i) + ".dae")
+                tmp_model.id = counter
+                counter+=1
+                tmp_transform = mat4(1.0)
+                k = 0.0
+                if (i == 1):
+                    k = 14.0
+                else:
+                    k = -14.0
+                tmp_transform = translate(tmp_transform, vec3(-14.0 + 4.0 + 4.0 * 5 * j, 0.0, k))
+                tmp_transform = rotate(tmp_transform, math.radians(-90.0), vec3(1,0,0))
+                tmp_model.model_matrix = tmp_transform
+                self.all_blocks.append(tmp_model)
+                self.all_blocks_transforms.append(tmp_transform)
+                self.all_blocks[len(self.all_blocks)-1].outlined = False
+
+        for i in range(2):
+            for j in range(2):
+                tmp_model = AnimatedObject("./data/bishop" + str(2-i) + ".dae")
+                tmp_model.id = counter
+                counter+=1
+                tmp_transform = mat4(1.0)
+                k = 0.0
+                if (i == 1):
+                    k = 14.0
+                else:
+                    k = -14.0
+                tmp_transform = translate(tmp_transform, vec3(-14.0 + 8.0 + 4.0 * 3 * j, 1.0, k))
+                tmp_transform = rotate(tmp_transform, math.radians(-90.0), vec3(1,0,0))
+                tmp_model.model_matrix = tmp_transform
+                self.all_blocks.append(tmp_model)
+                self.all_blocks_transforms.append(tmp_transform)
+                self.all_blocks[len(self.all_blocks)-1].outlined = False
+
+        for i in range(2):
+            for j in range(1):
+                tmp_model = AnimatedObject("./data/queen" + str(2-i) + ".dae")
+                tmp_model.id = counter
+                counter+=1
+                tmp_transform = mat4(1.0)
+                k = 0.0
+                if (i == 1):
+                    k = 14.0
+                else:
+                    k = -14.0
+                tmp_transform = translate(tmp_transform, vec3(-14.0 + 12.0, 1.0, k))
+                tmp_transform = rotate(tmp_transform, math.radians(-90.0), vec3(1,0,0))
+                tmp_model.model_matrix = tmp_transform
+                self.all_blocks.append(tmp_model)
+                self.all_blocks_transforms.append(tmp_transform)
+                self.all_blocks[len(self.all_blocks)-1].outlined = False
+
+        for i in range(2):
+            for j in range(1):
+                tmp_model = AnimatedObject("./data/king" + str(2-i) + ".dae")
+                tmp_model.color = vec3(0,1,0)
+                tmp_model.id = counter
+                counter+=1
+                tmp_transform = mat4(1.0)
+                k = 0.0
+                if (i == 1):
+                    k = 14.0
+                else:
+                    k = -14.0
+                tmp_transform = translate(tmp_transform, vec3(-14.0 + 16.0, 0.0, k))
+                tmp_transform = rotate(tmp_transform, math.radians(-90.0), vec3(1,0,0))
+                tmp_model.model_matrix = tmp_transform
+                self.all_blocks.append(tmp_model)
+                self.all_blocks_transforms.append(tmp_transform)
+                self.all_blocks[len(self.all_blocks)-1].outlined = False
+
+
+        self.chess_board = StaticObject("./data/chess_board.obj")
+        self.chess_board.model_matrix = translate(mat4(1.0), vec3(0,-3,0))
+
+
+        self.selection_box = StaticObject("./data/square.obj")
+
+        self.table_map = {}
+        letters = ["a", "b", "c", "d", "e", "f", "g", "h"]
+        for i in range(8):
+            letter = letters[i]
+            for j in range(8):
+                pos = vec3(-14.0 + i * 4.0, 0.0, 14.0 - 4.0 * j)
+                self.table_map[pos] = letter + str(j+1)
 
     def run_sunfish(self):
         hist = [Position(initial, 0, (True,True), (True,True), 0, 0)]
@@ -146,139 +245,36 @@ class App(Application):
 
         m = mat4(1.0)
         m = translate(m, end_pos)
+        m = rotate(m, math.radians(-90.0), vec3(1,0,0))
+
         self.all_blocks_transforms[self.clicked_block_index] = m
 
-    def setup(self):
-        self.projection = perspective(45.0, float(WIDTH)/float(HEIGHT), 0.1, 100.0)
-        self.map_shader = StaticShader()
-        self.test_shader = StaticShader()
-        self.testModel = StaticModel()
-        self.outline_shader = StaticShader()
-        self.outline_shader.setup("./data/outline_shader.vs","./data/outline_shader.fs")
-        self.selection_box_shader.setup("./data/selection_box_shader.vs", "./data/selection_box_shader.fs")
-        self.test_shader.setup("./data/basic_shader.vs","./data/basic_shader.fs")
-        self.map_shader.setup("./data/shader.vs","./data/shader.fs")
-        self.testModel.loadModel("./data/chess_board.obj")
-        self.selection_box.loadModel("./data/square.obj")
-        self.sky_box_shader.setup("./data/skybox_shader.vs","./data/skybox_shader.fs")
+    def __init__(self, *args, **kwargs):
+        Application.__init__(self, *args, **kwargs)
+
+        self.console = Console(WIDTH, HEIGHT)
+
+        self.show_shadows = True
+        self.show_ssao = False
+
+        self.light1 = Light(vec3(0.9,1,-0.4), vec3(1,1,1))
+        #self.light2 = Light(vec3(0, 4, 14), vec3(1,1,1))
+
+        # point camera at chess board
+        self.active_camera.position = vec3(16, 20, 0)
+        self.active_camera.yaw = -180.0
+        self.active_camera.pitch = -45.0
+
+        self.start_time = time.time()
+
         self.all_blocks = []
         self.all_blocks_transforms = []
-        self.selection_box_model = mat4(1.0)
+
         self.start_coord = ""
         self.end_coord = ""
         self.my_move = None
-        self.rlastX = 0
-        self.rlastY = 0
-        #print (self.scramble_moves)
-        faces = [
-            "./data/skybox/right.jpg",
-            "./data/skybox/left.jpg",
-            "./data/skybox/top.jpg",
-            "./data/skybox/bottom.jpg",
-            "./data/skybox/front.jpg",
-            "./data/skybox/back.jpg"
-        ]
 
-        self.sky_box.load(faces)
-
-        # draw pieces
-        counter = 0
-        for i in range(8):
-            tmp_model = Piece()
-            tmp_model.id = counter
-            counter+=1
-            tmp_model.loadModel("./data/pawn.obj")
-            self.all_blocks.append(tmp_model)
-            tmp_transform = mat4(1.0)
-            tmp_transform = translate(tmp_transform, vec3(-14.0 + 4.0 * i, 0.0, -10.0))
-            self.all_blocks_transforms.append(tmp_transform)
-
-        for i in range(2):
-            for j in range(2):
-                rook = Piece()
-                rook.loadModel("./data/rook.obj")
-                k = 0.0
-                if (i == 1):
-                    rook.colour = "gold"
-                    k = 14.0
-                else:
-                    k = -14.0
-                self.all_blocks.append(rook)
-                rook_transform = mat4(1.0)
-                rook_transform = translate(rook_transform, vec3(-14.0 + 4.0 * 7 * j, 0.0, k))
-                self.all_blocks_transforms.append(rook_transform)
-
-        for i in range(2):
-            for j in range(2):
-                knight = Piece()
-                knight.loadModel("./data/knight.obj")
-                k = 0.0
-                if (i == 1):
-                    knight.colour = "gold"
-                    k = 14.0
-                else:
-                    k = -14.0
-                self.all_blocks.append(knight)
-                knight_transform = mat4(1.0)
-                knight_transform = translate(knight_transform, vec3(-14.0 + 4.0 + 4.0 * 5 * j, 0.0, k))
-                self.all_blocks_transforms.append(knight_transform)
-
-        for i in range(2):
-            for j in range(2):
-                bishop = Piece()
-                bishop.loadModel("./data/bishop.obj")
-                k = 0.0
-                if (i == 1):
-                    bishop.colour = "gold"
-                    k = 14.0
-                else:
-                    k = -14.0
-                self.all_blocks.append(bishop)
-                bishop_transform = mat4(1.0)
-                bishop_transform = translate(bishop_transform, vec3(-14.0 + 8.0 + 4.0 * 3 * j, 0.0, k))
-                self.all_blocks_transforms.append(bishop_transform)
-
-        for i in range(2):
-            for j in range(1):
-                queen = Piece()
-                queen.loadModel("./data/queen.obj")
-                k = 0.0
-                if (i == 1):
-                    queen.colour = "gold"
-                    k = 14.0
-                else:
-                    k = -14.0
-                self.all_blocks.append(queen)
-                queen_transform = mat4(1.0)
-                queen_transform = translate(queen_transform, vec3(-14.0 + 12.0, 0.0, k))
-                self.all_blocks_transforms.append(queen_transform)
-
-        for i in range(2):
-            for j in range(1):
-                queen = Piece()
-                queen.loadModel("./data/king.obj")
-                k = 0.0
-                if (i == 1):
-                    queen.colour = "gold"
-                    k = 14.0
-                else:
-                    k = -14.0
-                self.all_blocks.append(queen)
-                queen_transform = mat4(1.0)
-                queen_transform = translate(queen_transform, vec3(-14.0 + 16.0, 0.0, k))
-                self.all_blocks_transforms.append(queen_transform)
-
-
-        for i in range(8):
-            tmp_model = Piece()
-            tmp_model.id = counter
-            counter+=1
-            tmp_model.loadModel("./data/pawn.obj")
-            tmp_model.colour = "gold"
-            self.all_blocks.append(tmp_model)
-            tmp_transform = mat4(1.0)
-            tmp_transform = translate(tmp_transform, vec3(-14.0 + 4.0 * i, 0.0, 10.0))
-            self.all_blocks_transforms.append(tmp_transform)
+        self.initialize_board()
 
         self.table_map = {}
         letters = ["a", "b", "c", "d", "e", "f", "g", "h"]
@@ -287,24 +283,7 @@ class App(Application):
             for j in range(8):
                 pos = vec3(-14.0 + i * 4.0, 0.0, 14.0 - 4.0 * j)
                 self.table_map[pos] = letter + str(j+1)
-
-        self.lightPos = vec3(1,0,1)
-
-        self.debug_shader.setup("../../GUI/debug_line_shader.vs", "../../GUI/debug_line_shader.fs")
-        self.debug_line.loadModel("../../GUI/line.obj")
-        glClearColor(0,0,0,1)
-        glEnable(GL_BLEND);  
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
-        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
         self.outlined = False
-
-        models = [self.testModel] 
-        model_positions = [mat4(1.0)]
-        self.player.setup(models, model_positions, vec3(0.7, 1.2, 0.7))
-        self.player.gravity = False
-
-
-        self.other_player_position = vec3(-10.0, 0.0, 10.0)
 
         self.clicked_block = None
         self.clicked_block_index = None
@@ -312,161 +291,64 @@ class App(Application):
         self.chess_engine_thread = Thread(target=self.run_sunfish)
         self.chess_engine_thread.start()
 
-        self.player.camera.Pitch = -90.0
-
         self.axes = FloatVector()
 
-    def set_view(self, mat):
-        self.map_shader.setMat4("view", mat)
+    def update(self):
+        #print (self.active_camera.Position, self.active_camera.Yaw, self.active_camera)
 
-
-    def draw(self):
-        self.currentFrame = time.time()
-        self.deltaTime = (self.currentFrame - self.lastFrame)
-        self.lastFrame = self.currentFrame
-        #print ("position:", self.camera.Position)
-        #self.view = lookAt(self.camera.Position, self.camera.Position + self.camera.Front, vec3(0,1,0))
-        #self.view = lookAt( self.camera.Position,  self.camera.Position + self.camera.Front,  vec3(0.0, 1.0,0.0)) 
-
-        glEnable(GL_STENCIL_TEST);
-        glEnable(GL_DEPTH_TEST);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE); 
-
-        glEnable(GL_DEPTH_CLAMP)
-
-        self.sky_box_shader.use();
-        #self.sky_box_shader.setInt("skybox", 0);
-
-        #draw skybox as last
-
-        sky_view = self.player.view.copy(); # remove translation from the view matrix
-        sky_view[3] = vec4(0,0,0,0)
-
-        self.sky_box_shader.setMat4("MVP", self.player.projection * sky_view);
-
-        self.sky_box.Draw(self.sky_box_shader)
-
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); 
-        glStencilMask(0x00); # make sure we don't update the stencil buffer while drawing the floor
-        
-        self.test_shader.use()
-        self.test_shader.setMat4("MVP", self.player.projection * self.player.view * translate(mat4(1.0), vec3(0.0, -4.0, 0.0)))
-        self.testModel.Draw(self.test_shader)          
-
-        glStencilFunc(GL_ALWAYS, 1, 0xFF); 
-        glStencilMask(0xFF);
-        self.selection_box_shader.use()
-        self.selection_box_shader.setMat4("MVP", self.player.projection * self.player.view * self.selection_box_model)
-
-        self.selection_box.Draw(self.selection_box_shader)
-
-        self.map_shader.use()
-        self.view_projection = self.player.projection * self.player.view
-        self.map_shader.setVec3("cameraPos",self.player.camera.Position)
-        self.map_shader.setMat4("MVP", self.player.projection * self.player.view)
-        self.sky_box.bindTexture()
-        #self.map_shader.setInt("skybox", 0)
-        #self.map_shader.use()
-
-        for i,block in enumerate(self.all_blocks):
-            if block == None:
-                continue
-            self.map_shader.setMat4("MVP", self.player.projection * self.player.view * self.all_blocks_transforms[i])     
-            self.map_shader.setMat4("model", self.all_blocks_transforms[i])
-            if (block.colour == "gold"):
-                self.map_shader.setVec3("colour", vec3(0.2, 0.1, 0.0))
-            else:
-                self.map_shader.setVec3("colour", vec3(0.0, 0.0, 0.0))
-
-            block.Draw(self.map_shader)
-
-
-        glStencilFunc(GL_ALWAYS, 1, 0xFF); 
-        glStencilMask(0xFF);
-
-        # to here
-
-    
-        other_player_mat = translate(mat4(1.0), self.other_player_position )
-        self.map_shader.setMat4("model", other_player_mat)
-        #print (self.other_player_position)
-
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        glStencilMask(0x00); 
-        glDisable(GL_DEPTH_TEST);
-        self.outline_shader.use()
-        self.outline_shader.setMat4("model", other_player_mat)
-        self.outline_shader.setMat4("view", self.player.view)
-        self.outline_shader.setMat4("projection", self.player.projection)       
-        for i,block in enumerate(self.all_blocks):
-            if block == None:
-                continue
-            if (block.outlined):
-                self.map_shader.setMat4("model", scale(self.all_blocks_transforms[i], vec3(1.1, 1.1, 1.1)))
-                block.Draw(self.map_shader)
-                break
-        glStencilMask(0xFF);
-        glStencilFunc(GL_ALWAYS, 0, 0xFF);   
-        glEnable(GL_DEPTH_TEST);  
-
-        clear_depth_buffer()
-
-        self.debug_shader.use()
-        debug_view_projection = self.player.projection * self.player.view
-        self.debug_shader.setMat4("model", scale(mat4(1.0), vec3(1.0, 1.0, 1.0)))
-        self.debug_shader.setMat4("MVP", debug_view_projection * scale(mat4(1.0), vec3(1.0, 1.0, 1.0)))
-        self.debug_shader.setVec3("colour", vec3(1.0, 0.0, 0.0))
-        self.debug_line.Draw(self.debug_shader)
-        z_axis = rotate(mat4(1.0), math.radians(-90.0), vec3(0.0, 1.0, 0.0))
-        self.debug_shader.setMat4("MVP", debug_view_projection * scale(z_axis, vec3(1.0, 1.0, 1.0)))
-        self.debug_shader.setMat4("model", scale(z_axis, vec3(1.0, 1.0, 1.0)))
-        self.debug_shader.setVec3("colour", vec3(0.0, 0.0, 1.0))
-        self.debug_line.Draw(self.debug_shader)
-        y_axis = rotate(mat4(1.0), math.radians(90.0), vec3(0.0, 0.0, 1.0))
-        self.debug_shader.setMat4("MVP", debug_view_projection * scale(y_axis, vec3(1.0, 1.0, 1.0)))
-        self.debug_shader.setMat4("model",  scale(y_axis, vec3(1.0, 1.0, 1.0)))
-        self.debug_shader.setVec3("colour", vec3(0.0, 1.0, 0.0))
-        #self.debug_line.Draw(self.debug_shader)
-
-
-        self.player.Update(self.deltaTime, self.currentFrame)
-        self.player.camera.Position = self.player.entity.position
-
-    def update(self): 
+        #self.light.position = vec3(5*math.sin(self.currentFrame % 60), 8, 5*math.cos(self.currentFrame % 60))
 
         self.processInput(self.window)
-        self.map_shader.use()
-        self.set_view(self.player.view)
-        self.draw()
+
+        self.end_time = time.time()
+        self.elapsed_time = self.end_time - self.start_time
+
+        self.console.update(self.currentFrame, self.deltaTime)
+
+        for i,block in enumerate(self.all_blocks):
+            if block == None:
+                continue
+            block.model_matrix = self.all_blocks_transforms[i]
+            if block.outlined:
+                block.model_matrix = scale(block.model_matrix, vec3(1.5,1.5,1.5))
+
 
     def processInput(self, window):
-        speed = 4.0
-
         if (get_key(window, KEY_ESCAPE) == PRESS):
             set_window_should_close(self.window, True);
+
         if (get_key(window, KEY_W) == PRESS):
-            self.player.ProcessKeyboard(0, self.deltaTime*speed)
+            self.active_camera.ProcessKeyboard(0, self.deltaTime)
+
         if (get_key(window, KEY_S) == PRESS):
-            self.player.ProcessKeyboard(1, self.deltaTime*speed)
+            self.active_camera.ProcessKeyboard(1, self.deltaTime)
+
         if (get_key(window, KEY_A) == PRESS):
-            self.player.ProcessKeyboard(2, self.deltaTime*speed)
+            self.active_camera.ProcessKeyboard(2, self.deltaTime)
+
         if (get_key(window, KEY_D) == PRESS):
-            self.player.ProcessKeyboard(3, self.deltaTime*speed)
+            self.active_camera.ProcessKeyboard(3, self.deltaTime)
+
+        if (get_key(window, KEY_E) == PRESS):
+            self.show_ssao = False
+            self.use_normal_map = False
+
         if (get_key(window, KEY_R) == PRESS):
-            self.player.entity.position.y = 40.0
-            self.player.camera.Position.y = 40.0
-    def onJoystickMoved(self, jid, event):
-        pass
+            self.show_ssao = True
+
+
+        if (get_key(window, KEY_Y) == PRESS):
+            self.use_normal_map = True
+
     def onMouseMoved(self, xpos, ypos):
         xoffset = xpos - self.lastX
         yoffset = self.lastY - ypos #reversed since y-coordinates go from bottom to top
 
         self.lastX = xpos
         self.lastY = ypos
+        self.active_camera.ProcessMouseMovement(xoffset, yoffset, True)
 
-        self.player.camera.ProcessMouseMovement(xoffset, yoffset, True)
-        
+
         x = (2.0 * self.lastX) / WIDTH - 1.0
         y = 1.0 - (2.0 * self.lastY) / HEIGHT
         z = 1.0
@@ -475,25 +357,24 @@ class App(Application):
 
         # # eye space to clip we would multiply by projection so
         # # clip space to eye space is the inverse projection
-        ray_eye = inverse(self.player.projection) * ray_clip
+        ray_eye = inverse(self.active_camera.projection_matrix) * ray_clip
 
         # # convert point to forwards
         ray_eye = vec4(ray_eye.x, ray_eye.y, -1.0, 0.0)
         # # world space to eye space is usually multiply by view so
         # # eye space to world space is inverse view
         #print (self.player.view)
-        inv_ray_wor = (inverse(self.player.view) * ray_eye)
+        inv_ray_wor = (inverse(self.active_camera.view_matrix) * ray_eye)
         ray_wor = vec3(inv_ray_wor.x, inv_ray_wor.y, inv_ray_wor.z)
         ray_wor = normalize(ray_wor)
-        new_pos = ray_plane_intersection(self.player.entity.position, ray_wor, vec3(0,1,0), vec3(0,-4,0))
-        new_pos = vec3(myround(new_pos.x + 10.0) - 10.0, 0.0, myround(new_pos.z - 10.0) + 10.0)
+        new_pos = ray_plane_intersection(self.active_camera.position, ray_wor, vec3(0,1,0), vec3(0,-4,0))
+        new_pos = vec3(myround(new_pos.x + 10.0) - 10.0, -1.9, myround(new_pos.z - 10.0) + 10.0)
 
-
-        m = self.selection_box_model
+        m = self.selection_box.model_matrix
         m = translate(m, new_pos - get_position(m))
-        self.selection_box_model = m
-    def onMouseClicked(self, button, action, mods):
+        self.selection_box.model_matrix = m
 
+    def onMouseClicked(self, button, action, mods):
         if (button == 2 and action == 1):
             set_cursor_visible(self.window, False)
         if (button == 2 and action == 0):
@@ -509,14 +390,14 @@ class App(Application):
 
             # # eye space to clip we would multiply by projection so
             # # clip space to eye space is the inverse projection
-            ray_eye = inverse(self.player.projection) * ray_clip
+            ray_eye = inverse(self.active_camera.projection_matrix) * ray_clip
 
             # # convert point to forwards
             ray_eye = vec4(ray_eye.x, ray_eye.y, -1.0, 0.0)
             # # world space to eye space is usually multiply by view so
             # # eye space to world space is inverse view
             #print (self.player.view)
-            inv_ray_wor = (inverse(self.player.view) * ray_eye)
+            inv_ray_wor = (inverse(self.active_camera.view_matrix) * ray_eye)
             ray_wor = vec3(inv_ray_wor.x, inv_ray_wor.y, inv_ray_wor.z)
             ray_wor = normalize(ray_wor)
 
@@ -526,11 +407,11 @@ class App(Application):
                 for i,block in enumerate(self.all_blocks):
                     if (block == None):
                         continue
-                    if (intersect(self.player.entity.position, ray_wor, get_position(self.all_blocks_transforms[i]), 5.0)):
+                    if (ray_intersect_sphere(self.active_camera.position, ray_wor, get_position(self.all_blocks_transforms[i]), 5.0)):
                         block.outlined = True
                         self.clicked_block = block
                         self.clicked_block_index = i
-                        new_pos = ray_plane_intersection(self.player.entity.position, ray_wor, vec3(0,1,0), vec3(0,-4,0))
+                        new_pos = ray_plane_intersection(self.active_camera.position, ray_wor, vec3(0,1,0), vec3(0,-4,0))
                         new_pos = vec3(myround(new_pos.x + 10.0) - 10.0, 0.0, myround(new_pos.z - 10.0) + 10.0)
                         if (new_pos in list(self.table_map.keys())):
                             ind = list(self.table_map.keys()).index(new_pos)
@@ -540,15 +421,16 @@ class App(Application):
                     else:
                         block.outlined = False
 
-            if self.clicked_block != None and button == 1:
+            if self.clicked_block != None and button == 1 and action == 1:
                 m = mat4(1.0)
-                pos_matrix = self.selection_box_model.copy()
+                pos_matrix = self.selection_box.model_matrix.copy()
                 new_pos = get_position(pos_matrix)
                 new_pos.y = 0.0
                 m = translate(m, new_pos)
+                m = rotate(m, math.radians(-90.0), vec3(1,0,0))
                 print (new_pos)
                 self.all_blocks_transforms[self.clicked_block_index] = m
-                new_pos = ray_plane_intersection(self.player.entity.position, ray_wor, vec3(0,1,0), vec3(0,-4,0))
+                new_pos = ray_plane_intersection(self.active_camera.position, ray_wor, vec3(0,1,0), vec3(0,-4,0))
                 new_pos = vec3(myround(new_pos.x + 10.0) - 10.0, 0.0, myround(new_pos.z - 10.0) + 10.0)
                 for i,block in enumerate(self.all_blocks):
                     if block == None or block == self.clicked_block:
@@ -559,23 +441,16 @@ class App(Application):
                     ind = list(self.table_map.keys()).index(new_pos)
                     self.end_coord = list(self.table_map.values())[ind]
                     self.my_move = self.start_coord + self.end_coord
+                    print (self.my_move)
                 else:
-                    print (False)     
+                    print (False)   
 
-    def __init__(self, *args, **kwargs):
+    def onWindowResized(self, width, height):
         pass
 
-    def init(self, *args, **kwargs):
-        Application.__init__(self, *args, **kwargs)
-        make_context_current(self.window)
-        set_cursor_visible(self.window, True)
-        self.setup()
-        #self.camera.Position = vec3(0.0, 0.0, 10.0)
-        self.view = lookAt(vec3(0.0, 0.0, 10.0), vec3(0.0, 0.0, -1.0), vec3(0.0, 1.0, 0.0))
-
-
-
+    def onKeyPressed(self, key, scancode, action, mods):
+        self.console.onKeyPressed(key, scancode, action, mods)
+        
 if __name__ == "__main__":
     app = App("chess", WIDTH, HEIGHT, False)
-    app.init("chess", WIDTH, HEIGHT, False)
     run(app)
