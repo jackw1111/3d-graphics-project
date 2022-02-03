@@ -68,7 +68,7 @@ $(function() {
 <div class="textblock"><dl class="reflist">
 <dt>Member <a class="el" href="class_static_mesh.html#a943e34caf74c794394dc32e99a96ffa5">StaticMesh::DrawInstanced</a>  (<a class="el" href="class_static_shader.html" title="A shader class used to light StaticModel type objects (ie. with no animations)">StaticShader</a> shader, std::vector&lt; mat4 &gt; modelTransforms)</dt>
 <dd><a class="anchor" id="_todo000002"></a>reimplement instancing to take into consideration the culling pipeline, and send matrices that pass to the GPU. Also glBufferData is allocating memory every draw call  </dd>
-<dt>Member <a class="el" href="class_static_mesh.html#a7b4a44ecb65ada714918ab9ba195c7dc">StaticMesh::getTriangles</a>  (glm::mat4 model)</dt>
+<dt>Member <a class="el" href="class_static_mesh.html#a991c8f970ef2536097c2e6915d5dbcc1">StaticMesh::getTriangles</a>  (const glm::mat4 &amp;model)</dt>
 <dd><a class="anchor" id="_todo000001"></a>make sure to cleanup after this exits  </dd>
 <dt>Class <a class="el" href="class_static_model.html">StaticModel</a>  </dt>
 <dd><a class="anchor" id="_todo000003"></a>fix segmentation fault when creating <a class="el" href="class_static_model.html" title="initiliazation function for heap allocation and similar">StaticModel</a>'s on the stack (only "new StaticModel" works)  </dd>

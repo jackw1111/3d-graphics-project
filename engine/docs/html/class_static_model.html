@@ -106,7 +106,7 @@ virtual std::vector&lt; float &gt;&#160;</td><td class="memItemRight" valign="bo
 <a class="el" href="class_static_mesh.html">StaticMesh</a>&#160;</td><td class="memItemRight" valign="bottom"><b>processMesh</b> (aiMesh *mesh, const aiScene *scene)</td></tr>
 <tr class="separator:ae18e0d4b74091752729d210944badf00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab660f10cf6411089b0d9f30038f468af"><td class="memItemLeft" align="right" valign="top">virtual vector&lt; <a class="el" href="struct_texture.html">Texture</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_static_model.html#ab660f10cf6411089b0d9f30038f468af">loadMaterialTextures</a> (aiMaterial *mat, aiTextureType type, string typeName)</td></tr>
-<tr class="memdesc:ab660f10cf6411089b0d9f30038f468af"><td class="mdescLeft">&#160;</td><td class="mdescRight">checks all material textures of a given type and loads the textures if they're not loaded yet. the required info is returned as a <a class="el" href="struct_texture.html">Texture</a> struct.  <a href="class_static_model.html#ab660f10cf6411089b0d9f30038f468af">More...</a><br /></td></tr>
+<tr class="memdesc:ab660f10cf6411089b0d9f30038f468af"><td class="mdescLeft">&#160;</td><td class="mdescRight">checks all material textures of a given type and loads the textures if they're not loaded yet. the required info is returned as a <a class="el" href="struct_texture.html" title="data structure to hold texture data">Texture</a> struct.  <a href="class_static_model.html#ab660f10cf6411089b0d9f30038f468af">More...</a><br /></td></tr>
 <tr class="separator:ab660f10cf6411089b0d9f30038f468af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -133,6 +133,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isInitialized</b> = f
 <tr class="memitem:a7eafd4a5fd6d415cfa6e0b29b6ba5fb6"><td class="memItemLeft" align="right" valign="top"><a id="a7eafd4a5fd6d415cfa6e0b29b6ba5fb6"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><b>filePath</b></td></tr>
 <tr class="separator:a7eafd4a5fd6d415cfa6e0b29b6ba5fb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f6653a5c06a3095c702ffd352fd3e08"><td class="memItemLeft" align="right" valign="top"><a id="a1f6653a5c06a3095c702ffd352fd3e08"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>reflective</b> = 0</td></tr>
+<tr class="separator:a1f6653a5c06a3095c702ffd352fd3e08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -225,7 +228,7 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>checks all material textures of a given type and loads the textures if they're not loaded yet. the required info is returned as a <a class="el" href="struct_texture.html">Texture</a> struct. </p>
+<p>checks all material textures of a given type and loads the textures if they're not loaded yet. the required info is returned as a <a class="el" href="struct_texture.html" title="data structure to hold texture data">Texture</a> struct. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">scene</td><td>an aiMaterial pointer </td></tr>

@@ -71,6 +71,11 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>Internal shader for <a class="el" href="class_animated_model.html" title="internal class to load a skinned model from Blender FBX">AnimatedModel</a>'s.  
+ <a href="class_animated_shader.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="animated__shader_8h_source.html">animated_shader.h</a>&gt;</code></p>
+
 <p>Inherits <a class="el" href="class_static_shader.html">StaticShader</a>.</p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -173,7 +178,14 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>_isBound</b> = false</
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>ID</b></td></tr>
 <tr class="separator:ac89471461c6e48609a59c1c416ee457b inherit pub_attribs_class_static_shader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Internal shader for <a class="el" href="class_animated_model.html" title="internal class to load a skinned model from Blender FBX">AnimatedModel</a>'s. </p>
+<ul>
+<li>The class is implemented in such a way that there is only ever 1 static shader object.</li>
+<li>The shader implements 1 monolithic shader design (see: animated_model_shader.vs/fs) so all models are rendered the same</li>
+<li>The renderer drawInstances MAX_MODELS number of models at a time (because max 1024 mat4's sent to shader at one time) </li>
+</ul>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>engine/core/include/<a class="el" href="animated__shader_8h_source.html">animated_shader.h</a></li>
 </ul>
 </div><!-- contents -->

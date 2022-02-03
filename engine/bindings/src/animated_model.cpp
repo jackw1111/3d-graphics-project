@@ -36,8 +36,13 @@ void wrap_AnimatedModel() {
     .add_property("color",&AnimatedObject::getColor, &AnimatedObject::setColor)
     .def_readwrite("start_frame", &AnimatedObject::start_frame)
     .def_readwrite("end_frame", &AnimatedObject::end_frame)
+    .def_readwrite("animated_vertices", &AnimatedObject::getAnimatedVertices)
     .def_readwrite("render_to_ui", &AnimatedObject::renderToUI)
+    .def_readwrite("bone_transforms", &AnimatedObject::getBoneTransforms)
+    .add_property("use_custom_shader", &AnimatedObject::getUseCustomShader, &AnimatedObject::setUseCustomShader)
     .def("set_frames", &AnimatedObject::setFrames)
-    .def_readwrite("set_to_draw", &AnimatedObject::setToDraw)
+    .add_property("set_to_draw", &AnimatedObject::getToDraw, &AnimatedObject::setToDraw)
+    .def_readwrite("bounding_box", &AnimatedObject::boundingBox)
+    .add_property("draw_bounding_box",&AnimatedObject::getDrawBoundingBox, &AnimatedObject::setDrawBoundingBox)
     .def("remove", &AnimatedObject::remove);
 }

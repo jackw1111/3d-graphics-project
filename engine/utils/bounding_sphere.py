@@ -39,6 +39,7 @@ class Circle():
             end_point = self.points[end]
             self.end_points.append([start_point, end_point])
             self.line = Line3D(start_point, end_point)
+            self.line.color = vec3(0,1,0)
             self.lines.append(self.line)
 
     def set_position(self, position):
@@ -72,3 +73,9 @@ class BoundingSphere():
 		self.c1 = Circle(model_pos, self.radius, vec3(1,0,0))
 		self.c2 = Circle(model_pos, self.radius, vec3(0,1,0))
 		self.c3 = Circle(model_pos, self.radius, vec3(0,0,1))
+
+class Ellipsoid():
+    def __init__(self, pos, scale):
+        self.c1 = Circle(pos, scale.x, vec3(1,0,0))
+        self.c2 = Circle(pos, scale.y, vec3(0,1,0))
+        self.c3 = Circle(pos, scale.z, vec3(0,0,1))

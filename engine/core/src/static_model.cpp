@@ -23,11 +23,17 @@ StaticObject::StaticObject(const std::string &filePath) {
             this->meshIsCulled = storedObject->meshIsCulled;
             this->uniqueID = StaticObject::modelRegistry[this->modelID].size();
             this->color = vec3(-1,-1,-1);
+            this->drawBoundingBox = false;
 
-            // add it to the store of objects
+            // // add it to the store of objects
             StaticObject::modelRegistry[this->modelID].push_back(*this);
             std::cout << "copying object" << std::endl;
             found = true;
+            vector<float> AABB =  this->model.get()->meshes.at(0).getAABB();
+            glm::vec3 min = glm::vec3(AABB[0], AABB[1], AABB[2]);
+            glm::vec3 max = glm::vec3(AABB[3], AABB[4], AABB[5]);
+            this->boundingBox.setup(min, max);
+
             break;
         }
     }
@@ -39,6 +45,11 @@ StaticObject::StaticObject(const std::string &filePath) {
         this->uniqueID = 0;
         this->meshIsCulled.resize(this->model.get()->meshes.size());
         this->color = vec3(-1,-1,-1);
+        this->drawBoundingBox =  false;
+        vector<float> AABB =  this->model.get()->meshes.at(0).getAABB();
+        glm::vec3 min = glm::vec3(AABB[0], AABB[1], AABB[2]);
+        glm::vec3 max = glm::vec3(AABB[3], AABB[4], AABB[5]);
+        this->boundingBox.setup(min, max);
 
         StaticObject::modelRegistry.push_back({*this});
     }
@@ -58,6 +69,16 @@ int StaticObject::setColor(vec3 c) {
     return 0;
 }
 
+bool StaticObject::getDrawBoundingBox() {
+    return StaticObject::modelRegistry.at(this->modelID).at(this->uniqueID).drawBoundingBox;
+}
+
+int StaticObject::setDrawBoundingBox(bool value) {
+    StaticObject::modelRegistry.at(this->modelID).at(this->uniqueID).drawBoundingBox = value;
+    return 0;
+}
+
+
 mat4 StaticObject::getModelMatrix() {
     return StaticObject::modelRegistry.at(this->modelID).at(this->uniqueID).modelMatrix;
 }
@@ -65,6 +86,10 @@ mat4 StaticObject::getModelMatrix() {
 int StaticObject::setModelMatrix(mat4 m) {
     StaticObject::modelRegistry.at(this->modelID).at(this->uniqueID).modelMatrix = m;
     return 0;
+}
+
+int StaticObject::getToDraw() {
+    return StaticObject::modelRegistry.at(this->modelID).at(this->uniqueID).toDraw;
 }
 
 void StaticObject::setToDraw(int b) {
@@ -104,14 +129,23 @@ int StaticObject::drawAllObjects(Camera &active_camera, StaticShader &shader) {
             for (unsigned int j = 0; j < modelTransforms.size(); j++) {  
                 // get the current object
                 StaticObject *object = &(*currentObjects)[j];
+                StaticMesh *currentMesh = &(object->model.get()->meshes[i]);
+
                 // check if object mesh is either not culled or not occluded
                 if (!object->meshIsCulled[i]) {
 
                     // std::cout << "drawing AABB" << std::endl;
-                    // object->model.get()->meshes[i].boundingCube.setMatrix("model", object->getModelMatrix());
-                    // object->model.get()->meshes[i].boundingCube.setMatrix("view", active_camera.view_matrix);
-                    // object->model.get()->meshes[i].boundingCube.setMatrix("projection", active_camera.projection_matrix);
-                    // object->model.get()->meshes[i].boundingCube.draw();
+                    if (object->drawBoundingBox) {
+                        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+                        glDisable(GL_CULL_FACE);
+                        currentMesh->boundingBox.setMatrix("model", object->getModelMatrix());
+                        currentMesh->boundingBox.setMatrix("view", active_camera.view_matrix);
+                        currentMesh->boundingBox.setMatrix("projection", active_camera.projection_matrix);
+                        currentMesh->boundingBox.draw();
+                        StaticModel::shader.use();
+                        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+                        glEnable(GL_CULL_FACE);
+                    }
 
                     visibleModelTransforms.push_back(modelTransforms[j]);
                 }
@@ -131,7 +165,8 @@ int StaticObject::drawAllObjects(Camera &active_camera, StaticShader &shader) {
             for (auto& x: sorted) {
                 sortedModelTransforms.push_back(x.second);
             }
-            
+            //std::cout << "shininess: " << pModel->meshes[i].mats.shininess << std::endl;
+            shader.setFloat("shininess", pModel->meshes[i].mats.shininess);
             // draw only those that arent culled
             pModel->meshes[i].DrawInstanced(shader, visibleModelTransforms);
         }
@@ -258,7 +293,8 @@ int StaticModel::loadModel(string path)
         vector<float> AABB =  this->meshes[i].getAABB();
         glm::vec3 min = glm::vec3(AABB[0], AABB[1], AABB[2]);
         glm::vec3 max = glm::vec3(AABB[3], AABB[4], AABB[5]);
-        this->meshes[i].boundingCube.setup(min * 1.2f, max * 1.2f);
+        this->meshes[i].boundingBox.setup(min, max);
+        this->meshes[i].boundingBox.toDraw = false;
     }
 
     return 0;
@@ -344,10 +380,13 @@ StaticMesh StaticModel::processMesh(aiMesh *mesh, const aiScene *scene)
 
     Material mat;
     aiColor3D color;
+    float shininess;
     // Read mtl file vertex data
     material->Get(AI_MATKEY_COLOR_SPECULAR, color);
-    mat.Ks = glm::vec4(color.r, color.g, color.b, 1.0);
+    material->Get(AI_MATKEY_SHININESS, shininess);
 
+    mat.Ks = glm::vec4(color.r, color.g, color.b, 1.0);
+    mat.shininess = shininess;
     // we assume a convention for sampler names in the shaders. Each diffuse texture should be named
     // as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER.
     // Same applies to other texture as the following list summarizes:
@@ -471,4 +510,78 @@ unsigned int TextureFromData(unsigned int width, unsigned int height, std::vecto
     
 
     return textureID;
+}
+
+float rayObjectIntersect(glm::vec3 rayOrigin, glm::vec3 rayDirection, StaticObject object)
+{   
+  std::vector<float> intersect_values = {};
+  for (unsigned int j = 0; j < object.model.get()->meshes.size(); j++) {
+    std::vector<Vertex> vertices = object.model.get()->meshes.at(j).vertices;
+    for (unsigned int i = 0; i < vertices.size()-3; i+=3) {
+      vec3 v1 = glm::vec3(object.getModelMatrix() * glm::vec4(vertices.at(i+0).Position, 1.0));
+      vec3 v2 = glm::vec3(object.getModelMatrix() * glm::vec4(vertices.at(i+1).Position, 1.0));
+      vec3 v3 = glm::vec3(object.getModelMatrix() * glm::vec4(vertices.at(i+2).Position, 1.0));
+      float t = rayTriangleIntersect(rayOrigin, rayDirection, v1, v2, v3);
+      if (t) {
+        intersect_values.push_back(t);
+      }
+    }
+  }
+  if (intersect_values.size()) {
+    float shortest_distance = FLT_MAX;
+    for (unsigned int i = 0; i < intersect_values.size(); i++) {
+        if (intersect_values.at(i) < shortest_distance) {
+          shortest_distance = intersect_values.at(i);
+        }
+    }
+    return shortest_distance;
+  } else {
+    return 0.0f;
+  }
+}
+
+  // } else {
+  //     vec3 p = closestPointOnTriangle(spherePosition, v1, v2, v3);
+  //     t = sphereRadius - glm::length(p - spherePosition);
+  //     if ( t > 0 ) {
+  //       intersect_values.push_back(t);
+  //       normals.push_back(glm::normalize(spherePosition - p));
+  //       positions.push_back(p);
+  //     }    
+  // }
+
+CollisionInfo sphereObjectIntersect(glm::vec3 spherePosition, glm::vec3 sphereVelocity, float deltaTime, float sphereRadius, StaticObject object)
+{   
+  CollisionInfo c;
+  c.depth = 0.0f;
+  std::vector<float> intersect_values = {};
+  std::vector<glm::vec3> normals = {};
+
+  for (unsigned int j = 0; j < object.model.get()->meshes.size(); j++) {
+    std::vector<Vertex> vertices = object.model.get()->meshes.at(j).vertices;
+
+    for (unsigned int i = 0; i < vertices.size(); i+=3) {
+      vec3 v1 = glm::vec3(object.getModelMatrix() * glm::vec4(vertices.at(i+0).Position, 1.0));
+      vec3 v2 = glm::vec3(object.getModelMatrix() * glm::vec4(vertices.at(i+1).Position, 1.0));
+      vec3 v3 = glm::vec3(object.getModelMatrix() * glm::vec4(vertices.at(i+2).Position, 1.0));
+      vec3 normal = glm::normalize(glm::cross(v2-v1, v3-v1));
+      float t = rayTriangleIntersect(spherePosition, glm::normalize(-sphereRadius * normal), v1, v2, v3);
+      if (t) {
+        intersect_values.push_back(t);
+        normals.push_back(normal);
+      }
+    }
+  }
+  if (intersect_values.size()) {
+    float shortest_distance = FLT_MAX;
+    for (unsigned int i = 0; i < intersect_values.size(); i++) {
+        if (intersect_values.at(i) < shortest_distance) {
+          c.depth = intersect_values.at(i);
+          c.normal = normals.at(i);
+        }
+    }
+    return c;
+  } else {
+    return c;
+  }
 }

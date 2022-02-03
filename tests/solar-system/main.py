@@ -1,6 +1,6 @@
 import sys
-sys.path.append("/home/me/Documents/3d-graphics-project/engine/bin")
-sys.path.append("/home/me/Documents/3d-graphics-project/engine/utils")
+sys.path.append("../../engine/bin")
+sys.path.append("../../engine/utils")
 from console import *
 from axis_3d import *
 from engine.graphics import *
@@ -44,7 +44,7 @@ class Circle():
             end_point = self.points[end]
             self.end_points.append([start_point, end_point])
             self.line = Line3D(start_point, end_point)
-            self.line.color = vec3(0,0,1)
+            self.line.color = vec3(0,1,0)
             self.lines.append(self.line)
 
     def set_position(self, position):
@@ -96,13 +96,13 @@ class App(Application):
         self.moon_pos = self.earth_pos + vec3(x,0,y)
         self.moon.model_matrix = translate(mat4(1.0), self.moon_pos)
         self.moon_orbit.set_position(self.earth_pos)
-        self.processInput(self.window)
+        self.process_input(self.window)
 
         self.end_time = time.time()
         self.elapsed_time = self.end_time - self.start_time
         #print ("FPS =", 1.0/(self.deltaTime+0.0001))
  
-    def processInput(self, window):
+    def process_input(self, window):
         if (get_key(window, KEY_ESCAPE) == PRESS):
             set_window_should_close(self.window, True);
 
@@ -129,7 +129,7 @@ class App(Application):
         if (get_key(window, KEY_Y) == PRESS):
             self.use_normal_map = True
 
-    def onMouseMoved(self, xpos, ypos):
+    def on_mouse_moved(self, xpos, ypos):
         xoffset = xpos - self.lastX
         yoffset = self.lastY - ypos #reversed since y-coordinates go from bottom to top
 
@@ -137,14 +137,14 @@ class App(Application):
         self.lastY = ypos
         self.active_camera.ProcessMouseMovement(xoffset, yoffset, True)
 
-    def onMouseClicked(self, button, action, mods):
+    def on_mouse_clicked(self, button, action, mods):
         pass
 
-    def onWindowResized(self, width, height):
+    def on_window_resized(self, width, height):
         pass
 
-    def onKeyPressed(self, key, scancode, action, mods):
-        #self.console.onKeyPressed(key, scancode, action, mods)
+    def on_key_pressed(self, key, scancode, action, mods):
+        #self.console.on_key_pressed(key, scancode, action, mods)
         pass
 if __name__ == "__main__":
     app = App("solar-system", WIDTH, HEIGHT, False)

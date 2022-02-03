@@ -92,6 +92,18 @@ void wrap_mat3() {
 
 }
 
+void wrap_quat() {
+
+    python::class_<glm::quat, boost::shared_ptr<glm::quat>>("quat", python::no_init)
+    .def("__init__", python::make_constructor(&make_quat))
+    .def("__mul__", &mul_quat, python::return_value_policy<python::manage_new_object>())
+    .def("__mul__", &mul_quat_float, python::return_value_policy<python::manage_new_object>())
+    .def("__add__", &add_quat, python::return_value_policy<python::manage_new_object>());
+
+    python::def("normalize", static_cast<glm::quat* (*)(glm::quat const &m)>(&_normalize_quat), python::return_value_policy<python::manage_new_object>());
+    python::def("mat4_cast", quat_mat4_cast, python::return_value_policy<python::manage_new_object>());
+}
+
 void wrap_mat4() {
 
     python::class_<glm::mat4, boost::shared_ptr<glm::mat4>>("mat4", python::no_init)
@@ -126,7 +138,7 @@ int setCursorVisible(GLFWwindow* window, bool isVisible) {
 }
 
 int isJoystickPresent() {
-  return 0;
+  return glfwJoystickPresent(GLFW_JOYSTICK_1);
 }
 
 std::vector<float> getJoystickAxes() {
@@ -153,6 +165,10 @@ int loadGL() {
         return -1;
     }
     return 1;
+}
+
+glm::quat custom_deleter_quat::operator()(glm::quat* f) {
+  return *f;
 }
 
 glm::mat4 custom_deleter_mat4::operator()(glm::mat4* f) {
@@ -186,6 +202,27 @@ glm::mat4* mul_mat4(glm::mat4 const &mat1, glm::mat4 const &mat2) {
   glm::mat4* tmp = new glm::mat4();
   *tmp = glm::operator*(mat1, mat2);
   std::unique_ptr<glm::mat4, custom_deleter_mat4> _m( tmp );
+  return _m.get();
+}
+
+glm::quat* mul_quat(glm::quat const &mat1, glm::quat const &mat2) {
+  glm::quat* tmp = new glm::quat();
+  *tmp = glm::operator*(mat1, mat2);
+  std::unique_ptr<glm::quat, custom_deleter_quat> _m( tmp );
+  return _m.get();
+}
+
+glm::quat* add_quat(glm::quat const &mat1, glm::quat const &mat2) {
+  glm::quat* tmp = new glm::quat();
+  *tmp = glm::operator+(mat1, mat2);
+  std::unique_ptr<glm::quat, custom_deleter_quat> _m( tmp );
+  return _m.get();
+}
+
+glm::quat* mul_quat_float(glm::quat const &mat1, float v) {
+  glm::quat* tmp = new glm::quat();
+  *tmp = glm::operator*(mat1, v);
+  std::unique_ptr<glm::quat, custom_deleter_quat> _m( tmp );
   return _m.get();
 }
 
@@ -237,6 +274,10 @@ boost::shared_ptr<glm::mat3> make_mat3(glm::vec3 right, glm::vec3 up, glm::vec3 
   return boost::make_shared<glm::mat3>(right, up, front);
 }
 
+boost::shared_ptr<glm::quat> make_quat(float w, float x, float y, float z)
+{
+  return boost::make_shared<glm::quat>(w,x,y,z);
+}
 
 glm::vec2 custom_deleter_vec2::operator()(glm::vec2* f) {
   return *f;
@@ -459,13 +500,19 @@ std::string print_vec2(glm::vec2 const &v) {
   return glm::to_string(v);
 }
 
-glm::mat4* _angle_axis(float rad_angle, glm::vec3 const &axis) {
-    glm::mat4* tmp = new glm::mat4();
-    *tmp = glm::toMat4(glm::angleAxis(rad_angle, axis));
-    std::unique_ptr<glm::mat4, custom_deleter_mat4> v( tmp );
+glm::quat* _angle_axis(float rad_angle, glm::vec3 const &axis) {
+    glm::quat* tmp = new glm::quat();
+    *tmp = glm::angleAxis(rad_angle, axis);
+    std::unique_ptr<glm::quat, custom_deleter_quat> v( tmp );
     return v.get();
 }
 
+glm::quat* _slerp(glm::quat const &x, glm::quat const &y, float interpolationFactor) {
+    glm::quat* tmp = new glm::quat();
+    *tmp = glm::slerp(x, y, interpolationFactor);
+    std::unique_ptr<glm::quat, custom_deleter_quat> v( tmp );
+    return v.get();
+}
 
 glm::vec3* _cross(glm::vec3 const &v1,  glm::vec3 const &v2) {
     glm::vec3* tmp = new glm::vec3();
@@ -488,7 +535,20 @@ float _length3(glm::vec3 const &v1) {
     return *v.get();
 }
 
+glm::vec2* _normalize_vec2(glm::vec2 const &m)
+{
+    glm::vec2 *tmp = new glm::vec2();
+    if (m == glm::vec2(0,0)) {
+      *tmp = m;
+      std::unique_ptr<glm::vec2, custom_deleter_vec2> _m( tmp );
+      return _m.get();
+    } else {
+      *tmp = glm::normalize(m);
+      std::unique_ptr<glm::vec2, custom_deleter_vec2> _m( tmp );    
+      return _m.get();  
+    }
 
+}
 
 glm::vec3* _normalize(glm::vec3 const &m)
 {
@@ -536,6 +596,21 @@ glm::mat3* _inverse_mat3(glm::mat3 const &m)
     return _m.get();
 }
 
+glm::mat4* quat_mat4_cast(glm::quat const &q)
+{
+    glm::mat4 *tmp = new glm::mat4();
+    *tmp = glm::mat4(q);
+    std::unique_ptr<glm::mat4, custom_deleter_mat4> _m( tmp );
+    return _m.get();
+}
+
+glm::quat* _normalize_quat(glm::quat const &m)
+{
+    glm::quat *tmp = new glm::quat();
+    *tmp = glm::normalize(m);
+    std::unique_ptr<glm::quat, custom_deleter_quat> _m( tmp );
+    return _m.get();
+}
 
 glm::mat3* _transpose_mat3(glm::mat3 const &m)
 {
@@ -600,6 +675,13 @@ glm::mat4* _ortho(float const &left, float const &right, float const &bottom, fl
     return m.get();
 }
 
+glm::vec3* _unproject(glm::vec3 const &win,  glm::mat4 const &model, glm::mat4 const &proj, glm::vec4 const &viewport) {
+    glm::vec3* tmp = new glm::vec3();
+    *tmp = glm::unProject(win, model, proj, viewport);
+    std::unique_ptr<glm::vec3, custom_deleter_vec3> v( tmp );
+    return v.get();
+}
+
 
 
 int setVsync(int value) {
@@ -653,9 +735,19 @@ int getMouseButton(GLFWwindow* window, int button) {
   return glfwGetMouseButton(window, button);
 }
 
+
+
+glm::vec3 getPixel(unsigned int x, unsigned int y) {
+  struct{ GLubyte red, green, blue; } pixel;
+  glReadPixels(x, y, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, &pixel);
+  return glm::vec3(pixel.red, pixel.green, pixel.blue);
+}
+
 void wrap_mathUtils() {
 
     python::def("dot", _dot2);
+    python::def("normalize", _normalize_vec2, python::return_value_policy<python::manage_new_object>());
+
     python::def("normalize", _normalize, python::return_value_policy<python::manage_new_object>());
     python::def("dot", _dot3);
     python::def("cross", _cross, python::return_value_policy<python::manage_new_object>());
@@ -663,12 +755,21 @@ void wrap_mathUtils() {
     python::def("distance", _distance);
     python::def("distance", _distance2);
     python::def("angle_axis", _angle_axis,  python::return_value_policy<python::manage_new_object>());
+    python::def("slerp", _slerp,  python::return_value_policy<python::manage_new_object>());
+
     python::def("ray_intersect_sphere", intersect);
     python::def("ray_cast", rayCast);
     python::def("ray_intersect_plane", intersectPlane);
-    python::def("ray_intersect_triangle", rayTriangleIntersect);
+    python::def("ray_intersect_quad", rayIntersectQuad);
     python::def("ray_intersect_object", rayObjectIntersect);
+    python::def("ray_intersect_animated_object", rayAnimatedObjectIntersect);
+    python::def("ray_intersect_triangle", rayTriangleIntersect);
+    python::def("line_segment_intersect_triangle", lineSegmentTriangleIntersect);
+    python::def("ray_intersect_box", rayBoxIntersect);
     python::def("box_intersect_box", check_collision);
+    python::def("box_intersect_plane", boxPlaneIntersect);
+    python::def("sphere_intersect_object", sphereObjectIntersect);
+    python::def("min_distance_point_to_plane", minDistancePointToPlane);
     // GL/app/window utility functions
     python::def("set_depth_test", setDepthTest);
     python::def("set_cull_face", setCullFace);
@@ -678,7 +779,10 @@ void wrap_mathUtils() {
     python::def("set_alpha_transparency", setAlphaTransparency);
     python::def("load_GL", loadGL);
     python::def("set_cursor_visible", setCursorVisible);
-
+    python::def("get_pixel", getPixel);
+    python::def("unproject", _unproject, python::return_value_policy<python::manage_new_object>());
+    python::def("reflect", reflect);
+    
     python::def("terminate", glfwTerminate);
     python::def("get_time", glfwGetTime);
     python::def("get_key", glfwGetKey);
@@ -691,6 +795,18 @@ void wrap_mathUtils() {
     python::def("is_joystick_present", isJoystickPresent, boost::python::return_value_policy<boost::python::return_by_value>());
     python::def("get_joystick_axes", getJoystickAxes, boost::python::return_value_policy<boost::python::return_by_value>()); 
 
+    python::class_<BoundingBox>("BoundingBox", python::init<>())
+    .def("get_translated_vertices", &BoundingBox::getTranslatedVertices)
+    .def("setup", &BoundingBox::setup)
+    .def_readwrite("model_matrix", &BoundingBox::modelMatrix)
+    .def_readwrite("velocity", &BoundingBox::velocity)
+    .def_readwrite("to_draw", &BoundingBox::toDraw)
+    ;
+    python::class_<CollisionInfo>("CollisionInfo", python::init<>())
+    .def_readwrite("position", &CollisionInfo::position)
+    .def_readwrite("normal", &CollisionInfo::normal)
+    .def_readwrite("depth", &CollisionInfo::depth)
+    ;
 
     // Custom iterator wrapper
 
@@ -743,4 +859,17 @@ void wrap_mathUtils() {
     // wrap vector of vector of vec3
     boost::python::class_<std::vector< std::vector< glm::vec3 > > >("Vec3VectorVector")
         .def(boost::python::vector_indexing_suite<std::vector< std::vector< glm::vec3 > > >());
+
+    // wrap vector of vec3
+    boost::python::class_<std::vector< glm::vec3 > >("Vec3Vector")
+        .def(boost::python::vector_indexing_suite<std::vector< glm::vec3 > >());
+
+
+    // wrap vector of mat4
+    boost::python::class_<std::vector< glm::mat4 > >("Mat4Vector")
+        .def(boost::python::vector_indexing_suite<std::vector< glm::mat4 > >());
+
+    // wrap vector of unsigned int
+    boost::python::class_<std::vector< unsigned int > >("UnsignedIntVector")
+        .def(boost::python::vector_indexing_suite<std::vector< unsigned int > >());
 }

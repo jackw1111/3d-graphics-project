@@ -24,33 +24,56 @@ AnimatedMesh::AnimatedMesh(const AnimatedMesh& m) : StaticMesh(m) {
     setupMesh();
 }
 
+
 std::vector<float> AnimatedMesh::getAABB() {
-    float minX = numeric_limits<float>::max();
-    float maxX = numeric_limits<float>::min();
-    float minY = numeric_limits<float>::max();
-    float maxY = numeric_limits<float>::min();
-    float minZ = numeric_limits<float>::max();
-    float maxZ = numeric_limits<float>::min();
-    for(unsigned int i = 0; i < vertices.size(); i++)
+
+    for(unsigned int i = 0; i < animatedVertices.size(); i++)
     {
-        if (vertices[i].Position.x < minX) {
-            minX = vertices[i].Position.x;
-        } else if (vertices[i].Position.x > maxX) {
-            maxX = vertices[i].Position.x;
+        if (animatedVertices[i].x < min.x) {
+            min.x = animatedVertices[i].x;
+        } else if (animatedVertices[i].x > max.x) {
+            max.x = animatedVertices[i].x;
         }
-        if (vertices[i].Position.y < minY) {
-            minY = vertices[i].Position.y;
-        } else if (vertices[i].Position.y > maxY) {
-            maxY = vertices[i].Position.y;
+        if (animatedVertices[i].y < min.y) {
+            min.y = animatedVertices[i].y;
+        } else if (animatedVertices[i].y > max.y) {
+            max.y = animatedVertices[i].y;
         }
-        if (vertices[i].Position.z < minZ) {
-            minZ = vertices[i].Position.z;
-        } else if (vertices[i].Position.z > maxZ) {
-            maxZ = vertices[i].Position.z;
+        if (animatedVertices[i].z < min.z) {
+            min.z = animatedVertices[i].z;
+        } else if (animatedVertices[i].z > max.z) {
+            max.z = animatedVertices[i].z;
         }
     }
-    vector<float> limits = {minX, minY, minZ, maxX, maxY, maxZ};
+    vector<float> limits = {min.x, min.y, min.z, max.x, max.y, max.z};
     return limits;
+}
+
+int AnimatedMesh::setVertices(vector<mat4> _gBones) {
+    animatedVertices = {};
+    std::vector<VertexTransform> verts = vertices;
+    std::vector<unsigned int> inds = indices;
+
+    for (unsigned int i = 0; i < inds.size(); i++) {
+        int BoneID0 = verts.at(inds.at(i)).Bones.IDs[0];
+        int BoneID1 = verts.at(inds.at(i)).Bones.IDs[1];
+        int BoneID2 = verts.at(inds.at(i)).Bones.IDs[2];
+        int BoneID3 = verts.at(inds.at(i)).Bones.IDs[3];
+
+        float Weights0 = verts.at(inds.at(i)).Bones.Weights[0];
+        float Weights1 = verts.at(inds.at(i)).Bones.Weights[1];
+        float Weights2 = verts.at(inds.at(i)).Bones.Weights[2];
+        float Weights3 = verts.at(inds.at(i)).Bones.Weights[3];
+
+        mat4 BoneTransform = _gBones.at(BoneID0) * Weights0;
+        BoneTransform     += _gBones.at(BoneID1) * Weights1;
+        BoneTransform     += _gBones.at(BoneID2) * Weights2;
+        BoneTransform     += _gBones.at(BoneID3) * Weights3;
+
+        vec4 animatedPos= BoneTransform * vec4(verts.at(inds.at(i)).Position, 1.0);
+        animatedVertices.push_back(animatedPos);
+    }
+    return 0;
 }
 
 void AnimatedMesh::Draw(AnimatedShader shader)
@@ -164,6 +187,14 @@ void AnimatedMesh::setupMesh()
     glVertexAttribDivisor(9, 1);
     glVertexAttribDivisor(10, 1);
 
+    float minX = numeric_limits<float>::max();
+    float maxX = numeric_limits<float>::min();
+    float minY = numeric_limits<float>::max();
+    float maxY = numeric_limits<float>::min();
+    float minZ = numeric_limits<float>::max();
+    float maxZ = numeric_limits<float>::min();
+    min = vec3(minX, minY, minZ);
+    max = vec3(maxX, maxY, maxZ);
 }
 
 void BoneData::AddBoneData(unsigned int BoneID, float Weight)
@@ -177,7 +208,7 @@ void BoneData::AddBoneData(unsigned int BoneID, float Weight)
     }
 
     // should never get here - more bones than we have space for
-    assert(0);
+    //assert(0);
 }
 
 AnimatedMesh::~AnimatedMesh()

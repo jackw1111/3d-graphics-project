@@ -29,7 +29,9 @@ void wrap_StaticModel() {
     .add_property("color",&StaticObject::getColor, &StaticObject::setColor)
     .add_property("model_matrix",&StaticObject::getModelMatrix, &StaticObject::setModelMatrix)
     .add_property("model", &StaticObject::getModel)
-    .def_readwrite("set_to_draw", &StaticObject::setToDraw)
+    .add_property("set_to_draw", &StaticObject::getToDraw, &StaticObject::setToDraw)
+    .def_readwrite("bounding_box", &StaticObject::boundingBox)
+    .add_property("draw_bounding_box",&StaticObject::getDrawBoundingBox, &StaticObject::setDrawBoundingBox)
     .def("remove", &StaticObject::remove);
 
     //.def_readwrite("color", &StaticModel::color)

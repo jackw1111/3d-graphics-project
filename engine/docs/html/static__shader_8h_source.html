@@ -73,69 +73,74 @@ $(function() {
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define STATIC_SHADER_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#define GLM_ENABLE_EXPERIMENTAL</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;glm/glm.hpp&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;glm/gtx/string_cast.hpp&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;glm/gtc/type_ptr.hpp&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;fstream&gt;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;glad/glad.h&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;stdexcept&gt;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keywordtype">float</span> to_float(uint32_t f);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="class_static_shader.html">   23</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_static_shader.html">StaticShader</a></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;{</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keywordtype">int</span> _isInit = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordtype">int</span> _isBound = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ID;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <a class="code" href="class_static_shader.html#a365b1b1095e4535655e3b4386c5df2a2">StaticShader</a>();</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <a class="code" href="class_static_shader.html#a365b1b1095e4535655e3b4386c5df2a2">StaticShader</a>(<span class="keyword">const</span> <a class="code" href="class_static_shader.html">StaticShader</a> &amp;other);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <a class="code" href="class_static_shader.html">StaticShader</a>&amp; operator=(<a class="code" href="class_static_shader.html">StaticShader</a> other);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_static_shader.html#aa98e7ae10ff15bf637f65da8bc2c4d36">setup</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* vertexPath, <span class="keyword">const</span> <span class="keywordtype">char</span>* fragmentPath, <span class="keyword">const</span> <span class="keywordtype">char</span>* geometryPath = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment">// #define GLM_FORCE_SSE2</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment">// #define GLM_FORCE_ALIGNED</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment">// #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment">// #include &lt;glm/glm.hpp&gt;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">// #include &lt;xmmintrin.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;glm/glm.hpp&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;glm/gtx/string_cast.hpp&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;glm/gtc/type_ptr.hpp&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &lt;fstream&gt;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;glad/glad.h&quot;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &lt;stdexcept&gt;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keywordtype">float</span> to_float(uint32_t f);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="class_static_shader.html">   28</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_static_shader.html">StaticShader</a></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;{</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">int</span> _isInit = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">int</span> _isBound = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ID;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <a class="code" href="class_static_shader.html#a365b1b1095e4535655e3b4386c5df2a2">StaticShader</a>();</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <a class="code" href="class_static_shader.html#a365b1b1095e4535655e3b4386c5df2a2">StaticShader</a>(<span class="keyword">const</span> <a class="code" href="class_static_shader.html">StaticShader</a> &amp;other);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="class_static_shader.html">StaticShader</a>&amp; operator=(<a class="code" href="class_static_shader.html">StaticShader</a> other);</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <a class="code" href="class_static_shader.html#a365b1b1095e4535655e3b4386c5df2a2">StaticShader</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* vertexPath, <span class="keyword">const</span> <span class="keywordtype">char</span>* fragmentPath, <span class="keyword">const</span> <span class="keywordtype">char</span>* geometryPath = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_static_shader.html#aa98e7ae10ff15bf637f65da8bc2c4d36">setup</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* vertexPath, <span class="keyword">const</span> <span class="keywordtype">char</span>* fragmentPath, <span class="keyword">const</span> <span class="keywordtype">char</span>* geometryPath = <span class="keyword">nullptr</span>);</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_static_shader.html#ade5b42a35e58ca0a3746aa13668f2dd7">use</a>();</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#a2ed971905c26cf0644a26aa9c64c94b2">setBool</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keywordtype">bool</span> value) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <a class="code" href="class_static_shader.html#a365b1b1095e4535655e3b4386c5df2a2">StaticShader</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* vertexPath, <span class="keyword">const</span> <span class="keywordtype">char</span>* fragmentPath, <span class="keyword">const</span> <span class="keywordtype">char</span>* geometryPath = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_static_shader.html#ade5b42a35e58ca0a3746aa13668f2dd7">use</a>();</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#ab20f12b09fceed310768bae535dcbf77">setInt</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keywordtype">int</span> value) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#a2ed971905c26cf0644a26aa9c64c94b2">setBool</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keywordtype">bool</span> value) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_static_shader.html#a54b51e179470e8b61603e63921bf6de4">setFloat</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keywordtype">float</span> value) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#ab20f12b09fceed310768bae535dcbf77">setInt</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keywordtype">int</span> value) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_static_shader.html#a3c6f45972da823f0ea375f0133d46afe">setFloatArray</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> sz, std::vector&lt;float&gt; v) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_static_shader.html#a54b51e179470e8b61603e63921bf6de4">setFloat</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keywordtype">float</span> value) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#a0367d895cbd40ed0176e65cd6e0ee32e">setVec2</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keyword">const</span> glm::vec2 &amp;value) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_static_shader.html#aada2cafff51449b61eb25dfadc68e189">setVec3</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keyword">const</span> glm::vec3&amp; value) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_static_shader.html#a3c6f45972da823f0ea375f0133d46afe">setFloatArray</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> sz, std::vector&lt;float&gt; v) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#a0367d895cbd40ed0176e65cd6e0ee32e">setVec2</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keyword">const</span> glm::vec2 &amp;value) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#a87d7deb23b547e59d617f4d12b605b80">setVec4</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keyword">const</span> glm::vec4 &amp;value) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_static_shader.html#aada2cafff51449b61eb25dfadc68e189">setVec3</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keyword">const</span> glm::vec3&amp; value) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#a87d7deb23b547e59d617f4d12b605b80">setVec4</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y, <span class="keywordtype">float</span> z, <span class="keywordtype">float</span> w) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#a01eef951180286a9ddce88260354c3aa">setMat2</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keyword">const</span> glm::mat2 &amp;mat) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#a87d7deb23b547e59d617f4d12b605b80">setVec4</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keyword">const</span> glm::vec4 &amp;value) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#a87d7deb23b547e59d617f4d12b605b80">setVec4</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keywordtype">float</span> x, <span class="keywordtype">float</span> y, <span class="keywordtype">float</span> z, <span class="keywordtype">float</span> w) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#a5207155000231f1da7f4350eadc51f62">setMat3</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keyword">const</span> glm::mat3 &amp;mat) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#a01eef951180286a9ddce88260354c3aa">setMat2</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keyword">const</span> glm::mat2 &amp;mat) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_static_shader.html#ade1bf9f1eb3bea214c5cd7b8963b12a0">setMat4</a>(std::string name, glm::mat4);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#a5207155000231f1da7f4350eadc51f62">setMat3</a>(<span class="keyword">const</span> std::string &amp;name, <span class="keyword">const</span> glm::mat3 &amp;mat) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_static_shader.html#a703d9374f3b1f63dd600f58446ed6c43">_setMat4</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> mataddr);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_static_shader.html#ade1bf9f1eb3bea214c5cd7b8963b12a0">setMat4</a>(std::string name, glm::mat4);</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#aa3fe226897514ea2cd8887144d1a9a53">checkCompileErrors</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> shader, std::string type);</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;};</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordtype">int</span> <a class="code" href="class_static_shader.html#a703d9374f3b1f63dd600f58446ed6c43">_setMat4</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* name, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> mataddr);</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="class_static_shader.html#aa3fe226897514ea2cd8887144d1a9a53">checkCompileErrors</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> shader, std::string type);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;};</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_static_shader_html_a5207155000231f1da7f4350eadc51f62"><div class="ttname"><a href="class_static_shader.html#a5207155000231f1da7f4350eadc51f62">StaticShader::setMat3</a></div><div class="ttdeci">void setMat3(const std::string &amp;name, const glm::mat3 &amp;mat) const</div><div class="ttdoc">utility function for sending/setting mat3 to GLSL</div></div>
 <div class="ttc" id="aclass_static_shader_html_a365b1b1095e4535655e3b4386c5df2a2"><div class="ttname"><a href="class_static_shader.html#a365b1b1095e4535655e3b4386c5df2a2">StaticShader::StaticShader</a></div><div class="ttdeci">StaticShader()</div><div class="ttdoc">A shader class used to light StaticModel type objects (ie. with no animations)</div></div>
@@ -150,7 +155,7 @@ $(function() {
 <div class="ttc" id="aclass_static_shader_html_a01eef951180286a9ddce88260354c3aa"><div class="ttname"><a href="class_static_shader.html#a01eef951180286a9ddce88260354c3aa">StaticShader::setMat2</a></div><div class="ttdeci">void setMat2(const std::string &amp;name, const glm::mat2 &amp;mat) const</div><div class="ttdoc">utility function for sending/setting mat2 to GLSL</div></div>
 <div class="ttc" id="aclass_static_shader_html_ade1bf9f1eb3bea214c5cd7b8963b12a0"><div class="ttname"><a href="class_static_shader.html#ade1bf9f1eb3bea214c5cd7b8963b12a0">StaticShader::setMat4</a></div><div class="ttdeci">int setMat4(std::string name, glm::mat4)</div><div class="ttdoc">utility function for sending/setting mat4 to GLSL</div></div>
 <div class="ttc" id="aclass_static_shader_html_a87d7deb23b547e59d617f4d12b605b80"><div class="ttname"><a href="class_static_shader.html#a87d7deb23b547e59d617f4d12b605b80">StaticShader::setVec4</a></div><div class="ttdeci">void setVec4(const std::string &amp;name, const glm::vec4 &amp;value) const</div><div class="ttdoc">utility function for sending/setting vec4 to GLSL</div></div>
-<div class="ttc" id="aclass_static_shader_html"><div class="ttname"><a href="class_static_shader.html">StaticShader</a></div><div class="ttdoc">A shader class used to light StaticModel type objects (ie. with no animations)</div><div class="ttdef"><b>Definition:</b> static_shader.h:23</div></div>
+<div class="ttc" id="aclass_static_shader_html"><div class="ttname"><a href="class_static_shader.html">StaticShader</a></div><div class="ttdoc">A shader class used to light StaticModel type objects (ie. with no animations)</div><div class="ttdef"><b>Definition:</b> static_shader.h:28</div></div>
 <div class="ttc" id="aclass_static_shader_html_aada2cafff51449b61eb25dfadc68e189"><div class="ttname"><a href="class_static_shader.html#aada2cafff51449b61eb25dfadc68e189">StaticShader::setVec3</a></div><div class="ttdeci">int setVec3(const std::string &amp;name, const glm::vec3 &amp;value) const</div><div class="ttdoc">utility function for sending/setting vec3 to GLSL</div></div>
 <div class="ttc" id="aclass_static_shader_html_ade5b42a35e58ca0a3746aa13668f2dd7"><div class="ttname"><a href="class_static_shader.html#ade5b42a35e58ca0a3746aa13668f2dd7">StaticShader::use</a></div><div class="ttdeci">int use()</div><div class="ttdoc">activate the shader</div></div>
 <!-- start footer part -->

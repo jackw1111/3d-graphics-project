@@ -4,7 +4,9 @@
 #include "static_shader.h"
 #include "stb_image.h"
 
-
+/*! @brief environment cubemap class, defaults to a generic skybox if none specified.
+- must be explicitly turned off with Application.setSkybox = false
+- if you want to use a custom one, you must include a folder ./data/skybox with all jpg face images. */
 class Skybox {
 public:
     // skybox VAO

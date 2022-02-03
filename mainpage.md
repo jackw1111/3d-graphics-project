@@ -4,8 +4,8 @@
 
 ### Features:
 
-- Deferred 3D renderer (C++11, Python3, OpenGL3.3), built on Intel 3000 iGPU (bottom 2% GPU on userbenchmark.com) so compatible and performant across many GPUs
-- shadow maps, multiple lights,  SSAO, skeletal animations, basic particle system, skybox
+- 3D renderer (C++11, Python3, OpenGL3.3), built on Intel 3000 iGPU (bottom 2% GPU on userbenchmark.com) so compatible and performant across many GPUs (every rect and line is batched, every model is instanced, vertex lighting to save on perf, frustum culling, caching)
+- shadow maps, multiple lights, skeletal animations, basic particle system, skybox
 - ellipsoid character collision detection with collision resolution
 - basic audio
 - gamepad support
@@ -23,3 +23,8 @@
 - Proficient in C++ and Python, and can rewrite sections of slow Python apps in C++
 - Working knowledge in mid-scale software engineering design patterns (10k LOC project)
 - Building maintainable and scalable code (Fully documented API, released) (WIP)
+
+# troubleshoot
+- there is a strange bug when exporting .obj files for `StaticObject`'s, you will need to flip forward and up axis in the export settings for the object to appear the correct orientation in the engine. Eg. if you want to export -z forward and y up, you will have to apply y forward and -z up in the blender export settings.
+- TO DO example on how to export .dae/.fbx for `AnimatedObject`'s.
+

@@ -12,10 +12,13 @@ int ApplicationWrap::setup(std::string title, unsigned int WIDTH, unsigned int H
 void ApplicationWrap::update()
 {
     if (boost::python::override _update = this->get_override("update")) {
-        // call python overriden update method first
-        _update();
+
         // call default update method
         Application::update();
+
+        // call python overriden update method first
+        _update();
+
 
     } else {
         // no python method; just call default update method
@@ -25,7 +28,7 @@ void ApplicationWrap::update()
 
 void ApplicationWrap::onKeyPressed(int key, int scancode, int action, int mods) 
 {
-    if (boost::python::override f = this->get_override("onKeyPressed")) {
+    if (boost::python::override f = this->get_override("on_key_pressed")) {
         f(key, scancode, action, mods);
         Application::onKeyPressed(key, scancode, action, mods);
     } else {
@@ -36,7 +39,7 @@ void ApplicationWrap::onKeyPressed(int key, int scancode, int action, int mods)
 
 void ApplicationWrap::onMouseClicked(int button, int action, int mods)
 {
-    if (boost::python::override f = this->get_override("onMouseClicked")) {
+    if (boost::python::override f = this->get_override("on_mouse_clicked")) {
         f(button, action, mods);
         Application::onMouseClicked(button, action, mods);
     } else {
@@ -46,7 +49,7 @@ void ApplicationWrap::onMouseClicked(int button, int action, int mods)
 
 void ApplicationWrap::onMouseScrolled(double xpos, double ypos)
 {
-    if (boost::python::override f = this->get_override("onMouseScrolled")) {
+    if (boost::python::override f = this->get_override("on_mouse_scrolled")) {
         f(xpos, ypos);
         Application::onMouseScrolled(xpos, ypos);
     } else {
@@ -56,7 +59,7 @@ void ApplicationWrap::onMouseScrolled(double xpos, double ypos)
 
 void ApplicationWrap::onWindowResized(int width, int height)
 {
-    if (boost::python::override f = this->get_override("onWindowResized")) {
+    if (boost::python::override f = this->get_override("on_window_resized")) {
         glViewport(0,0, width, height);
         f(width, height);
         Application::onWindowResized(width, height);
@@ -67,7 +70,7 @@ void ApplicationWrap::onWindowResized(int width, int height)
 
 void ApplicationWrap::onMouseMoved(double xpos, double ypos)
 {
-    if (boost::python::override f = this->get_override("onMouseMoved")) {
+    if (boost::python::override f = this->get_override("on_mouse_moved")) {
         f(xpos, ypos);
         Application::onMouseMoved(xpos, ypos);
     } else {
@@ -78,7 +81,7 @@ void ApplicationWrap::onMouseMoved(double xpos, double ypos)
 
 void ApplicationWrap::onJoystickMoved(int jid, int event)
 {
-    if (boost::python::override f = this->get_override("onJoystickMoved")) {
+    if (boost::python::override f = this->get_override("on_joystick_moved")) {
         f(jid, event);
         Application::onJoystickMoved(jid, event);
     } else {
@@ -94,6 +97,11 @@ float ApplicationWrap::getFPS() {
 void ApplicationWrap::gameLoop()
 {
     Application::gameLoop();
+}
+
+void ApplicationWrap::draw()
+{
+    Application::draw();
 }
 BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(GLFWwindow);
 
@@ -112,15 +120,16 @@ void wrap_Application() {
       .def_readwrite("debug", &Application::debug)
       .def_readwrite("light_projection_matrix", &Application::lightProjection)
       .def_readwrite("light_view_matrix", &Application::lightView)
-      .def("set_far_plane", &Application::setFarPlane)
+      .def_readwrite("use_custom_view_matrix", &Application::useCustomViewMatrix)
+
       .add_property("window", boost::python::make_function(&Application::getWindow, boost::python::return_value_policy<boost::python::return_opaque_pointer>()), &Application::setWindow)
       .def("update", &ApplicationWrap::update)
-      .def("onKeyPressed", &ApplicationWrap::onKeyPressed)
-      .def("onMouseClicked", &ApplicationWrap::onMouseClicked)
-      .def("onWindowResized", &ApplicationWrap::onWindowResized)
-      .def("onMouseScrolled", &ApplicationWrap::onMouseScrolled)
-      .def("onMouseMoved", &ApplicationWrap::onMouseMoved)
-      .def("onJoystickMoved", &ApplicationWrap::onJoystickMoved)
+      .def("on_key_pressed", &ApplicationWrap::onKeyPressed)
+      .def("on_mouse_clicked", &ApplicationWrap::onMouseClicked)
+      .def("on_window_resized", &ApplicationWrap::onWindowResized)
+      .def("on_mouse_scrolled", &ApplicationWrap::onMouseScrolled)
+      .def("on_mouse_moved", &ApplicationWrap::onMouseMoved)
+      .def("on_joystick_moved", &ApplicationWrap::onJoystickMoved)
       .def("gameLoop", &ApplicationWrap::gameLoop)
       .def("get_fps", &ApplicationWrap::getFPS)
       .def("set_background_color", &Application::setBackgroundColor)

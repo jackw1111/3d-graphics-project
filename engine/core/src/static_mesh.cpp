@@ -5,14 +5,8 @@
 
 
 Vertex::Vertex(){
-    float r = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-    glm::vec3 lightDir = glm::normalize(glm::vec3(0,0,0) - Position);
-    float diff = max(dot(Normal, lightDir), 0.0f);
-    // // attenuation
-    // float distance    = glm::length(glm::vec3(0,0,0) - Position);
-    // float attenuation = 1.0 / (1.0f + 0.09f * distance + 0.032f * (distance * distance));
-    // diff *= attenuation;  
-    shading = diff;   
+    /// @todo work on light maps, maybe just generate a light value
+    /// for each vertex, taking into consideration light occlusion 
 
 };
 
@@ -21,6 +15,7 @@ Vertex::Vertex(float x, float y, float z) {
 }
 
 bool  Vertex::operator==(const Vertex v) { return this == &v; }
+
 
 
 
@@ -65,14 +60,14 @@ std::vector<float> StaticMesh::getAABB() {
     return limits;
 }
 
-std::vector<std::vector<glm::vec3>> StaticMesh::getTriangles(glm::mat4 model) {
+std::vector<std::vector<glm::vec3>> StaticMesh::getTriangles(const glm::mat4 &model) {
 
 
     std::vector<std::vector<glm::vec3>> triangles = std::vector<std::vector<glm::vec3>>();
-    for (unsigned int i = 0; i < indices.size();) {
-        glm::vec3 v1 = glm::vec3(model * glm::vec4(vertices.at(indices.at(i++)).Position, 1.0));
-        glm::vec3 v2 = glm::vec3(model * glm::vec4(vertices.at(indices.at(i++)).Position, 1.0));
-        glm::vec3 v3 = glm::vec3(model * glm::vec4(vertices.at(indices.at(i++)).Position, 1.0));
+    for (unsigned int i = 0; i < vertices.size();) {
+        glm::vec3 v1 = vertices.at(indices.at(i++)).Position;
+        glm::vec3 v2 = vertices.at(indices.at(i++)).Position;
+        glm::vec3 v3 = vertices.at(indices.at(i++)).Position;
         std::vector<glm::vec3> triangle = std::vector<glm::vec3>();
         triangle = {v1, v2, v3};
         triangles.push_back(triangle);
@@ -106,7 +101,7 @@ StaticMesh::StaticMesh(const StaticMesh& other) {
     this->filePath = other.filePath;
     this->modelID = other.modelID;
     this->toDraw = other.toDraw;
-    this->boundingCube = other.boundingCube;
+    this->boundingBox = other.boundingBox;
     //setupMesh();
 }
 
@@ -124,7 +119,7 @@ StaticMesh& StaticMesh::operator=(StaticMesh other) {
     this->filePath = other.filePath;
     this->modelID = other.modelID;
     this->toDraw = other.toDraw;
-    this->boundingCube = other.boundingCube;
+    this->boundingBox = other.boundingBox;
     return *this;
 }
 

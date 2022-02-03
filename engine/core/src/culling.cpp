@@ -427,8 +427,6 @@ void Frustum::reset(AnimatedObject &object) {
 
     for (unsigned int j = 0; j < animModel->meshes.size(); j++) {
 
-        StaticMesh *mesh = &animModel->meshes[j];
-
         object.meshIsCulled[j] = 0;
     }
 }

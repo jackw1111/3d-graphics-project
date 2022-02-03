@@ -1,6 +1,6 @@
 import sys
-sys.path.append("/home/me/Documents/3d-graphics-project/engine/bin")
-sys.path.append("/home/me/Documents/3d-graphics-project/engine/utils")
+sys.path.append("../../engine/bin")
+sys.path.append("../../engine/utils")
 from console import *
 from axis_3d import *
 from engine.graphics import *
@@ -15,6 +15,8 @@ from OpenGL.GL import *
 WIDTH = 640
 HEIGHT = 480
 
+# TO DO fix lighting, fix gravity, fix UI
+
 class App(Application):
 
     def __init__(self, *args, **kwargs):
@@ -24,36 +26,42 @@ class App(Application):
 
         self.light = Light(vec3(-4,8,-2), vec3(1,1,1))
 
-        self.ak47_icon = Rect(vec2(100 ,HEIGHT - 100), vec2(100,100), "./data/ak47.png")
-        self.awp_icon = Rect(vec2(100 , HEIGHT - 100), vec2(100,100), "./data/awp.png")
+        self.ak47_icon = Rect2D(vec2(100 ,HEIGHT - 100), vec2(100,100), "./data/ak47.png",1,1)
+        self.awp_icon = Rect2D(vec2(100 , HEIGHT - 100), vec2(100,100), "./data/awp.png",1,1)
+        self.ak47_icon.ordering = 1
+        self.awp_icon.ordering = 1
 
         # simple UI
-        self.crosshair = Rect(vec2(WIDTH/2, HEIGHT/2), vec2(25, 25), "./data/crosshair.png")
-        self.scope = Rect(vec2(WIDTH/2, HEIGHT/2), vec2(WIDTH, HEIGHT), "./data/scope.png")
+        self.crosshair = Rect2D(vec2(WIDTH/2, HEIGHT/2), vec2(25, 25), "./data/crosshair.png",1,1)
+        self.crosshair.ordering = 1
+        self.scope = Rect2D(vec2(WIDTH/2, HEIGHT/2), vec2(WIDTH, HEIGHT), "./data/scope.png",1,1)
         self.scope.to_draw = False
+        self.scope.ordering = 1
 
         # FPS gun
 
         self.gun1 = AnimatedObject("./data/fps_hands_aks74u.fbx")
         self.gun1.set_frames(0.1, 0.101, 0.0)
-
         self.gun2 = AnimatedObject("./data/AWP/fps_hands_awp.dae")
 
         self.gun = self.gun1
 
         # create a 2nd player
-        self.other_player = AnimatedObject("../angry-bots/data/unity_player.fbx")
-        self.other_player.position = vec3(-40,-36.5,20)
+        # "../angry-bots/data/unity_player.fbx")
+        #self.other_player = AnimatedObject("../minecraft/data/steve.dae")
+        #self.other_player.draw_bounding_box = True
+        #self.other_player.position = vec3(-40,-36.5,20)
 
         #self.other_player = StaticObject("./data/dj_skully/dj_scully.obj")
-        self.other_player.model_matrix = translate(mat4(1.0), self.other_player.position)  
-        self.other_player.model_matrix = scale(self.other_player.model_matrix, vec3(0.01, 0.01, 0.01))
+        #self.other_player.model_matrix = translate(mat4(1.0), self.other_player.position)  
+        #self.other_player.model_matrix = scale(self.other_player.model_matrix, vec3(0.01, 0.01, 0.01))
 
         self.audio_window = AudioWindow()
         #self.audio_window.play("./data/theme.wav")
         #self.audio_window.set_volume("./data/theme.wav", 0.1)
 
         self.map = StaticObject("./data/de_dust2/de_dust2.dae")
+        #self.map.set_to_draw = False
         self.map.model_matrix = translate(self.map.model_matrix, vec3(21.2147, 30.0086, 28.7207) * -1.0)
         #self.map.model_matrix = translate(mat4(1.0), vec3(-1,0,0))
         #self.map.model_matrix = scale(self.map.model_matrix, vec3(3,3,3))
@@ -71,21 +79,30 @@ class App(Application):
         collision_objects = [self.map_position]
         v = [self.map.model]
         self.entity = CharacterEntity(v, collision_objects, vec3(0.7, 1.2, 0.7))
-
+        self.entity.add_static_model(v, collision_objects)
         self.active_camera.MovementSpeed = 70.0
 
         self.set_background_color(vec3(0.8, 0.9, 1.0))
 
         self.gravity = vec3(0,-10,0)
         self.jump = vec3(0,0,0)
-
+        self.t  = 0
+        glLineWidth(5)
+        self.i = 0
+        #self.entity.add_animated_object(self.other_player)
 
     def update(self):
-        self.processInput(self.window)
+
+        self.t += 0.01
+
+        #if (self.t > 1.0 and self.t < 1.05):
+            #self.entity.add_animated_object(self.other_player)
+
+        self.process_input(self.window)
         self.console.update(self.currentFrame, self.deltaTime)
-        #self.shadow_map_center = self.active_camera.position + self.active_camera.front * 10.0
 
         if (is_joystick_present()):
+            print ('joysticks')
             speed = self.active_camera.MovementSpeed
             axes = FloatVector()
             axes = get_joystick_axes()
@@ -123,8 +140,9 @@ class App(Application):
         self.entity.velocity.x *= 0.1
         self.entity.velocity.z *= 0.1
         self.entity.velocity.y *= 0.1
-        self.entity.velocity += self.gravity * self.deltaTime
         self.entity.velocity += self.jump * self.deltaTime
+        self.entity.gravity = self.gravity * self.deltaTime
+
         self.entity.update()
 
         if (self.entity.grounded):
@@ -157,8 +175,8 @@ class App(Application):
             self.gun1.set_to_draw =  False
             self.ak47_icon.to_draw = False
             self.awp_icon.to_draw = True
-
-    def processInput(self, window):
+        #self.other_player.set_frames(0, 5.0, self.t)
+    def process_input(self, window):
         if (get_key(window, KEY_ESCAPE) == PRESS):
             set_window_should_close(self.window, True);
         speed = self.active_camera.MovementSpeed * self.deltaTime;
@@ -171,7 +189,7 @@ class App(Application):
             total_velocity -= self.active_camera.right
         if (get_key(window, KEY_D) == PRESS):
             total_velocity += self.active_camera.right
-
+        #total_velocity.y = 0.0
         self.entity.velocity = normalize(total_velocity) * speed
 
         if (get_key(window, KEY_R) == PRESS):
@@ -180,7 +198,7 @@ class App(Application):
         # if (get_key(self.window, KEY_ESCAPE) == PRESS):
         #     set_window_should_close(self.window, True);
 
-    def onMouseMoved(self, xpos, ypos):
+    def on_mouse_moved(self, xpos, ypos):
         xoffset = xpos - self.lastX
         yoffset = self.lastY - ypos #reversed since y-coordinates go from bottom to top
 
@@ -188,7 +206,7 @@ class App(Application):
         self.lastY = ypos
         self.active_camera.ProcessMouseMovement(xoffset, yoffset, True)
 
-    def onMouseClicked(self, button, action, mods):
+    def on_mouse_clicked(self, button, action, mods):
         print (MOUSE_BUTTON_2, button, action)
         if (button == MOUSE_BUTTON_1 and action == 0):
             self.audio_window.play("./data/awp.wav")
@@ -211,39 +229,40 @@ class App(Application):
             ray_wor = vec3(inv_ray_wor.x, inv_ray_wor.y, inv_ray_wor.z)
             ray_wor = normalize(ray_wor)
             print (ray_wor)
-            if (ray_intersect_sphere(self.entity.position, ray_wor, self.other_player.position, 2.0)):
-                print ("player 2 hit!")
-                self.other_player.color = vec3(1,0,0)
-                self.other_player.set_frames(6.0, 8.0, 0.0)   
-            else:
-                self.other_player.color = vec3(-1,-1,-1)
-                self.other_player.set_frames(0.2, 2.7, 0.0)  
+            # if (ray_intersect_sphere(self.entity.position, ray_wor, self.other_player.position, 2.0)):
+            #     print ("player 2 hit!")
+            #     self.other_player.color = vec3(1,0,0)
+            #     self.other_player.set_frames(6.0, 8.0, 0.0)   
+            # else:
+            #     self.other_player.color = vec3(-1,-1,-1)
+            #     self.other_player.set_frames(0.2, 2.7, 0.0)  
 
         if (button == MOUSE_BUTTON_2 and action == 0):
             # toggle scope on rmb click
-            if self.scope.to_draw is False:
+            if not self.scope.to_draw:
                 self.active_camera.projection_matrix = perspective(math.radians(15.0), float(WIDTH)/float(HEIGHT), 0.1, 100.0)
                 self.scope.to_draw = True
                 self.gun1.set_to_draw =  False
                 self.gun2.set_to_draw =  False
                 self.crosshair.to_draw = False
-
-            elif (self.scope.to_draw):
+            elif self.scope.to_draw:
                 self.scope.to_draw = False
-                self.gun1.set_to_draw =  False
-                self.gun2.set_to_draw =  False
+                self.gun1.set_to_draw =  True
+                self.gun2.set_to_draw =  True
                 self.crosshair.to_draw = True
                 self.active_camera.projection_matrix = perspective(math.radians(45.0), float(WIDTH)/float(HEIGHT), 0.1, 1000.0)
 
-    def onWindowResized(self, width, height):
+    def on_window_resized(self, width, height):
         pass
 
-    def onKeyPressed(self, key, scancode, action, mods):
-        self.console.onKeyPressed(key, scancode, action, mods)
+    def on_key_pressed(self, key, scancode, action, mods):
+        self.console.on_key_pressed(key, scancode, action, mods)
         if (key == KEY_1 and action == 1):
             self.gun = self.gun1
         if (key == KEY_2 and action == 1):
             self.gun = self.gun2
+        if (key == KEY_3 and action == 1):
+            self.i += 3
         if (key == KEY_V and action == 1):
             self.debug = True
         elif (key == KEY_V and action == 0):

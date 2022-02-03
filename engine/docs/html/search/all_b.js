@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['plane_31',['Plane',['../class_plane.html',1,'']]],
-  ['playaudio_32',['playAudio',['../class_audio_window.html#a4704b3a710f251ca01caa51d1695eca4',1,'AudioWindow']]],
-  ['poly_33',['Poly',['../class_poly.html',1,'']]],
-  ['processnode_34',['processNode',['../class_static_model.html#a1d432e246001ff091886b8d49bb975f9',1,'StaticModel']]]
+  ['octree_36',['Octree',['../class_octree.html',1,'']]],
+  ['operator_3d_37',['operator=',['../class_static_mesh.html#a69be26cea7debad832cd7d747d82c455',1,'StaticMesh']]],
+  ['operator_3d_3d_38',['operator==',['../struct_vertex.html#af5b846c256971814fb594827159d6f18',1,'Vertex::operator==()'],['../class_static_mesh.html#a61d357f916e39ba95e1a17bc34aa11b1',1,'StaticMesh::operator==()']]]
 ];

@@ -1,5 +1,5 @@
 
-#include "_engine.h"
+#include "engine.h"
 
 #include <GLFW/glfw3.h>
 
@@ -28,6 +28,8 @@ struct ApplicationWrap : Application, boost::python::wrapper<Application>
   void onJoystickMoved(int jid, int event);
   void onMouseScrolled(double xpos, double ypos);
   void gameLoop();
+  void draw();
+
   float getFPS();
 };
 void wrap_Application();

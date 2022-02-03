@@ -1,21 +1,15 @@
 #ifndef ANIMATED_MESH_H
 #define ANIMATED_MESH_H
 
-#include <iostream>
-#include <vector>
-#include <map>
-
 #include <assimp/Importer.hpp>
 
+#include "math_utils.h"
 #include "static_mesh.h"
 #include "animated_shader.h"
-#include "math_utils.h"
-
 
 #define NUM_BONES_PER_VEREX 4
 
-/// @brief testing
-///        testing
+/// @brief Internal data structure to hold bone data for AnimatedModel's
 struct BoneData
 {
     unsigned int IDs[NUM_BONES_PER_VEREX];
@@ -35,6 +29,7 @@ struct BoneData
     void AddBoneData(unsigned int BoneID, float Weight);
 };
 
+/// @brief Internal data structure to hold vertex data for AnimatedModel's
 struct VertexTransform {
 
     VertexTransform();
@@ -56,6 +51,10 @@ struct VertexTransform {
     BoneData Bones;
 };
 
+/*! @brief Type to store skinned mesh data.
+ - AnimatedModel's can (and usually do) contain more than one AnimatedMesh
+ - It is one of the atomic units that gets passed to the renderer to be efficiently drawn.
+*/
 class AnimatedMesh : public StaticMesh
 {
 public:
@@ -81,9 +80,12 @@ public:
     Assimp::Importer *m_Importer;
 
     unsigned int modelID = 0;
+
+    glm::vec3 min;
+    glm::vec3 max;
+
+    vector<vec3> animatedVertices = {};
+    int setVertices(vector<mat4> _gBones);
 };
-
-
-
 
 #endif  /* ANIMATED_MESH_H */

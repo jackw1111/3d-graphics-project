@@ -1,6 +1,6 @@
 import sys
-sys.path.append("/home/me/Documents/3d-graphics-project/engine/bin")
-sys.path.append("/home/me/Documents/3d-graphics-project/engine/utils")
+sys.path.append("../../engine/bin")
+sys.path.append("../../engine/utils")
 
 from engine.graphics import *
 from keys import *
@@ -80,6 +80,7 @@ class App(Application):
 
         v = [self.all_blocks[0].model]
         self.entity = CharacterEntity(v, self.all_blocks_transforms, vec3(0.7, 1.2, 0.7))
+        self.entity.add_static_model(v, self.all_blocks_transforms)
         self.active_camera.MovementSpeed = 50.0
 
         # set third person mode as default
@@ -92,15 +93,16 @@ class App(Application):
         self.jump = vec3(0,0,0)
 
     def update(self):
-
-        self.processInput(self.window)
+        t = self.currentFrame - int(self.currentFrame)
+        self.player.set_frames(0, 5, t)
+        self.process_input(self.window)
         #print (self.shadow_map_center)
         #self.shadow_map_center = self.entity.position
         # update for collision detection / resolution
         self.entity.velocity.x *= 0.1
         self.entity.velocity.z *= 0.1
         self.entity.velocity.y *= 0.1
-        self.entity.velocity  += self.gravity * self.deltaTime
+        self.entity.gravity  = self.gravity * self.deltaTime
         self.entity.velocity += self.jump * self.deltaTime
         self.entity.update()
 
@@ -130,7 +132,7 @@ class App(Application):
         #self.player.model_matrix = rotate(self.correct_orientation, math.radians(90.0), vec3(0,1,0))
         self.player.model_matrix = rotate(self.correct_orientation, math.radians(-90.0), vec3(1,0,0))
 
-    def processInput(self, window):
+    def process_input(self, window):
 
         # exit handler
         if (get_key(window, KEY_ESCAPE) == PRESS):
@@ -138,20 +140,23 @@ class App(Application):
 
         # basic keyboard controls for entity
         speed = self.active_camera.MovementSpeed * self.deltaTime;
+        total_velocity = vec3(0,0,0)
         if (get_key(window, KEY_W) == PRESS):
-            self.entity.velocity += self.active_camera.front * speed
+            total_velocity += self.active_camera.front
         if (get_key(window, KEY_S) == PRESS):
-            self.entity.velocity += self.active_camera.front * -speed
+            total_velocity -= self.active_camera.front
         if (get_key(window, KEY_A) == PRESS):
-            self.entity.velocity += self.active_camera.right * -speed
+            total_velocity -= self.active_camera.right
         if (get_key(window, KEY_D) == PRESS):
-            self.entity.velocity += self.active_camera.right * speed
+            total_velocity += self.active_camera.right
+        total_velocity.y = 0.0
+        self.entity.velocity = normalize(total_velocity) * speed
 
         if (get_key(window, KEY_R) == PRESS):
             self.entity.position = vec3(-2,2.5,-2)
             self.player.color = vec3(random.randrange(0,2,1), random.randrange(0,2,1), random.randrange(0,2,1))
             
-    def onMouseMoved(self, xpos, ypos):
+    def on_mouse_moved(self, xpos, ypos):
         xoffset = xpos - self.lastX
         yoffset = self.lastY - ypos #reversed since y-coordinates go from bottom to top
 
@@ -159,13 +164,13 @@ class App(Application):
         self.lastY = ypos
         self.active_camera.ProcessMouseMovement(xoffset, yoffset, True)
 
-    def onMouseClicked(self, button, action, mods):
+    def on_mouse_clicked(self, button, action, mods):
         pass
 
-    def onWindowResized(self, width, height):
+    def on_window_resized(self, width, height):
         pass
 
-    def onKeyPressed(self, key, scancode, action, mods):
+    def on_key_pressed(self, key, scancode, action, mods):
         if (key == KEY_V and action == 1):
             self.debug = True
         elif (key == KEY_V and action == 0):
@@ -174,5 +179,5 @@ class App(Application):
             if (self.jump == vec3(0,0,0)):
                 self.jump = vec3(0,20,0)
 
-app = App("example", WIDTH, HEIGHT, False)
+app = App("minecraft", WIDTH, HEIGHT, False)
 run(app)

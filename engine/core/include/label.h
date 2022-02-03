@@ -21,7 +21,7 @@ struct Character {
     GLuint Advance;    // Horizontal offset to advance to next glyph
 };
 
-
+/*! @brief 2D text utility */
 class Label {
 
     int _isInit = false;

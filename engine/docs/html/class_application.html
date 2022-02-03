@@ -69,6 +69,11 @@ $(function() {
 <div class="title">Application Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Main entry point into the graphics program and all game logic is written somewhere inside this.  
+ <a href="class_application.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="app_8h_source.html">app.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -81,6 +86,9 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>setup</b> (std
 <tr class="memitem:a3cccee3c10b46727e07d403d0ae75916"><td class="memItemLeft" align="right" valign="top"><a id="a3cccee3c10b46727e07d403d0ae75916"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>gameLoop</b> ()</td></tr>
 <tr class="separator:a3cccee3c10b46727e07d403d0ae75916"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab82798fbcc0041f7bb4e62088e237d17"><td class="memItemLeft" align="right" valign="top"><a id="ab82798fbcc0041f7bb4e62088e237d17"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>draw</b> ()</td></tr>
+<tr class="separator:ab82798fbcc0041f7bb4e62088e237d17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58671ae4790a1d8c9900627afef2a839"><td class="memItemLeft" align="right" valign="top"><a id="a58671ae4790a1d8c9900627afef2a839"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>drawScene</b> (int shadowPass)</td></tr>
 <tr class="separator:a58671ae4790a1d8c9900627afef2a839"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -108,6 +116,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>onJoystickMov
 <tr class="memitem:ac3d110d29af2e87f7f46c984c940c5cb"><td class="memItemLeft" align="right" valign="top"><a id="ac3d110d29af2e87f7f46c984c940c5cb"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>onMouseScrolled</b> (double xpos, double ypos)</td></tr>
 <tr class="separator:ac3d110d29af2e87f7f46c984c940c5cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b11711e9ae6fc0db73b1cd080b4bcb1"><td class="memItemLeft" align="right" valign="top"><a id="a8b11711e9ae6fc0db73b1cd080b4bcb1"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>test</b> ()</td></tr>
+<tr class="separator:a8b11711e9ae6fc0db73b1cd080b4bcb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab17af725e527cf86f99a56b0abeba10a"><td class="memItemLeft" align="right" valign="top"><a id="ab17af725e527cf86f99a56b0abeba10a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>onWindowClose</b> (GLFWwindow *window)</td></tr>
 <tr class="separator:ab17af725e527cf86f99a56b0abeba10a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -123,9 +134,6 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>getFPS</b> ()</td></
 <tr class="memitem:ab0a84b5be3bab2df78e22c3f6f51137b"><td class="memItemLeft" align="right" valign="top"><a id="ab0a84b5be3bab2df78e22c3f6f51137b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setBackgroundColor</b> (vec3 color)</td></tr>
 <tr class="separator:ab0a84b5be3bab2df78e22c3f6f51137b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa02f1106bcdc37ef91657bfe61bca1a5"><td class="memItemLeft" align="right" valign="top"><a id="aa02f1106bcdc37ef91657bfe61bca1a5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setFarPlane</b> (float farPlane)</td></tr>
-<tr class="separator:aa02f1106bcdc37ef91657bfe61bca1a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -201,14 +209,45 @@ glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><b>lightSpaceMatrix
 <tr class="memitem:aaa97bfc4e2ea7f992b635bd8d95e4e54"><td class="memItemLeft" align="right" valign="top"><a id="aaa97bfc4e2ea7f992b635bd8d95e4e54"></a>
 glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><b>farLightSpaceMatrix</b></td></tr>
 <tr class="separator:aaa97bfc4e2ea7f992b635bd8d95e4e54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff0c7ef37cfc82a041bd2e97d3bf0011"><td class="memItemLeft" align="right" valign="top"><a id="aff0c7ef37cfc82a041bd2e97d3bf0011"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>farPlane</b> = 100.0f</td></tr>
-<tr class="separator:aff0c7ef37cfc82a041bd2e97d3bf0011"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4e59b1470262f3161831c24b36a63f3"><td class="memItemLeft" align="right" valign="top"><a id="aa4e59b1470262f3161831c24b36a63f3"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>debug</b> = false</td></tr>
 <tr class="separator:aa4e59b1470262f3161831c24b36a63f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e46638f34a6a15e4837f97f1a0ea909"><td class="memItemLeft" align="right" valign="top"><a id="a8e46638f34a6a15e4837f97f1a0ea909"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>ditherMap</b></td></tr>
+<tr class="separator:a8e46638f34a6a15e4837f97f1a0ea909"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf8ecaba04d93b163b80bbdaeaab0d29"><td class="memItemLeft" align="right" valign="top"><a id="acf8ecaba04d93b163b80bbdaeaab0d29"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>useCustomViewMatrix</b> = false</td></tr>
+<tr class="separator:acf8ecaba04d93b163b80bbdaeaab0d29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55b1999227b0ac03a1f9fce5fa5476d4"><td class="memItemLeft" align="right" valign="top"><a id="a55b1999227b0ac03a1f9fce5fa5476d4"></a>
+<a class="el" href="class_bounding_box.html">BoundingBox</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>bcube</b></td></tr>
+<tr class="separator:a55b1999227b0ac03a1f9fce5fa5476d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a660b4caa3cd980955135ed37d93493fb"><td class="memItemLeft" align="right" valign="top"><a id="a660b4caa3cd980955135ed37d93493fb"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>maxContacts</b> = 256</td></tr>
+<tr class="separator:a660b4caa3cd980955135ed37d93493fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4eb0a84eb124aa4c279ad10847540d8e"><td class="memItemLeft" align="right" valign="top"><a id="a4eb0a84eb124aa4c279ad10847540d8e"></a>
+<a class="el" href="class_contact.html">Contact</a>&#160;</td><td class="memItemRight" valign="bottom"><b>contacts</b> [256]</td></tr>
+<tr class="separator:a4eb0a84eb124aa4c279ad10847540d8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a574f848d39b0bd7fbad34147d49b35d6"><td class="memItemLeft" align="right" valign="top"><a id="a574f848d39b0bd7fbad34147d49b35d6"></a>
+<a class="el" href="struct_collision_data.html">CollisionData</a>&#160;</td><td class="memItemRight" valign="bottom"><b>cData</b></td></tr>
+<tr class="separator:a574f848d39b0bd7fbad34147d49b35d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a219f52c7089ad206b1a613f8f2803bbf"><td class="memItemLeft" align="right" valign="top"><a id="a219f52c7089ad206b1a613f8f2803bbf"></a>
+<a class="el" href="class_contact_resolver.html">ContactResolver</a>&#160;</td><td class="memItemRight" valign="bottom"><b>resolver</b></td></tr>
+<tr class="separator:a219f52c7089ad206b1a613f8f2803bbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af521ec33ad074053a9656098cd8942c8"><td class="memItemLeft" align="right" valign="top"><a id="af521ec33ad074053a9656098cd8942c8"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>boxes</b> = 3</td></tr>
+<tr class="separator:af521ec33ad074053a9656098cd8942c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae26bdf210486ba7ab4f9b9baa1845495"><td class="memItemLeft" align="right" valign="top"><a id="ae26bdf210486ba7ab4f9b9baa1845495"></a>
+<a class="el" href="class_collision_box.html">CollisionBox</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>boxData</b> [3]</td></tr>
+<tr class="separator:ae26bdf210486ba7ab4f9b9baa1845495"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Main entry point into the graphics program and all game logic is written somewhere inside this. </p>
+<ul>
+<li>1 created per program (see <a class="el" href="class_scene.html" title="TODO.">Scene</a> for WIP on more than one graphics application per context)</li>
+<li>Must be overriden (can be overriden from Python)</li>
+<li>Responsible for updating, drawing, input handling and context handling </li>
+</ul>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>engine/core/include/<a class="el" href="app_8h_source.html">app.h</a></li>
 </ul>
 </div><!-- contents -->

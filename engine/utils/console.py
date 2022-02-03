@@ -14,7 +14,8 @@ class Console():
         self.spacing = 30.0
 
         self.console = Label(">" + self.cmd + " ", vec2(self.spacing, self.height-self.spacing), "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 0.5)
-        self.bg = Rect(vec2(0, self.height), vec2(int(self.width*2), int(self.height/3)), "./data/console_bg.png")
+        self.bg = Rect2D(vec2(0, self.height), vec2(int(self.width*2), int(self.height/3)), "./data/console_bg.png",1,1)
+        self.bg.ordering = 1
         self.debug_mode = False
         self.show = False
 
@@ -24,7 +25,6 @@ class Console():
         self.console.text = ">" + self.cmd + " "
 
         if self.show == True:
-            set_alpha_transparency(1)
             self.bg.to_draw = True
             self.console.to_draw = True
             if (int(currentFrame) % 2 == 0):
@@ -39,7 +39,7 @@ class Console():
     def new_command(self, key, cmd):
         self.custom_cmds.append([key, cmd])
 
-    def onKeyPressed(self, key, scancode, action, mods):
+    def on_key_pressed(self, key, scancode, action, mods):
         if (self.show == True and action == 1):
             try:
                 ch = chr(ascii_map[scancode])

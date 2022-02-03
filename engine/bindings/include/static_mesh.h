@@ -1,5 +1,5 @@
 
-#include "_engine.h"
+#include "engine.h"
 
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>

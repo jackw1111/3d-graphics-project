@@ -74,7 +74,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>loads a skinned model from Blender FBX  
+<p>internal class to load a skinned model from Blender FBX  
  <a href="class_animated_model.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="animated__model_8h_source.html">animated_model.h</a>&gt;</code></p>
@@ -84,6 +84,7 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="struct_animated_model_1_1_bone_info.html">BoneInfo</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">internal helper data structure to store bone information for <a class="el" href="class_animated_model.html" title="internal class to load a skinned model from Blender FBX">AnimatedModel</a>'s  <a href="struct_animated_model_1_1_bone_info.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -142,7 +143,7 @@ virtual std::vector&lt; float &gt;&#160;</td><td class="memItemRight" valign="bo
 <a class="el" href="class_static_mesh.html">StaticMesh</a>&#160;</td><td class="memItemRight" valign="bottom"><b>processMesh</b> (aiMesh *mesh, const aiScene *scene)</td></tr>
 <tr class="separator:ae18e0d4b74091752729d210944badf00 inherit pub_methods_class_static_model"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab660f10cf6411089b0d9f30038f468af inherit pub_methods_class_static_model"><td class="memItemLeft" align="right" valign="top">virtual vector&lt; <a class="el" href="struct_texture.html">Texture</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_static_model.html#ab660f10cf6411089b0d9f30038f468af">loadMaterialTextures</a> (aiMaterial *mat, aiTextureType type, string typeName)</td></tr>
-<tr class="memdesc:ab660f10cf6411089b0d9f30038f468af inherit pub_methods_class_static_model"><td class="mdescLeft">&#160;</td><td class="mdescRight">checks all material textures of a given type and loads the textures if they're not loaded yet. the required info is returned as a <a class="el" href="struct_texture.html">Texture</a> struct.  <a href="class_static_model.html#ab660f10cf6411089b0d9f30038f468af">More...</a><br /></td></tr>
+<tr class="memdesc:ab660f10cf6411089b0d9f30038f468af inherit pub_methods_class_static_model"><td class="mdescLeft">&#160;</td><td class="mdescRight">checks all material textures of a given type and loads the textures if they're not loaded yet. the required info is returned as a <a class="el" href="struct_texture.html" title="data structure to hold texture data">Texture</a> struct.  <a href="class_static_model.html#ab660f10cf6411089b0d9f30038f468af">More...</a><br /></td></tr>
 <tr class="separator:ab660f10cf6411089b0d9f30038f468af inherit pub_methods_class_static_model"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
@@ -218,6 +219,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isInitialized</b> = f
 <tr class="memitem:a7eafd4a5fd6d415cfa6e0b29b6ba5fb6 inherit pub_attribs_class_static_model"><td class="memItemLeft" align="right" valign="top"><a id="a7eafd4a5fd6d415cfa6e0b29b6ba5fb6"></a>
 std::string&#160;</td><td class="memItemRight" valign="bottom"><b>filePath</b></td></tr>
 <tr class="separator:a7eafd4a5fd6d415cfa6e0b29b6ba5fb6 inherit pub_attribs_class_static_model"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f6653a5c06a3095c702ffd352fd3e08 inherit pub_attribs_class_static_model"><td class="memItemLeft" align="right" valign="top"><a id="a1f6653a5c06a3095c702ffd352fd3e08"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>reflective</b> = 0</td></tr>
+<tr class="separator:a1f6653a5c06a3095c702ffd352fd3e08 inherit pub_attribs_class_static_model"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -268,8 +272,12 @@ std::map&lt; std::string, const aiNodeAnim * &gt;&#160;</td><td class="memItemRi
 <tr class="separator:a588b2a080b0758a1ba07d5f60ff0446d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>loads a skinned model from Blender FBX </p>
-<dl class="section note"><dt>Note</dt><dd>to export skinned models from Blender properly: export as FBX, select all meshes and bone collection and apply "selected only", leave all armature settings as ticked when adding normal maps be sure to use node&gt;vector&gt;normal map and feed the output into normal on the principle bsdf node </dd></dl>
+<div class="textblock"><p>internal class to load a skinned model from Blender FBX </p>
+<dl class="section note"><dt>Note</dt><dd>to export skinned models from Blender properly: export as FBX, select all meshes and bone collection and apply "selected only", leave all armature settings as ticked </dd>
+<dd>
+when adding normal maps be sure to use node&gt;vector&gt;normal map and feed the output into normal on the principle bsdf node </dd>
+<dd>
+COLLADA files have the most reliable support at the moment </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="aa941d88cc7887502823c96b8a7d0cdeb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa941d88cc7887502823c96b8a7d0cdeb">&#9670;&nbsp;</a></span>Draw()</h2>

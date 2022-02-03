@@ -59,15 +59,20 @@ void wrap_CharacterEntity() {
     .def("update", &CharacterEntity::update)
     .def("setup", &CharacterEntity::setup)
     .def("checkCollision",&CharacterEntity::checkCollision)
-    .def("add_model",&CharacterEntity::addModel)
-    .def_readwrite("position", &CharacterEntity::position)
+    .def("add_static_model",&CharacterEntity::addModel)
+    .def("add_animated_object",&CharacterEntity::addAnimatedObject)
+    .def_readwrite("gravity", &CharacterEntity::gravity)
+    .def_readwrite("position", &CharacterEntity::position) // @todo this is a reference for some reason 
     .def_readwrite("velocity", &CharacterEntity::velocity)
     .def_readwrite("modelTransforms", &CharacterEntity::modelTransforms)
     .def_readwrite("collisionPackage", &CharacterEntity::collisionPackage)
     .def_readwrite("grounded", &CharacterEntity::grounded)
+    .def_readwrite("sliding", &CharacterEntity::sliding)
     .def_readwrite("Yaw", &CharacterEntity::Yaw)
     .def_readwrite("Front", &CharacterEntity::Front)
     .def_readwrite("Right", &CharacterEntity::Right)
     .def_readwrite("colliding_normal", &CharacterEntity::slidePlaneNormal)
     ;
+
+    
 }

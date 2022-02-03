@@ -26,7 +26,7 @@ void wrap_StaticMesh() {
     .def_readwrite("vertices", &StaticMesh::vertices)
     .def_readwrite("indices", &StaticMesh::indices)
     .def_readwrite("textures", &StaticMesh::textures)
-    .def_readwrite("bounding_cube", &StaticMesh::boundingCube)
+    .def_readwrite("bounding_box", &StaticMesh::boundingBox)
 
     ;
 
@@ -37,9 +37,7 @@ void wrap_StaticMesh() {
             .def_readwrite("id", &Texture::id)
         ;
 
-    python::class_<BCube, boost::noncopyable>("BoundingCube", python::init<>())
-    .def("get_translated_vertices", &BCube::getTranslatedVertices)
-    ;
+
 }
 
 

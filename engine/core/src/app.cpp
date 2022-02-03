@@ -1,5 +1,6 @@
 #include "app.h"
 #include <chrono>
+#include "physics.h"
 
 std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
@@ -40,7 +41,7 @@ using namespace boost::python;
 #include <vector>
 #include <iomanip>
 
-#include "/home/me/Documents/3d-graphics-project/engine/core/include/_engine.h"
+#include "engine.h"
 
 // renderQuad() renders a 1x1 XY quad in NDC
 // -----------------------------------------
@@ -121,6 +122,7 @@ Application::Application(std::string title, unsigned int _WIDTH, unsigned int _H
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE );
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     //glfwWindowHint(GLFW_SAMPLES, 4);
     if (!fullscreen) {
@@ -145,11 +147,20 @@ Application::Application(std::string title, unsigned int _WIDTH, unsigned int _H
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
     } 
-    
+    std::cout << glGetString ( GL_SHADING_LANGUAGE_VERSION ) << std::endl;
+
     if (!GLAD_GL_ARB_arrays_of_arrays) {
         std::cout << "GL_ARB_arrays_of_arrays not supported!" << std::endl; 
     }
-
+    if (!GLAD_GL_ARB_shader_storage_buffer_object) {
+        std::cout << "GL_ARB_shader_storage_buffer_object not supported!" << std::endl; 
+    }
+    if (!GLAD_GL_EXT_multi_draw_arrays) {
+        std::cout << "GL_EXT_multi_draw_arrays not supported!" << std::endl; 
+    }
+    if (!GLAD_GL_ARB_multi_draw_indirect) {
+        std::cout << "GLAD_GL_ARB_multi_draw_indirect not supported!" << std::endl; 
+    }
     setup(title, WIDTH, HEIGHT, fullscreen);
 
 }
@@ -157,11 +168,6 @@ Application::Application(std::string title, unsigned int _WIDTH, unsigned int _H
 void Application::setBackgroundColor(vec3 color) {
     backgroundColor = color;
     glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0);
-}
-
-void Application::setFarPlane(float _farPlane) {
-    farPlane = _farPlane;
-    active_camera.projection_matrix = perspective(45.0f, float(WIDTH)/float(HEIGHT), 0.01f, farPlane);
 }
 
 
@@ -174,18 +180,22 @@ int Application::setup(std::string title, unsigned int WIDTH, unsigned int HEIGH
     lastY = HEIGHT / 2.0f;
     std::cout << "constructor in C++" << std::endl;
 
-    //glEnable(GL_MULTISAMPLE);
-    //glEnable(GL_LINE_SMOOTH);
-    //glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+    // glEnable(GL_MULTISAMPLE);
+    // glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+    // glEnable(GL_LINE_SMOOTH);
+    
     glEnable(GL_FRAMEBUFFER_SRGB);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
 
     glCullFace(GL_BACK);
 
     setBackgroundColor(vec3(0.0f, 0.0f, 0.0f));
     active_camera._setup(vec3(0.0, 0.0, 10.0), vec3(0.0, 0.0, -1.0), vec3(0.0, 1.0, 0.0), -90.0f, 0.0f);
-    active_camera.projection_matrix = perspective(45.0f, float(WIDTH)/float(HEIGHT), 0.01f, farPlane);
+    active_camera.projection_matrix = perspective(45.0f, float(WIDTH)/float(HEIGHT), active_camera.nearPlane, active_camera.farPlane);
 
     sky_box = Skybox();
     sky_box_shader.setup("/home/me/Documents/3d-graphics-project/shaders/skybox_shader.vs","/home/me/Documents/3d-graphics-project/shaders/skybox_shader.fs");
@@ -230,14 +240,41 @@ int Application::setup(std::string title, unsigned int WIDTH, unsigned int HEIGH
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    // dither map
+    ditherMap = TextureFromFile("dither.png", "/home/me/Documents/3d-graphics-project/data");
+
+    lastFrame = 0.0f;
+
+
+
+    bcube = new BoundingBox();
+    bcube->setup(glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f));
+
+
+    // PHYSICS
+    resolver = ContactResolver(maxContacts*8);
+    cData.contactArray = contacts;
+    // reset box states
+    // CollisionBox *box1 = new CollisionBox();
+    // CollisionBox *box2 = new CollisionBox();
+    // CollisionBox *box3 = new CollisionBox();
+    // box1->setState(0.0, 0.0, 0.0, 0.0, 0.0, 100000.0, 1.0, 100000.0);
+    // box2->setState(3.0, -10.0, 4.0, 1.0, 3.0, 1.0, 1.0, 1.0);
+    // box3->setState(6.5, -10.0, 1.0, 2.0, 4.0, 1.0, 1.0, 1.0);
+
+
     return 0;
 }
 
 void Application::drawScene(int shadowPass) {
+
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+
     if (Light::lights.size() > 0) {
 
         Light *light = Light::lights.at(0);
-        vec3 frustumCenter = (frustum.Cfar - frustum.Cnear)*0.25f;
 
         lightView = glm::lookAt(normalize(light->position), vec3(0,0,0), vec3(0,0,1));
 
@@ -294,8 +331,22 @@ void Application::drawScene(int shadowPass) {
         lightSpaceMatrix = lightProjection * lightView;
     }
     mat4 proj_view = active_camera.projection_matrix * active_camera.view_matrix;
-    if (!shadowPass) {        
 
+    if (!shadowPass) {    
+
+        if (sky_box.loadSkybox) {
+            // draw skybox
+            sky_box_shader.use();
+            mat4 sky_view = active_camera.view_matrix;
+            // remove translation from the view matrix
+            sky_view[3] = vec4(0,0,0,0);
+            sky_box_shader.setMat4("projection", active_camera.projection_matrix);
+            sky_box_shader.setMat4("view", sky_view);
+            sky_box_shader.setMat4("model", mat4(1.0));
+            sky_box.Draw(sky_box_shader);      
+        }   
+        Particle::setCamera(proj_view);
+        Particle::drawAllParticles(active_camera, 0);      
         if (StaticObject::modelRegistry.size() > 0) {
 
             // frustum cull objects
@@ -308,13 +359,23 @@ void Application::drawScene(int shadowPass) {
             StaticModel::shader.setMat4("proj_view", proj_view);
             StaticModel::shader.setVec3("lightPos", Light::lights.at(0)->position); 
             StaticModel::shader.setVec3("viewPos", active_camera.Position); 
+            StaticModel::shader.setVec3("backgroundColor", backgroundColor); 
             StaticModel::shader.setMat4("lightSpaceMatrix", lightSpaceMatrix); 
+            StaticModel::shader.setFloat("nearPlane", active_camera.nearPlane); 
+            StaticModel::shader.setFloat("farPlane", active_camera.farPlane); 
 
+            glActiveTexture(GL_TEXTURE13);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, sky_box.cubemapTexture);
+            StaticModel::shader.setInt("skybox", 13); 
+
+
+            glActiveTexture(GL_TEXTURE14);
+            glBindTexture(GL_TEXTURE_2D, ditherMap);
+            StaticModel::shader.setInt("ditherMap", 14); 
 
             glActiveTexture(GL_TEXTURE15);
             glBindTexture(GL_TEXTURE_2D, depthMap);
             StaticModel::shader.setInt("depthMap", 15); 
-
 
             StaticObject::drawAllObjects(active_camera, StaticModel::shader); 
         }     
@@ -331,31 +392,90 @@ void Application::drawScene(int shadowPass) {
             AnimatedModel::shader.use();
             AnimatedModel::shader.setMat4("proj_view", proj_view);            
             AnimatedModel::shader.setVec3("lightPos", Light::lights.at(0)->position); 
+            AnimatedModel::shader.setVec3("viewPos", active_camera.Position); 
             AnimatedModel::shader.setInt("shadowPass", shadowPass); 
+            AnimatedModel::shader.setVec3("backgroundColor", backgroundColor); 
+            AnimatedModel::shader.setFloat("nearPlane", active_camera.nearPlane); 
+            AnimatedModel::shader.setFloat("farPlane", active_camera.farPlane); 
 
             AnimatedObject::drawAllObjects(active_camera, currentFrame, shadowPass); 
            
         }
 
-        if (sky_box.loadSkybox) {
-            // draw skybox
-            sky_box_shader.use();
-            mat4 sky_view = active_camera.GetViewMatrix(); 
-            // remove translation from the view matrix
-            sky_view[3] = vec4(0,0,0,0);
-            sky_box_shader.setMat4("projection", active_camera.projection_matrix);
-            sky_box_shader.setMat4("view", sky_view);
-            sky_box_shader.setMat4("model", mat4(1.0));
-            sky_box.Draw(sky_box_shader);      
-        }     
+        Line3D::setCamera(proj_view);
+        Line3D::drawAllLines();
+
+        Particle::setCamera(proj_view);
+        Particle::drawAllParticles(active_camera, 1);  
 
 
-        // draw all lines
-        for (unsigned int i = 0; i < Line3D::lines.size(); i++) {
-            Line3D *currentLine = Line3D::lines.at(i);
-            currentLine->setCamera(proj_view);
-            currentLine->draw();
-        }        
+        // Update the boxes
+        for (unsigned int i = 0; i < CollisionBox::boxCount; i++)
+        {
+            CollisionBox *box = CollisionBox::boxData[i];
+
+            // Run the physics
+            box->body->integrate(deltaTime);
+            box->calculateInternals();
+        }
+        
+        // Perform the contact generation
+
+        // Set up the collision data structure
+        cData.reset(maxContacts);
+        cData.friction = (double)0.9;
+        cData.restitution = (double)0.1;
+        cData.tolerance = (double)0.1;
+        //CollisionBox::allBoxes.size()
+        for (unsigned int i = 0; i < CollisionBox::boxCount; i++)
+        {
+            for (unsigned int j = 0; j < CollisionBox::boxCount; j++)
+            {
+                CollisionBox *box1 = CollisionBox::boxData[i];
+                CollisionBox *box2 = CollisionBox::boxData[j];
+
+                if (box1 != box2) {
+                    CollisionDetector::boxAndBox(*box1, *box2, &cData);
+                }
+            }
+        }
+
+        // Resolve detected contacts
+        resolver.resolveContacts(
+            cData.contactArray,
+            cData.contactCount,
+            deltaTime
+            );
+
+        // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        // glDisable(GL_CULL_FACE);
+        for (unsigned int i = 0; i < CollisionBox::boxCount; i++)
+        {
+            CollisionBox *box = CollisionBox::boxData[i];
+            box->setModelMatrix(glm::scale((glm::mat4)box->body->transformMatrix, glm::vec3(box->halfSize.x*2, box->halfSize.y*2, box->halfSize.z*2)));
+            // bcube->setMatrix("model", box->getModelMatrix());
+            // bcube->setMatrix("view", active_camera.view_matrix);
+            // bcube->setMatrix("projection", active_camera.projection_matrix);
+            // bcube->draw();
+        }
+        // glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+        // glEnable(GL_CULL_FACE);  
+
+        // for (unsigned int i = 0; i < BoundingBox::allBoundingBoxes.size(); i++) {
+        //     if (BoundingBox::allBoundingBoxes.at(i)->toDraw) {
+        //         glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        //         glDisable(GL_CULL_FACE);
+        //         BoundingBox::allBoundingBoxes.at(i)->setMatrix("model", BoundingBox::allBoundingBoxes.at(i)->modelMatrix);
+        //         BoundingBox::allBoundingBoxes.at(i)->setMatrix("view", active_camera.view_matrix);
+        //         BoundingBox::allBoundingBoxes.at(i)->setMatrix("projection", active_camera.projection_matrix);
+        //         BoundingBox::allBoundingBoxes.at(i)->draw();
+        //         glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+        //         glEnable(GL_CULL_FACE);                
+        //     }
+        // }
+
+
+
     } else {
         // TO DO cull from light position (implement frustum cull for ortho)
         for (unsigned int i = 0; i < AnimatedObject::modelRegistry.size(); i++) {
@@ -370,23 +490,19 @@ void Application::drawScene(int shadowPass) {
 
         AnimatedObject::drawAllObjects(active_camera, currentFrame, shadowPass);     
     }
+
     
 }
 
 void Application::drawUI() {
 
     // drawUI
-    std::sort( Rect::rects.begin( ), Rect::rects.end( ), [ ]( Rect *lhs, Rect *rhs )
-    {
-       return lhs->ordering < rhs->ordering;
-    });
+    glm::mat4 ortho_proj = glm::ortho(0.0f, (float)WIDTH, 0.0f, (float)HEIGHT, -1.0f, 1.0f);  
+    Rect2D::setCamera(ortho_proj);
+    Rect2D::drawAllRects(active_camera, 1); 
 
-    for (unsigned int i = 0; i < Rect::rects.size(); i++) {
-        Rect *currentRect = Rect::rects.at(i);
-        if (currentRect->toDraw == true) {
-            currentRect->draw();
-        }
-    }
+
+    glDisable(GL_BLEND);
 
     // draw all labels
     for (unsigned int i = 0; i < Label::labels.size(); i++) {
@@ -395,6 +511,10 @@ void Application::drawUI() {
             currentLabel->draw();
         }
     }
+    glEnable(GL_BLEND);
+
+
+
 
 
 }
@@ -405,21 +525,32 @@ void Application::update() {
 
 }
 
+int Application::test() {
+
+
+
+    return 1;
+}
+
 int Application::gameLoop() {
 
     currentFrame = (float)getTime::now().time_since_epoch().count()/1000000000.0f; // convert nanoseconds to seconds
-
-    deltaTime = (float)(currentFrame - lastFrame);
+    if (lastFrame == 0.0f) {
+        deltaTime = 0.0f;
+    } else {
+        deltaTime = (float)(currentFrame - lastFrame);
+    }
     lastFrame = currentFrame;
 
     update();
-
+    
     // // update scene cameras view matrix (ie. GetViewMatrix())
-    active_camera.view_matrix = lookAt(active_camera.Position, active_camera.Position + active_camera.Front, vec3(0,1,0));
+    if (!useCustomViewMatrix) {
+        active_camera.view_matrix = lookAt(active_camera.Position, active_camera.Position + active_camera.Front, vec3(0,1,0));
+    }
+    frustum = Frustum(active_camera.fov, active_camera.nearPlane, active_camera.farPlane, WIDTH, HEIGHT, active_camera);
 
-    frustum = Frustum(active_camera.fov, 0.01f, 100.0f, WIDTH, HEIGHT, active_camera);
-
-    // shadow pass TO DO save bones and culling
+    // shadow pass
     glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -440,7 +571,7 @@ int Application::gameLoop() {
         drawUI();
         glFlush();
 
-
+        
     // if (debug) {
     //     std::cout << "debug!"<< std::endl;
     //     debugDepthQuad->use();
@@ -450,6 +581,13 @@ int Application::gameLoop() {
     //     glBindTexture(GL_TEXTURE_2D, depthMap);
     //     renderQuad();        
     // }
+
+
+    return 1;
+}
+int Application::draw() {
+
+
 
     return 1;
 }
@@ -462,6 +600,6 @@ void Application::onKeyPressed(int key, int scancode, int action, int mods){
 
     // for (unsigned int i = 0; i < StaticModel::models.size(); i++) {
     //     StaticModel *statModel = StaticModel::models.at(i);
-    //     statModel->onKeyPressed(key, scancode, action, mods);
+    //     statModel->on_key_pressed(key, scancode, action, mods);
     // }
 };

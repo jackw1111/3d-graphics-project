@@ -56,5 +56,7 @@ void wrap_Camera(){
     .add_property("pitch", &Camera::getPitch, &Camera::setPitch)
     .add_property("fov", &Camera::getFOV, &Camera::setFOV)
     .def_readwrite("MovementSpeed", &Camera::MovementSpeed)
+    .def("set_far_plane", &Camera::setFarPlane)
+    .def("set_near_plane", &Camera::setNearPlane)
     ;
 }

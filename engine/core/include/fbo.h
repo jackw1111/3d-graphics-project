@@ -3,6 +3,8 @@
 
 #include "static_model.h"
 
+/*! @brief TODO
+*/
 class FBO {
 public:
   unsigned int framebuffer;

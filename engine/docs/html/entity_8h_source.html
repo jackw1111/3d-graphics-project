@@ -80,51 +80,63 @@ $(function() {
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;collision.h&quot;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;animated_model.h&quot;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;octree.h&quot;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="class_character_entity.html">   13</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_character_entity.html">CharacterEntity</a> {</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  <a class="code" href="class_character_entity.html">CharacterEntity</a>();</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;  <a class="code" href="class_character_entity.html">CharacterEntity</a>(<span class="keyword">const</span> <a class="code" href="class_character_entity.html">CharacterEntity</a> &amp;entity);</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;  glm::vec3 getPosition();</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  <span class="keywordtype">int</span> setPosition(glm::vec3 pos);</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  glm::vec3 getVelocity();</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  <span class="keywordtype">int</span> setVelocity(glm::vec3 vel);</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  <a class="code" href="class_character_entity.html">CharacterEntity</a>(std::vector&lt;StaticModel&gt; models, std::vector&lt;mat4&gt; _modelTransforms, glm::vec3 radius);</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">int</span> setup(std::vector&lt;StaticModel&gt; models, std::vector&lt;mat4&gt; _modelTransforms, glm::vec3 radius);</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">int</span> update();</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">int</span> checkCollision();</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  <span class="keywordtype">void</span> collideAndSlide(<span class="keyword">const</span> glm::vec3&amp; gravity);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <span class="keywordtype">void</span> collideWithWorld(glm::vec3&amp; out, <span class="keyword">const</span> glm::vec3&amp; pos, <span class="keyword">const</span> glm::vec3&amp; velocity);</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keywordtype">void</span> remove();</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  <span class="keywordtype">int</span> addModel(<a class="code" href="class_static_model.html">StaticModel</a> statModel);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  glm::vec3 position, velocity, radius;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  <a class="code" href="class_collision_packet.html">CollisionPacket</a> collisionPackage;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  std::vector&lt;StaticModel&gt; models;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  <span class="keywordtype">int</span> grounded;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  <span class="keywordtype">float</span> Yaw = 0.0f;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  vec3 Front;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  vec3 Right;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  <span class="keywordtype">bool</span> initialized = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <span class="keywordtype">int</span> debug = 0;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  std::vector&lt;mat4&gt; modelTransforms;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <a class="code" href="class_octree.html">Octree</a> *closestRegion;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <a class="code" href="class_octree.html">Octree</a> cube;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  std::vector&lt;std::vector&lt;vec3&gt;&gt; triangles = {};</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  <span class="keywordtype">bool</span> collide = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  glm::vec3 slidePlaneNormal;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;};</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;line3d.h&quot;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="class_character_entity.html">   17</a></span>&#160;<span class="keyword">class </span><a class="code" href="class_character_entity.html">CharacterEntity</a> {</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  <a class="code" href="class_character_entity.html">CharacterEntity</a>();</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  <a class="code" href="class_character_entity.html">CharacterEntity</a>(<span class="keyword">const</span> <a class="code" href="class_character_entity.html">CharacterEntity</a> &amp;entity);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  glm::vec3 getPosition();</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  <span class="keywordtype">int</span> setPosition(glm::vec3 pos);</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  glm::vec3 getVelocity();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  <span class="keywordtype">int</span> setVelocity(glm::vec3 vel);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  <a class="code" href="class_character_entity.html">CharacterEntity</a>(std::vector&lt;StaticModel&gt; models, std::vector&lt;mat4&gt; _modelTransforms, glm::vec3 radius);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <span class="keywordtype">int</span> setup(std::vector&lt;StaticModel&gt; models, std::vector&lt;mat4&gt; _modelTransforms, glm::vec3 radius);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keywordtype">int</span> update();</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  <span class="keywordtype">int</span> checkCollision();</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  <span class="keywordtype">void</span> collideAndSlide(<span class="keyword">const</span> glm::vec3&amp; gravity);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  <span class="keywordtype">void</span> collideWithWorld(glm::vec3&amp; out, <span class="keyword">const</span> glm::vec3&amp; pos, <span class="keyword">const</span> glm::vec3&amp; velocity);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  <span class="keywordtype">void</span> remove();</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  glm::vec3 sphereSweep(glm::vec3 pos, glm::vec3 vel);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="keywordtype">int</span> addModel(std::vector&lt;StaticModel&gt; models, std::vector&lt;mat4&gt; _modelTransforms);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  <span class="keywordtype">int</span> addAnimatedObject(<a class="code" href="class_animated_object.html">AnimatedObject</a> aObject);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  glm::vec3 position, velocity, radius;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <a class="code" href="class_collision_packet.html">CollisionPacket</a> collisionPackage;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  std::vector&lt;StaticModel&gt; models;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  <span class="keywordtype">int</span> grounded;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <span class="keywordtype">float</span> Yaw = 0.0f;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  vec3 Front;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  vec3 Right;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <span class="keywordtype">bool</span> initialized = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="keywordtype">int</span> debug = 0;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  std::vector&lt;mat4&gt; modelTransforms;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <a class="code" href="class_octree.html">Octree</a> *closestRegion;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <a class="code" href="class_octree.html">Octree</a> cube;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#endif // ENTITY_H</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  <a class="code" href="class_octree.html">Octree</a> *aClosestRegion;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  <a class="code" href="class_octree.html">Octree</a> animatedOctree;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  std::vector&lt;std::vector&lt;vec3&gt;&gt; triangles = {};</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  std::vector&lt;std::vector&lt;vec3&gt;&gt; animated_triangles = {};</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keywordtype">bool</span> collide = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  glm::vec3 slidePlaneNormal;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  glm::vec3 gravity;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="keywordtype">int</span> sliding;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <a class="code" href="class_line3_d.html">Line3D</a> line;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;};</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#endif // ENTITY_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclass_character_entity_html"><div class="ttname"><a href="class_character_entity.html">CharacterEntity</a></div><div class="ttdef"><b>Definition:</b> entity.h:13</div></div>
-<div class="ttc" id="aclass_static_model_html"><div class="ttname"><a href="class_static_model.html">StaticModel</a></div><div class="ttdoc">initiliazation function for heap allocation and similar</div><div class="ttdef"><b>Definition:</b> static_model.h:33</div></div>
-<div class="ttc" id="aclass_collision_packet_html"><div class="ttname"><a href="class_collision_packet.html">CollisionPacket</a></div><div class="ttdef"><b>Definition:</b> collision.h:30</div></div>
-<div class="ttc" id="aclass_octree_html"><div class="ttname"><a href="class_octree.html">Octree</a></div><div class="ttdef"><b>Definition:</b> octree.h:18</div></div>
+<div class="ttc" id="aclass_character_entity_html"><div class="ttname"><a href="class_character_entity.html">CharacterEntity</a></div><div class="ttdoc">Sphere collider for collision detection and response with objects in the world, used mostly for playe...</div><div class="ttdef"><b>Definition:</b> entity.h:17</div></div>
+<div class="ttc" id="aclass_line3_d_html"><div class="ttname"><a href="class_line3_d.html">Line3D</a></div><div class="ttdoc">Efficient 3D line drawing class, mainly used for debugging.</div><div class="ttdef"><b>Definition:</b> line3d.h:17</div></div>
+<div class="ttc" id="aclass_animated_object_html"><div class="ttname"><a href="class_animated_object.html">AnimatedObject</a></div><div class="ttdoc">game logic facing class used to instantiate a skinned object in the scene</div><div class="ttdef"><b>Definition:</b> animated_model.h:93</div></div>
+<div class="ttc" id="aclass_collision_packet_html"><div class="ttname"><a href="class_collision_packet.html">CollisionPacket</a></div><div class="ttdoc">data structure to pass around collision specific information</div><div class="ttdef"><b>Definition:</b> collision.h:31</div></div>
+<div class="ttc" id="aclass_octree_html"><div class="ttname"><a href="class_octree.html">Octree</a></div><div class="ttdoc">BSP implementation used in optimizing collision detection TODO raycast octree.</div><div class="ttdef"><b>Definition:</b> octree.h:19</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

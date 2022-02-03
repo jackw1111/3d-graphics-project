@@ -29,6 +29,7 @@ void wrap_AnimatedMesh() {
     .def_readwrite("vertices", &AnimatedMeshWrap::vertices)
     .def_readwrite("indices", &AnimatedMeshWrap::indices)
     .def_readwrite("textures", &AnimatedMeshWrap::textures)
+    .def_readwrite("bounding_box", &AnimatedMeshWrap::boundingBox)
     ;
 }
 

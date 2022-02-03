@@ -64,7 +64,7 @@ glm::vec3 Camera::getPosition() const {
 void Camera::setPosition(glm::vec3 pos) {
   Position = pos;
   updateCameraVectors();
-  view_matrix = GetViewMatrix();
+  //view_matrix = GetViewMatrix();
 
 }
 
@@ -75,7 +75,7 @@ glm::vec3 Camera::getFront() const {
 void Camera::setFront(glm::vec3 front) {
   Front = front;
   updateCameraVectors();
-  view_matrix = GetViewMatrix();
+  //view_matrix = GetViewMatrix();
 
 }
 
@@ -86,7 +86,7 @@ glm::vec3 Camera::getRight() {
 int Camera::setRight(glm::vec3 right) {
   Right = right;
   updateCameraVectors();
-  view_matrix = GetViewMatrix();
+  //view_matrix = GetViewMatrix();
 
   return 1;
 }
@@ -97,14 +97,14 @@ float Camera::getPitch() { return Pitch; };
 void Camera::setPitch(float pitch ) {
   Pitch = pitch;
   updateCameraVectors();
-  view_matrix = GetViewMatrix();
+  //view_matrix = GetViewMatrix();
 };
 float Camera::getYaw() { return Yaw;};
 
 void Camera::setYaw(float yaw) {
   Yaw = yaw;
   updateCameraVectors();
-  view_matrix = GetViewMatrix();
+  //view_matrix = GetViewMatrix();
 };
 
 float Camera::getFOV() { return Yaw;};
@@ -113,6 +113,16 @@ void Camera::setFOV(float f) {
   fov = f;
   projection_matrix = perspective(fov, float(WIDTH)/float(HEIGHT), 0.1f, 1000.0f);
 };
+
+void Camera::setFarPlane(float _farPlane) {
+    farPlane = _farPlane;
+    projection_matrix = perspective(45.0f, float(WIDTH)/float(HEIGHT), nearPlane, farPlane);
+}
+
+void Camera::setNearPlane(float _nearPlane) {
+    nearPlane = _nearPlane;
+    projection_matrix = perspective(45.0f, float(WIDTH)/float(HEIGHT), nearPlane, farPlane);
+}
 
 // Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
 int Camera::ProcessKeyboard(int direction, float deltaTime)

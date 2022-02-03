@@ -2,7 +2,7 @@
 #define MAIN_BINDINGS_H
 #define PY
 
-#include "_engine.h"
+#include "engine.h"
 
 #include "../../bindings/include/static_shader.h"
 #include "../../bindings/include/static_mesh.h"
@@ -17,13 +17,15 @@
 #include "../../bindings/include/entity.h"
 #include "../../bindings/include/app.h"
 #include "../../bindings/include/light.h"
-#include "../../bindings/include/rect.h"
+#include "../../bindings/include/particle.h"
+#include "../../bindings/include/rect2d.h"
 #include "../../bindings/include/label.h"
 #include "../../bindings/include/line3d.h"
 #include "../../bindings/include/sky_box.h"
 #include "../../bindings/include/audio.h"
 
 #include "../../bindings/include/math_utils.h"
+#include "../../bindings/include/physics.h"
 
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>

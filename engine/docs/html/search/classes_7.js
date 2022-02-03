@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['plane_85',['Plane',['../class_plane.html',1,'']]],
-  ['poly_86',['Poly',['../class_poly.html',1,'']]]
+  ['octree_102',['Octree',['../class_octree.html',1,'']]]
 ];

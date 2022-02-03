@@ -399,14 +399,14 @@ class App(Application):
             self.current_scene.show()
 
     def update(self):
-        self.processInput(self.window)
+        self.process_input(self.window)
 
 
-    def processInput(self, window):
+    def process_input(self, window):
         if (get_key(window, KEY_ESCAPE) == PRESS):
             set_window_should_close(self.window, True);
 
-    def onMouseMoved(self, xpos, ypos):
+    def on_mouse_moved(self, xpos, ypos):
         xoffset = xpos - self.lastX
         yoffset = self.lastY - ypos #reversed since y-coordinates go from bottom to top
 
@@ -416,7 +416,7 @@ class App(Application):
         self.active_camera.ProcessMouseMovement(xoffset, yoffset, True)
 
 
-    def onMouseClicked(self, button, action, mods):
+    def on_mouse_clicked(self, button, action, mods):
 
         if (button == 0):
 
@@ -531,10 +531,10 @@ class App(Application):
                     self.audio_window.stop("./data/intro.wav")
                     self.audio_window.play("./data/clock.wav")
 
-    def onWindowResized(self, width, height):
+    def on_window_resized(self, width, height):
         pass
 
-    def onKeyPressed(self, key, scancode, action, mods):
+    def on_key_pressed(self, key, scancode, action, mods):
         pass
 
 if __name__ == "__main__":

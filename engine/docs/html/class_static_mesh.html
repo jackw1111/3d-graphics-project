@@ -99,9 +99,9 @@ Public Member Functions</h2></td></tr>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_static_mesh.html#a61d357f916e39ba95e1a17bc34aa11b1">operator==</a> (const <a class="el" href="class_static_mesh.html">StaticMesh</a> s)</td></tr>
 <tr class="memdesc:a61d357f916e39ba95e1a17bc34aa11b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">simple comparison that compares pointers for equality <br /></td></tr>
 <tr class="separator:a61d357f916e39ba95e1a17bc34aa11b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b4a44ecb65ada714918ab9ba195c7dc"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; glm::vec3 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_static_mesh.html#a7b4a44ecb65ada714918ab9ba195c7dc">getTriangles</a> (glm::mat4 model)</td></tr>
-<tr class="memdesc:a7b4a44ecb65ada714918ab9ba195c7dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns triangle vertices in local space  <a href="class_static_mesh.html#a7b4a44ecb65ada714918ab9ba195c7dc">More...</a><br /></td></tr>
-<tr class="separator:a7b4a44ecb65ada714918ab9ba195c7dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a991c8f970ef2536097c2e6915d5dbcc1"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; glm::vec3 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_static_mesh.html#a991c8f970ef2536097c2e6915d5dbcc1">getTriangles</a> (const glm::mat4 &amp;model)</td></tr>
+<tr class="memdesc:a991c8f970ef2536097c2e6915d5dbcc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns triangle vertices in local space  <a href="class_static_mesh.html#a991c8f970ef2536097c2e6915d5dbcc1">More...</a><br /></td></tr>
+<tr class="separator:a991c8f970ef2536097c2e6915d5dbcc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3373edbdd4781137878b8abf9a123a5"><td class="memItemLeft" align="right" valign="top"><a id="ae3373edbdd4781137878b8abf9a123a5"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_static_mesh.html#ae3373edbdd4781137878b8abf9a123a5">Draw</a> (<a class="el" href="class_static_shader.html">StaticShader</a> shader)</td></tr>
 <tr class="memdesc:ae3373edbdd4781137878b8abf9a123a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">render the mesh <br /></td></tr>
@@ -152,9 +152,9 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:ab6c7f57e8e813b2760be3ae7aa853874"><td class="memItemLeft" align="right" valign="top"><a id="ab6c7f57e8e813b2760be3ae7aa853874"></a>
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>EBO</b></td></tr>
 <tr class="separator:ab6c7f57e8e813b2760be3ae7aa853874"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d176d0705f728f74f7976ee86103d58"><td class="memItemLeft" align="right" valign="top"><a id="a0d176d0705f728f74f7976ee86103d58"></a>
-<a class="el" href="class_b_cube.html">BCube</a>&#160;</td><td class="memItemRight" valign="bottom"><b>boundingCube</b></td></tr>
-<tr class="separator:a0d176d0705f728f74f7976ee86103d58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf2b3c2d9247c5a10dea7c61b5ef3961"><td class="memItemLeft" align="right" valign="top"><a id="aaf2b3c2d9247c5a10dea7c61b5ef3961"></a>
+<a class="el" href="class_bounding_box.html">BoundingBox</a>&#160;</td><td class="memItemRight" valign="bottom"><b>boundingBox</b></td></tr>
+<tr class="separator:aaf2b3c2d9247c5a10dea7c61b5ef3961"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a702040986c1cf12bca1d855c0681c643"><td class="memItemLeft" align="right" valign="top"><a id="a702040986c1cf12bca1d855c0681c643"></a>
 vector&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>limits</b></td></tr>
 <tr class="separator:a702040986c1cf12bca1d855c0681c643"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -203,8 +203,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>toDraw</b> = false</t
 
 </div>
 </div>
-<a id="a7b4a44ecb65ada714918ab9ba195c7dc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7b4a44ecb65ada714918ab9ba195c7dc">&#9670;&nbsp;</a></span>getTriangles()</h2>
+<a id="a991c8f970ef2536097c2e6915d5dbcc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a991c8f970ef2536097c2e6915d5dbcc1">&#9670;&nbsp;</a></span>getTriangles()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -212,7 +212,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>toDraw</b> = false</t
         <tr>
           <td class="memname">std::vector&lt;std::vector&lt;glm::vec3&gt; &gt; StaticMesh::getTriangles </td>
           <td>(</td>
-          <td class="paramtype">glm::mat4&#160;</td>
+          <td class="paramtype">const glm::mat4 &amp;&#160;</td>
           <td class="paramname"><em>model</em></td><td>)</td>
           <td></td>
         </tr>

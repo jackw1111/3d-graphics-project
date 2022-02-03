@@ -1,12 +1,10 @@
 import sys
-sys.path.append("/home/me/Documents/3d-graphics-project/engine/bin")
-sys.path.append("/home/me/Documents/3d-graphics-project/engine/utils")
+sys.path.append("../../engine/bin")
+sys.path.append("../../engine/utils")
 from console import *
 from axis_3d import *
 from engine.graphics import *
-from engine.core.physics import collision_SAT
 from keys import *
-from player import *
 import random
 import time
 import math
@@ -23,20 +21,18 @@ class App(Application):
         make_context_current(self.window)
         set_cursor_visible(self.window, False)
 
-        self.show_shadows = True
-        self.show_ssao = False
         self.light = Light(vec3(0, 1, 4), vec3(1,1,1))
 
         self.start_time = time.time()
 
     def update(self):
 
-        self.processInput(self.window)
+        self.process_input(self.window)
 
         self.end_time = time.time()
         self.elapsed_time = self.end_time - self.start_time
 
-    def processInput(self, window):
+    def process_input(self, window):
         if (get_key(window, KEY_ESCAPE) == PRESS):
             set_window_should_close(self.window, True);
 
@@ -52,18 +48,7 @@ class App(Application):
         if (get_key(window, KEY_D) == PRESS):
             self.active_camera.ProcessKeyboard(3, self.deltaTime)
 
-        if (get_key(window, KEY_E) == PRESS):
-            self.show_ssao = False
-            self.use_normal_map = False
-
-        if (get_key(window, KEY_R) == PRESS):
-            self.show_ssao = True
-
-
-        if (get_key(window, KEY_Y) == PRESS):
-            self.use_normal_map = True
-
-    def onMouseMoved(self, xpos, ypos):
+    def on_mouse_moved(self, xpos, ypos):
         xoffset = xpos - self.lastX
         yoffset = self.lastY - ypos #reversed since y-coordinates go from bottom to top
 
@@ -71,13 +56,13 @@ class App(Application):
         self.lastY = ypos
         self.active_camera.ProcessMouseMovement(xoffset, yoffset, True)
 
-    def onMouseClicked(self, button, action, mods):
+    def on_mouse_clicked(self, button, action, mods):
         pass
 
-    def onWindowResized(self, width, height):
+    def on_window_resized(self, width, height):
         pass
 
-    def onKeyPressed(self, key, scancode, action, mods):
+    def on_key_pressed(self, key, scancode, action, mods):
         #self.console.onKeyPressed(key, scancode, action, mods)
         pass
 if __name__ == "__main__":

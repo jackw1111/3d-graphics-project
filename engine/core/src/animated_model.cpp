@@ -64,7 +64,7 @@ AnimatedObject::AnimatedObject(const std::string &filePath) {
         this->meshIsCulled.resize(this->model.get()->meshes.size());
         this->uniqueID = 0;
         this->color = vec3(-1,-1,-1);
-
+        this->setAABB();
         AnimatedObject::modelRegistry.push_back({*this});
     }
 
@@ -81,6 +81,20 @@ mat4 AnimatedObject::getModelMatrix() {
 int AnimatedObject::setModelMatrix(mat4 m) {
     AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).modelMatrix = m;
     return 0;
+}
+
+
+bool AnimatedObject::getDrawBoundingBox() {
+    return AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).drawBoundingBox;
+}
+
+int AnimatedObject::setDrawBoundingBox(bool value) {
+    AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).drawBoundingBox = value;
+    return 0;
+}
+
+vector<mat4> AnimatedObject::getBoneTransforms() {
+    return AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).boneTransforms;
 }
 
 vec3 AnimatedObject::getColor() {
@@ -102,7 +116,22 @@ vector<mat4> AnimatedObject::getObjectTransforms(const vector<AnimatedObject> &c
     return modelTransforms;
 }
 
+
+vector<vector<vec3>> AnimatedObject::getAnimatedVertices() {
+    AnimatedObject *object = &AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID);
+    object->animatedVertices = {};
+
+    for (unsigned int i = 0; i < object->model.get()->meshes.size(); i++) {
+        AnimatedMesh *currentMesh = &(object->model.get()->meshes.at(i));
+        currentMesh->setVertices(this->boneTransforms);
+        object->animatedVertices.push_back(currentMesh->animatedVertices);
+    }
+    return object->animatedVertices;
+}
+
+
 int AnimatedObject::drawAllObjects(Camera &active_camera, float currentFrame, bool recalculateBones) {
+    
 
     unsigned int totalMeshes = 0;
     unsigned int drawnMeshes = 0;
@@ -120,35 +149,67 @@ int AnimatedObject::drawAllObjects(Camera &active_camera, float currentFrame, bo
         for (unsigned int i = 0; i < pModel->meshes.size(); i++) {
             // reset transforms
             vector<mat4> visibleModelTransforms = {};
-
+            vector<mat4> coloredVisibleModelTransforms = {};
+            vector<vec3> colors = {};
             //for each transform
             unsigned int id = 0;
             for (unsigned int j = 0; j < modelTransforms.size(); j++) {  
                 // get the current object
                 AnimatedObject *object = &(*currentObjects)[j];
-                // check if object mesh is either not culled or not occluded
-                if (!object->meshIsCulled[i]) {
-                    //std::cout << "drawing AABB" << std::endl;
-                    // object->model.get()->meshes[i].boundingCube.setMatrix("model", object->getModelMatrix());
-                    // object->model.get()->meshes[i].boundingCube.setMatrix("view", active_camera.view_matrix);
-                    // object->model.get()->meshes[i].boundingCube.setMatrix("projection", active_camera.projection_matrix);
+                AnimatedMesh *currentMesh = &(object->model.get()->meshes.at(i));
+                if (!object->useCustomShader) {
+                    // check if object mesh is either not culled or not occluded
+                    if (!object->meshIsCulled[i]) {
+                        //std::cout << "drawing AABB" << std::endl;
+                        if (object->drawBoundingBox) {
 
-                    // object->model.get()->meshes[i].boundingCube.draw();
-                    if (recalculateBones) {
-                        object->boneTransforms = {};
-                    }
-                    pModel->getFrame(id, playFrames(object->start_frame, object->end_frame, object->offset), object->boneTransforms);
-                    visibleModelTransforms.push_back(modelTransforms[j]);
-                    id++;
-                    ///@note indexing the bone matrices with j wasn't working and was only
-                    /// sparsely filling the bone matrix vector to send to the shader
-                    /// packing the index tightly (with id) fixes the alignment of
-                    /// bone matrices (for now) but this needs to be reevaluated when
-                    /// consider how the indexing system works when objects are added/removed
-                    /// but for now "it just werks"                    
+                            vector<float> AABB = currentMesh->getAABB();
+                            glm::vec3 min = glm::vec3(AABB[0], AABB[1], AABB[2]);
+                            glm::vec3 max = glm::vec3(AABB[3], AABB[4], AABB[5]);
+                            currentMesh->boundingBox.setup(min, max);
+                            
+
+                            glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+                            glDisable(GL_CULL_FACE);
+                            currentMesh->boundingBox.setMatrix("model", object->getModelMatrix());
+                            currentMesh->boundingBox.setMatrix("view", active_camera.view_matrix);
+                            currentMesh->boundingBox.setMatrix("projection", active_camera.projection_matrix);
+
+                            currentMesh->boundingBox.draw();
+                            AnimatedModel::shader.use();
+                            glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+                            glEnable(GL_CULL_FACE);
+                        }
 
 
-                }                   
+                        if (recalculateBones) {
+                            object->boneTransforms = {};
+                        }
+                        pModel->getFrame(id, playFrames(object->start_frame, object->end_frame, object->offset), object->boneTransforms);
+                        // create animated vertices for the frame
+                        // @todo speed up with octree, raycast
+                        // vector<mat4> _gBones = object->boneTransforms;
+                        // object->animatedVertices = {};
+                        // for (unsigned int j  = 0; j < object->model.get()->meshes.size(); j++) {
+                        //     AnimatedMesh *currentMesh = &(object->model.get()->meshes.at(j));
+                        //     currentMesh->setVertices(_gBones);
+                        //     object->animatedVertices.push_back(currentMesh->animatedVertices);
+                        // }
+                        visibleModelTransforms.push_back(modelTransforms[j]);
+                        id++;
+                        ///@note indexing the bone matrices with j wasn't working and was only
+                        /// sparsely filling the bone matrix vector to send to the shader
+                        /// packing the index tightly (with id) fixes the alignment of
+                        /// bone matrices (for now) but this needs to be reevaluated when
+                        /// consider how the indexing system works when objects are added/removed
+                        /// but for now "it just werks"                    
+                        colors.push_back(object->color);
+                        if (object->color != vec3(-1,-1,-1)) {
+                            coloredVisibleModelTransforms.push_back(modelTransforms[j]);
+                        }
+                    }    
+                }
+                               
             } 
             drawnMeshes += visibleModelTransforms.size();
             totalMeshes += modelTransforms.size();
@@ -157,12 +218,59 @@ int AnimatedObject::drawAllObjects(Camera &active_camera, float currentFrame, bo
             // {
             //    return distance(active_camera.Position, vec3(lhs[3])) > distance(active_camera.Position, vec3(rhs[3]));
             // });
+
+            for (unsigned int j = 0; j < colors.size(); j++) {
+                stringstream Name;
+                Name << "colors[" << j << "]";
+                AnimatedModel::shader.setVec3(Name.str().c_str(), colors[j]);                 
+            }   
+            // glDepthMask(GL_FALSE);
+            // glDisable(GL_DEPTH_TEST);
+            
+            // // draw highlights with depth writing disabled
+            // pModel->meshes[i].DrawInstanced(pModel->shader, coloredVisibleModelTransforms);
+
+            // glDepthMask(GL_TRUE);
+            // glEnable(GL_DEPTH_TEST);
+
+
             // draw only those that arent culled
             pModel->meshes[i].DrawInstanced(AnimatedModel::shader, visibleModelTransforms);
+
+            
+            for (unsigned int j = 0; j < visibleModelTransforms.size(); j++) {
+                stringstream Name;
+                Name << "colors[" << j << "]";
+                AnimatedModel::shader.setVec3(Name.str().c_str(), vec3(-1,-1,-1));                 
+            }   
         }
     }
 
     //std::cout << drawnMeshes << " of " << totalMeshes << " drawn." << std::endl;
+    return 0;
+}
+
+
+
+int AnimatedObject::setAABB() {
+
+    float duration = model.get()->m_pScene->mAnimations[0]->mDuration;
+    float dt = 0.1f;
+
+    for (float t = dt; t < duration; t+=0.1f) {
+
+        boneTransforms = {};
+        model.get()->getFrame(0, playFrames(0.0f, duration, t), boneTransforms);
+        vector<mat4> _gBones = boneTransforms;
+        for (unsigned int j  = 0; j < model.get()->meshes.size(); j++) {
+            AnimatedMesh *currentMesh = &(model.get()->meshes.at(j));
+            currentMesh->setVertices(_gBones);
+            vector<float> AABB = currentMesh->getAABB();
+
+        }
+    }
+
+
     return 0;
 }
 
@@ -173,8 +281,22 @@ void AnimatedObject::setFrames(float start, float end, float offset) {
 
 }
 
+int AnimatedObject::getToDraw() {
+    return AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).toDraw;
+}
+
+
 void AnimatedObject::setToDraw(int b) {
     AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).toDraw = b;
+}
+
+int AnimatedObject::getUseCustomShader() {
+    return AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).useCustomShader;
+}
+
+
+void AnimatedObject::setUseCustomShader(int b) {
+    AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).useCustomShader = b;
 }
 
 int AnimatedObject::remove() {
@@ -359,17 +481,6 @@ int AnimatedModel::loadModel(string path) {
 
     AnimatedModel::shader.setup("../../shaders/animatedmodel_shader.vs","../../shaders/animatedmodel_shader.fs");
 
-    for (unsigned int i = 0; i < this->meshes.size(); i++) {
-        vector<float> AABB =  this->meshes[i].getAABB();
-        for (unsigned int i = 0; i < AABB.size(); i++) {
-        }
-        glm::vec3 min = glm::vec3(AABB[0], AABB[1], AABB[2]);
-        glm::vec3 max = glm::vec3(AABB[3], AABB[4], AABB[5]);
-        /// @note using a BIG bounding box to make sure when
-        /// AnimatedObjects bones are animating that
-        /// they are definitely inside the bounding box
-        this->meshes[i].boundingCube.setup(min, max);
-    }
 
     model = mat4(1.0);
     start_frame = 0.0f;
@@ -464,7 +575,6 @@ void AnimatedModel::BoneTransform(float TimeInSeconds, vector<mat4>& Transforms)
     float TicksPerSecond = (float)(m_pScene->mAnimations[animationIndex]->mTicksPerSecond != 0 ? m_pScene->mAnimations[animationIndex]->mTicksPerSecond : 25.0f);
     float TimeInTicks = TimeInSeconds * TicksPerSecond;
     float AnimationTime = fmod(TimeInTicks, (float)m_pScene->mAnimations[animationIndex]->mDuration);
-
     ReadNodeHeirarchy(AnimationTime, m_pScene->mRootNode, Identity);
 
     Transforms.resize(m_NumBones);
@@ -473,6 +583,7 @@ void AnimatedModel::BoneTransform(float TimeInSeconds, vector<mat4>& Transforms)
         Transforms[i] = m_BoneInfo[i].FinalTransformation;
     }
 }
+
 // You can store the aiNodeAnim's in a map and use that to look them up instead of your FindNodeAnim function for every node every frame. I don't have an FPS counter set up but my profiler said that function was consuming most of my CPU and by using a map the animation went from mildly choppy to silky smooth. I do realize this is just meant to be illustrative and educational code.
 
 void AnimatedModel::storeNodeAnim(const aiAnimation* pAnimation) {
@@ -621,6 +732,34 @@ AnimatedModel::~AnimatedModel() {
 }
 
 
+float rayAnimatedObjectIntersect(glm::vec3 rayOrigin, glm::vec3 rayDirection, AnimatedObject object)
+{   
+  std::vector<float> intersect_values = {};
+  for (unsigned int j = 0; j < object.model.get()->meshes.size(); j++) {
+    std::vector<vec3> vertices = object.getAnimatedVertices().at(j);
+    for (unsigned int i = 0; i < vertices.size()-3; i+=3) {
+      vec3 v1 = glm::vec3(object.getModelMatrix() * glm::vec4(vertices.at(i+0), 1.0));
+      vec3 v2 = glm::vec3(object.getModelMatrix() * glm::vec4(vertices.at(i+1), 1.0));
+      vec3 v3 = glm::vec3(object.getModelMatrix() * glm::vec4(vertices.at(i+2), 1.0));
+      float t = rayTriangleIntersect(rayOrigin, rayDirection, v1, v2, v3);
+      if (t) {
+        intersect_values.push_back(t);
+      }
+    }
+  }
+  if (intersect_values.size()) {
+    float shortest_distance = FLT_MAX;
+    for (unsigned int i = 0; i < intersect_values.size(); i++) {
+        if (intersect_values.at(i) < shortest_distance) {
+          shortest_distance = intersect_values.at(i);
+        }
+    }
+    return shortest_distance;
+  } else {
+    return 0.0f;
+  }
+  return 0.0f;
+}
 
 
 

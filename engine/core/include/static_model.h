@@ -85,9 +85,15 @@ public:
     mat4 model;
     bool isInitialized = false;
     std::string filePath;
+    int reflective = 0;
 };
 
-
+/*! @brief non-updating scene object. Doesn't cast shadows, but has shadows cast on to.
+- useful for maps
+- static non-moving objects
+- non-interactable
+- collision meshes (with set_to_draw = false)
+*/
 class StaticObject {
 
 public:
@@ -98,15 +104,21 @@ public:
     mat4 modelMatrix = mat4(1.0f);
     int setModelMatrix(mat4 m);
     mat4 getModelMatrix();
+
+    int getToDraw();
     void setToDraw(int b);
     int toDraw = 1;
     int renderToUI = 0;
     
     vec3 getColor();
     int setColor(vec3 c);
-
     vec3 color = vec3(0.0, 0.0, 0.0);
 
+    bool getDrawBoundingBox();
+    int setDrawBoundingBox(bool value);
+    bool drawBoundingBox = false;
+    BoundingBox boundingBox;
+    
     // remove this access func asap
     StaticModel getModel();
 
@@ -127,6 +139,8 @@ private:
     static vector<mat4> getObjectTransforms(const vector<StaticObject> &objectStore);
 };
 
+float rayObjectIntersect(glm::vec3 rayOrigin, glm::vec3 rayDirection, StaticObject object);
+CollisionInfo sphereObjectIntersect(glm::vec3 spherePosition, glm::vec3 sphereVelocity, float deltaTime, float sphereRadius, StaticObject object);
 
 #endif
 

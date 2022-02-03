@@ -121,13 +121,16 @@ BOOST_PYTHON_MODULE(engine)
     wrap_Line3D();
     wrap_Light();
     wrap_Label();
-    wrap_Rect();
+    wrap_Particle();
+    wrap_Rect2D();
     wrap_mathUtils();
     wrap_vec2();
     wrap_vec3();
     wrap_vec4();
     wrap_mat4();
     wrap_mat3();
+    wrap_quat();
+    wrap_CollisionBox();
 
     // still some to wrap TO DO
     python::class_<Texture, boost::noncopyable>("Texture")

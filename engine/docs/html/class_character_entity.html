@@ -69,6 +69,11 @@ $(function() {
 <div class="title">CharacterEntity Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Sphere collider for collision detection and response with objects in the world, used mostly for player controllers.  
+ <a href="class_character_entity.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="entity_8h_source.html">entity.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -90,15 +95,15 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>setVelocity</b> (glm::
 <tr class="memitem:afb6ef419e92af7dabfc52bce2cc57dff"><td class="memItemLeft" align="right" valign="top"><a id="afb6ef419e92af7dabfc52bce2cc57dff"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>CharacterEntity</b> (std::vector&lt; <a class="el" href="class_static_model.html">StaticModel</a> &gt; models, std::vector&lt; mat4 &gt; _modelTransforms, glm::vec3 radius)</td></tr>
 <tr class="separator:afb6ef419e92af7dabfc52bce2cc57dff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7cee265bd70128b89dd2fe6a3d5fa856"><td class="memItemLeft" align="right" valign="top"><a id="a7cee265bd70128b89dd2fe6a3d5fa856"></a>
-virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>setup</b> (std::vector&lt; <a class="el" href="class_static_model.html">StaticModel</a> &gt; models, std::vector&lt; mat4 &gt; _modelTransforms, glm::vec3 radius)</td></tr>
-<tr class="separator:a7cee265bd70128b89dd2fe6a3d5fa856"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa59f2f490af15bf36afa65dffba31bf4"><td class="memItemLeft" align="right" valign="top"><a id="aa59f2f490af15bf36afa65dffba31bf4"></a>
-virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>update</b> ()</td></tr>
-<tr class="separator:aa59f2f490af15bf36afa65dffba31bf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a63725ed2393f0be51fc26d75a6707c2f"><td class="memItemLeft" align="right" valign="top"><a id="a63725ed2393f0be51fc26d75a6707c2f"></a>
-virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>checkCollision</b> ()</td></tr>
-<tr class="separator:a63725ed2393f0be51fc26d75a6707c2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9980d2a2635909f1e794e7a4c628b1e8"><td class="memItemLeft" align="right" valign="top"><a id="a9980d2a2635909f1e794e7a4c628b1e8"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>setup</b> (std::vector&lt; <a class="el" href="class_static_model.html">StaticModel</a> &gt; models, std::vector&lt; mat4 &gt; _modelTransforms, glm::vec3 radius)</td></tr>
+<tr class="separator:a9980d2a2635909f1e794e7a4c628b1e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7283c592a45cf5f468cf1fa90cf3fac"><td class="memItemLeft" align="right" valign="top"><a id="ab7283c592a45cf5f468cf1fa90cf3fac"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>update</b> ()</td></tr>
+<tr class="separator:ab7283c592a45cf5f468cf1fa90cf3fac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe4c04cfa343b5413f7362d0508d89c7"><td class="memItemLeft" align="right" valign="top"><a id="afe4c04cfa343b5413f7362d0508d89c7"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>checkCollision</b> ()</td></tr>
+<tr class="separator:afe4c04cfa343b5413f7362d0508d89c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ac3af551c59772b600f5337fbe55f2f"><td class="memItemLeft" align="right" valign="top"><a id="a8ac3af551c59772b600f5337fbe55f2f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>collideAndSlide</b> (const glm::vec3 &amp;gravity)</td></tr>
 <tr class="separator:a8ac3af551c59772b600f5337fbe55f2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -108,9 +113,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>collideWithWorld</b> 
 <tr class="memitem:aa7b7003f961ba8bd27594632f6cf7aae"><td class="memItemLeft" align="right" valign="top"><a id="aa7b7003f961ba8bd27594632f6cf7aae"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>remove</b> ()</td></tr>
 <tr class="separator:aa7b7003f961ba8bd27594632f6cf7aae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9863cec1dbadec37f98762ba5419f7a1"><td class="memItemLeft" align="right" valign="top"><a id="a9863cec1dbadec37f98762ba5419f7a1"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>addModel</b> (<a class="el" href="class_static_model.html">StaticModel</a> statModel)</td></tr>
-<tr class="separator:a9863cec1dbadec37f98762ba5419f7a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20dc4ead11e8c173405c8dc532e24d70"><td class="memItemLeft" align="right" valign="top"><a id="a20dc4ead11e8c173405c8dc532e24d70"></a>
+glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><b>sphereSweep</b> (glm::vec3 pos, glm::vec3 vel)</td></tr>
+<tr class="separator:a20dc4ead11e8c173405c8dc532e24d70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc4c31ba2e89f5ec0ab3a5712db37956"><td class="memItemLeft" align="right" valign="top"><a id="adc4c31ba2e89f5ec0ab3a5712db37956"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>addModel</b> (std::vector&lt; <a class="el" href="class_static_model.html">StaticModel</a> &gt; models, std::vector&lt; mat4 &gt; _modelTransforms)</td></tr>
+<tr class="separator:adc4c31ba2e89f5ec0ab3a5712db37956"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39ca172a43571726488224aae58ad46d"><td class="memItemLeft" align="right" valign="top"><a id="a39ca172a43571726488224aae58ad46d"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>addAnimatedObject</b> (<a class="el" href="class_animated_object.html">AnimatedObject</a> aObject)</td></tr>
+<tr class="separator:a39ca172a43571726488224aae58ad46d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -156,17 +167,37 @@ std::vector&lt; mat4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>
 <tr class="memitem:a8628e8396b55519d181e4359b9cfe7e0"><td class="memItemLeft" align="right" valign="top"><a id="a8628e8396b55519d181e4359b9cfe7e0"></a>
 <a class="el" href="class_octree.html">Octree</a>&#160;</td><td class="memItemRight" valign="bottom"><b>cube</b></td></tr>
 <tr class="separator:a8628e8396b55519d181e4359b9cfe7e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab97d10547541f70d1a5dea45f82c63a9"><td class="memItemLeft" align="right" valign="top"><a id="ab97d10547541f70d1a5dea45f82c63a9"></a>
+<a class="el" href="class_octree.html">Octree</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>aClosestRegion</b></td></tr>
+<tr class="separator:ab97d10547541f70d1a5dea45f82c63a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a642eb54e94563aea26798681311f895d"><td class="memItemLeft" align="right" valign="top"><a id="a642eb54e94563aea26798681311f895d"></a>
+<a class="el" href="class_octree.html">Octree</a>&#160;</td><td class="memItemRight" valign="bottom"><b>animatedOctree</b></td></tr>
+<tr class="separator:a642eb54e94563aea26798681311f895d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd90c8c3f53dc480e6bd585c934f4a50"><td class="memItemLeft" align="right" valign="top"><a id="abd90c8c3f53dc480e6bd585c934f4a50"></a>
 std::vector&lt; std::vector&lt; vec3 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>triangles</b> = {}</td></tr>
 <tr class="separator:abd90c8c3f53dc480e6bd585c934f4a50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc5a0bb95cc13f623f8eb996d651367f"><td class="memItemLeft" align="right" valign="top"><a id="acc5a0bb95cc13f623f8eb996d651367f"></a>
+std::vector&lt; std::vector&lt; vec3 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>animated_triangles</b> = {}</td></tr>
+<tr class="separator:acc5a0bb95cc13f623f8eb996d651367f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64d58d27442d4430122949c768aecf5e"><td class="memItemLeft" align="right" valign="top"><a id="a64d58d27442d4430122949c768aecf5e"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>collide</b> = true</td></tr>
 <tr class="separator:a64d58d27442d4430122949c768aecf5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31dffc941647a72cc5a8f92a9a281708"><td class="memItemLeft" align="right" valign="top"><a id="a31dffc941647a72cc5a8f92a9a281708"></a>
 glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><b>slidePlaneNormal</b></td></tr>
 <tr class="separator:a31dffc941647a72cc5a8f92a9a281708"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20a1b96c13f231044aea4949e5070eb8"><td class="memItemLeft" align="right" valign="top"><a id="a20a1b96c13f231044aea4949e5070eb8"></a>
+glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><b>gravity</b></td></tr>
+<tr class="separator:a20a1b96c13f231044aea4949e5070eb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a182e811eb638dcc8011808cef288495e"><td class="memItemLeft" align="right" valign="top"><a id="a182e811eb638dcc8011808cef288495e"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>sliding</b></td></tr>
+<tr class="separator:a182e811eb638dcc8011808cef288495e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad95c01af5c81c9f520b85d3015ca9b67"><td class="memItemLeft" align="right" valign="top"><a id="ad95c01af5c81c9f520b85d3015ca9b67"></a>
+<a class="el" href="class_line3_d.html">Line3D</a>&#160;</td><td class="memItemRight" valign="bottom"><b>line</b></td></tr>
+<tr class="separator:ad95c01af5c81c9f520b85d3015ca9b67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Sphere collider for collision detection and response with objects in the world, used mostly for player controllers. </p>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>engine/core/include/<a class="el" href="entity_8h_source.html">entity.h</a></li>
 </ul>
 </div><!-- contents -->

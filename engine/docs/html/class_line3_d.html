@@ -63,35 +63,46 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
-<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_line3_d-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Line3D Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Efficient 3D line drawing class, mainly used for debugging.  
+ <a href="class_line3_d.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="line3d_8h_source.html">line3d.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae788e4cec0bbcdcb1f3363bccfc415c6"><td class="memItemLeft" align="right" valign="top"><a id="ae788e4cec0bbcdcb1f3363bccfc415c6"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Line3D</b> (vec3 start, vec3 end)</td></tr>
 <tr class="separator:ae788e4cec0bbcdcb1f3363bccfc415c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa568bd3ef88cba46be84b02fcfbec36"><td class="memItemLeft" align="right" valign="top"><a id="afa568bd3ef88cba46be84b02fcfbec36"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>setModel</b> (mat4 modelMatrix)</td></tr>
-<tr class="separator:afa568bd3ef88cba46be84b02fcfbec36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9f50a3c85410dbee8b4de229ae9bbdd"><td class="memItemLeft" align="right" valign="top"><a id="aa9f50a3c85410dbee8b4de229ae9bbdd"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>setCamera</b> (mat4 cameraMatrix)</td></tr>
-<tr class="separator:aa9f50a3c85410dbee8b4de229ae9bbdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b0715596a7046e10b3a20f0984af934"><td class="memItemLeft" align="right" valign="top"><a id="a7b0715596a7046e10b3a20f0984af934"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>setColor</b> (vec3 col)</td></tr>
 <tr class="separator:a7b0715596a7046e10b3a20f0984af934"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a599cb476c64d3addfac1819bd13d387e"><td class="memItemLeft" align="right" valign="top"><a id="a599cb476c64d3addfac1819bd13d387e"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>draw</b> ()</td></tr>
-<tr class="separator:a599cb476c64d3addfac1819bd13d387e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afce6360c42859b14eaccddd91583a0b8"><td class="memItemLeft" align="right" valign="top"><a id="afce6360c42859b14eaccddd91583a0b8"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>setEndpoints</b> (vec3 startPoint, vec3 endPoint)</td></tr>
 <tr class="separator:afce6360c42859b14eaccddd91583a0b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e7707775d0036d03d34db03d5d86740"><td class="memItemLeft" align="right" valign="top"><a id="a3e7707775d0036d03d34db03d5d86740"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>setProject</b> (int p)</td></tr>
+<tr class="separator:a3e7707775d0036d03d34db03d5d86740"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16b65dbb8dddf35e3a97e0b00f9b5d49"><td class="memItemLeft" align="right" valign="top"><a id="a16b65dbb8dddf35e3a97e0b00f9b5d49"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>getProject</b> ()</td></tr>
+<tr class="separator:a16b65dbb8dddf35e3a97e0b00f9b5d49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:aaa9d450e3b26ddcb5db0637a2b23334f"><td class="memItemLeft" align="right" valign="top"><a id="aaa9d450e3b26ddcb5db0637a2b23334f"></a>
+static int&#160;</td><td class="memItemRight" valign="bottom"><b>drawAllLines</b> ()</td></tr>
+<tr class="separator:aaa9d450e3b26ddcb5db0637a2b23334f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb652d1ecaad085d34913af4eabc0354"><td class="memItemLeft" align="right" valign="top"><a id="afb652d1ecaad085d34913af4eabc0354"></a>
+static int&#160;</td><td class="memItemRight" valign="bottom"><b>setCamera</b> (mat4 cameraMatrix)</td></tr>
+<tr class="separator:afb652d1ecaad085d34913af4eabc0354"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -101,38 +112,49 @@ vec3&#160;</td><td class="memItemRight" valign="bottom"><b>startPoint</b></td></
 <tr class="memitem:aa72eea173391b9af1cbf4dd5059a1803"><td class="memItemLeft" align="right" valign="top"><a id="aa72eea173391b9af1cbf4dd5059a1803"></a>
 vec3&#160;</td><td class="memItemRight" valign="bottom"><b>endPoint</b></td></tr>
 <tr class="separator:aa72eea173391b9af1cbf4dd5059a1803"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6bf8348a0f883e91e57e27f477dc707b"><td class="memItemLeft" align="right" valign="top"><a id="a6bf8348a0f883e91e57e27f477dc707b"></a>
-mat4&#160;</td><td class="memItemRight" valign="bottom"><b>model</b></td></tr>
-<tr class="separator:a6bf8348a0f883e91e57e27f477dc707b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd07f0d0af637ba470c5eb6106b36337"><td class="memItemLeft" align="right" valign="top"><a id="acd07f0d0af637ba470c5eb6106b36337"></a>
-mat4&#160;</td><td class="memItemRight" valign="bottom"><b>viewProjection</b></td></tr>
-<tr class="separator:acd07f0d0af637ba470c5eb6106b36337"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99350979b67b438d817ec045a8792a51"><td class="memItemLeft" align="right" valign="top"><a id="a99350979b67b438d817ec045a8792a51"></a>
 vec3&#160;</td><td class="memItemRight" valign="bottom"><b>color</b></td></tr>
 <tr class="separator:a99350979b67b438d817ec045a8792a51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26c033320bf67221fa33b03b09692ff8"><td class="memItemLeft" align="right" valign="top"><a id="a26c033320bf67221fa33b03b09692ff8"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>project</b> = true</td></tr>
+<tr class="separator:a26c033320bf67221fa33b03b09692ff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
+<tr class="memitem:a38d2c73deb89dd4dae7bd1678ee3bc90"><td class="memItemLeft" align="right" valign="top"><a id="a38d2c73deb89dd4dae7bd1678ee3bc90"></a>
+static int&#160;</td><td class="memItemRight" valign="bottom"><b>shaderProgram</b></td></tr>
+<tr class="separator:a38d2c73deb89dd4dae7bd1678ee3bc90"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50bcba14d4aec4e4e5567a01f0139b75"><td class="memItemLeft" align="right" valign="top"><a id="a50bcba14d4aec4e4e5567a01f0139b75"></a>
+static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>VBO</b></td></tr>
+<tr class="separator:a50bcba14d4aec4e4e5567a01f0139b75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7b4fa417436eb0207d647dbe901902b"><td class="memItemLeft" align="right" valign="top"><a id="ad7b4fa417436eb0207d647dbe901902b"></a>
+static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>VAO</b></td></tr>
+<tr class="separator:ad7b4fa417436eb0207d647dbe901902b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f8ae4a8a68b723d3dbdce917b8a858d"><td class="memItemLeft" align="right" valign="top"><a id="a9f8ae4a8a68b723d3dbdce917b8a858d"></a>
+static vector&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>vertices</b></td></tr>
+<tr class="separator:a9f8ae4a8a68b723d3dbdce917b8a858d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa019cab58ffbb60d6045b27a2ec692ff"><td class="memItemLeft" align="right" valign="top"><a id="aa019cab58ffbb60d6045b27a2ec692ff"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><b>setup</b></td></tr>
+<tr class="separator:aa019cab58ffbb60d6045b27a2ec692ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd07f0d0af637ba470c5eb6106b36337"><td class="memItemLeft" align="right" valign="top"><a id="acd07f0d0af637ba470c5eb6106b36337"></a>
+static mat4&#160;</td><td class="memItemRight" valign="bottom"><b>viewProjection</b></td></tr>
+<tr class="separator:acd07f0d0af637ba470c5eb6106b36337"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3719df8114b2e6355f71a34db49ace43"><td class="memItemLeft" align="right" valign="top"><a id="a3719df8114b2e6355f71a34db49ace43"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><b>dirtyPositions</b></td></tr>
+<tr class="separator:a3719df8114b2e6355f71a34db49ace43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad906642758538bef5f9c3ebbdaffe14b"><td class="memItemLeft" align="right" valign="top"><a id="ad906642758538bef5f9c3ebbdaffe14b"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><b>dirtyColors</b></td></tr>
+<tr class="separator:ad906642758538bef5f9c3ebbdaffe14b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add0fad1a0ca47a32120ceda9938d9bbe"><td class="memItemLeft" align="right" valign="top"><a id="add0fad1a0ca47a32120ceda9938d9bbe"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><b>dirtyLines</b></td></tr>
+<tr class="separator:add0fad1a0ca47a32120ceda9938d9bbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6780d5371b069e433447b8e810cbb819"><td class="memItemLeft" align="right" valign="top"><a id="a6780d5371b069e433447b8e810cbb819"></a>
 static std::vector&lt; <a class="el" href="class_line3_d.html">Line3D</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>lines</b></td></tr>
 <tr class="separator:a6780d5371b069e433447b8e810cbb819"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
-Private Attributes</h2></td></tr>
-<tr class="memitem:a38d2c73deb89dd4dae7bd1678ee3bc90"><td class="memItemLeft" align="right" valign="top"><a id="a38d2c73deb89dd4dae7bd1678ee3bc90"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>shaderProgram</b></td></tr>
-<tr class="separator:a38d2c73deb89dd4dae7bd1678ee3bc90"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50bcba14d4aec4e4e5567a01f0139b75"><td class="memItemLeft" align="right" valign="top"><a id="a50bcba14d4aec4e4e5567a01f0139b75"></a>
-unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>VBO</b></td></tr>
-<tr class="separator:a50bcba14d4aec4e4e5567a01f0139b75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7b4fa417436eb0207d647dbe901902b"><td class="memItemLeft" align="right" valign="top"><a id="ad7b4fa417436eb0207d647dbe901902b"></a>
-unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>VAO</b></td></tr>
-<tr class="separator:ad7b4fa417436eb0207d647dbe901902b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f8ae4a8a68b723d3dbdce917b8a858d"><td class="memItemLeft" align="right" valign="top"><a id="a9f8ae4a8a68b723d3dbdce917b8a858d"></a>
-vector&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>vertices</b></td></tr>
-<tr class="separator:a9f8ae4a8a68b723d3dbdce917b8a858d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Efficient 3D line drawing class, mainly used for debugging. </p>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>engine/core/include/<a class="el" href="line3d_8h_source.html">line3d.h</a></li>
 </ul>
 </div><!-- contents -->

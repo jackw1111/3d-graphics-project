@@ -14,7 +14,7 @@
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
-#define unitsPerMeter 100.0f
+#define unitsPerMeter 1.0f
 
 using glm::vec3;
 using glm::vec4;
@@ -26,7 +26,8 @@ using glm::dot;
 using glm::max;
 using glm::min;
 using glm::radians;
-
+/*! @brief data structure to pass around collision specific information
+*/
 class CollisionPacket {
 public:
 	vec3 eRadius; // ellipsoid radius
@@ -46,7 +47,7 @@ public:
   // iteration depth
   int collisionRecursionDepth;
 };
-
+/*! @brief 3D primitive used in CharacterEntity collision detection */
 class Plane {
 public:
 	vec4 equation;

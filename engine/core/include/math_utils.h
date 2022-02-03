@@ -7,8 +7,7 @@
 #include <vector>
 #include <limits>
 #include <algorithm>
-#include "static_model.h"
-#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -26,6 +25,49 @@ using glm::normalize;
 using glm::vec4;
 using glm::mat4;
 
+
+/*! 
+@brief Specifies the bounding box for an AnimatedMesh, used for:
+- frustum cull geometry behind the camera
+- collision detection and response
+*/
+class BoundingBox {
+public:
+    static std::vector<BoundingBox*> allBoundingBoxes;
+
+    unsigned int shaderProgram;
+    unsigned int VBO, VAO;
+
+    GLuint queryFront;
+    GLuint queryBack;
+
+    std::vector<glm::vec3> translated_vertices = {};
+    std::vector<float> vertices = {};
+    glm::vec3 position;
+    glm::vec3 velocity;
+
+    glm::mat4 modelMatrix = mat4(1.0f);
+
+    bool toDraw = true;
+
+    BoundingBox();
+
+    BoundingBox( const BoundingBox &obj);
+
+
+    int getTranslatedVertices(glm::mat4 modelMatrix);
+
+    void setup(glm::vec3 min, glm::vec3 max);
+
+    void setMatrix(std::string name, glm::mat4 mat);
+    void draw();
+};
+
+
+glm::vec3 reflect(glm::vec3 I, glm::vec3 N);
+
+float boxPlaneIntersect(BoundingBox obb, glm::mat4 modelMatrix, glm::vec3 planeNormal, glm::mat4 planeModelMatrix);
+
 glm::vec3 getPosition(glm::mat4 mat);
 
 float lerp(float a, float b, float f);
@@ -37,9 +79,16 @@ bool solveQuadratic(const float &a, const float &b, const float &c, float &x0, f
 bool intersect(const vec3 &pos, const vec3 &ray, const vec3 &sphere, float radius2);
 
 float intersectPlane(vec3 n, vec3 p0, vec3 l0, vec3 l);
+float rayIntersectQuad(vec3 n, vec3 p0, vec3 l0, vec3 l, mat4 planeModelMatrix);
+
+float minDistancePointToPlane(glm::vec3 plane_position, glm::vec3 plane_normal, glm::vec3 point);
 
 float rayTriangleIntersect(
     const vec3 &rayOrigin, const vec3 &rayVector,
+    const vec3 &vertex0, const vec3 &vertex1, const vec3 &vertex2);
+
+float lineSegmentTriangleIntersect(
+    const vec3 &startPos, const vec3 &endPos,
     const vec3 &vertex0, const vec3 &vertex1, const vec3 &vertex2);
 
 bool alongRayTriangleIntersect(
@@ -47,26 +96,27 @@ bool alongRayTriangleIntersect(
     const vec3 &vertex0, const vec3 &vertex1, const vec3 &vertex2,
     float &t);
 
-float rayObjectIntersect(glm::vec3 rayOrigin, glm::vec3 rayDirection, StaticObject object);
+//float rayObjectIntersect(glm::vec3 rayOrigin, glm::vec3 rayDirection, StaticObject object);
 
 void checkCameraOcclusion(const vec3 &ray_wor, const vec3 &sphere, float &sphereT, float &triangleT, float &distanceFromCamera, const float &setDistance);
 
 bool checkCollision(vec2 ballPosition, vec2 ballSize, vec2 brickPosition, vec2 brickSize);
 float distance(vec2 p1, vec2 p2);
 int round(float value, int denomination);
-
-class Poly {
+/*! @brief data structure to pass around collision specific information
+*/
+class CollisionInfo {
 public:
-  StaticModel model;
-  glm::mat4 modelMatrix;
-    std::vector<glm::vec3> translated_vertices = {};
-    std::vector<Vertex> vertices;
-    Poly(){};
-  int setup(glm::mat4 modelMatrix);
-  int setup2(std::vector<Vertex> vertices);
-  int getTranslatedVertices(std::vector<Vertex> vertices);
+  glm::vec3 normal;
+  glm::vec3 position;
+  float depth;
+  CollisionInfo();
 };
 
-bool check_collision(BCube boundingCube1, BCube boundingCube2);
+CollisionInfo check_collision(BoundingBox boundingBox1, glm::mat4 modelMatrix1, BoundingBox boundingBox2, glm::mat4 modelMatrix2);
+CollisionInfo rayBoxIntersect(glm::vec3 rayOrigin, glm::vec3 rayDirection, BoundingBox &boundingBox);
+
+
+
 
 #endif

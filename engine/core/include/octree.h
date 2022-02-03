@@ -15,6 +15,7 @@ using glm::vec3;
 
 bool isTriangleInCube(vec3 position, float hw, std::vector<vec3> triangles);
 
+/*! @brief BSP implementation used in optimizing collision detection TODO raycast octree */
 class Octree {
 public:
   int index;

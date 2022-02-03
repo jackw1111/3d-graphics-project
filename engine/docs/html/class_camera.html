@@ -70,6 +70,9 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>the view into the 3D world, <a class="el" href="class_application.html" title="Main entry point into the graphics program and all game logic is written somewhere inside this.">Application</a> contains an <code>active_camera</code> instance of <a class="el" href="class_camera.html" title="the view into the 3D world, Application contains an active_camera instance of Camera that can be used...">Camera</a> that can be used to change the position of the view in the world (via the <code>view_matrix</code>)  
+ <a href="class_camera.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="camera_8h_source.html">camera.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -137,6 +140,12 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>getFOV</b> ()</td></
 <tr class="memitem:a91a53c68a016bf6f76c4edb598ad3fc5"><td class="memItemLeft" align="right" valign="top"><a id="a91a53c68a016bf6f76c4edb598ad3fc5"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setFOV</b> (float f)</td></tr>
 <tr class="separator:a91a53c68a016bf6f76c4edb598ad3fc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe0f47f060c64202161071a611937837"><td class="memItemLeft" align="right" valign="top"><a id="abe0f47f060c64202161071a611937837"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setNearPlane</b> (float nearPlane)</td></tr>
+<tr class="separator:abe0f47f060c64202161071a611937837"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3aeba74f7563e005bde0050a2cfd66c7"><td class="memItemLeft" align="right" valign="top"><a id="a3aeba74f7563e005bde0050a2cfd66c7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setFarPlane</b> (float farPlane)</td></tr>
+<tr class="separator:a3aeba74f7563e005bde0050a2cfd66c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90fe1492dc8122575e657b91418ed2d4"><td class="memItemLeft" align="right" valign="top"><a id="a90fe1492dc8122575e657b91418ed2d4"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>updateCameraVectors</b> ()</td></tr>
 <tr class="separator:a90fe1492dc8122575e657b91418ed2d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -185,9 +194,15 @@ mat4&#160;</td><td class="memItemRight" valign="bottom"><b>view_matrix</b></td><
 <tr class="memitem:a715c2106177b3cbdc35bb8fe5e159dfc"><td class="memItemLeft" align="right" valign="top"><a id="a715c2106177b3cbdc35bb8fe5e159dfc"></a>
 vec3&#160;</td><td class="memItemRight" valign="bottom"><b>dPosition</b></td></tr>
 <tr class="separator:a715c2106177b3cbdc35bb8fe5e159dfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e8436cced3a180e13bfafa0791fb82a"><td class="memItemLeft" align="right" valign="top"><a id="a8e8436cced3a180e13bfafa0791fb82a"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>farPlane</b> = 100.0f</td></tr>
+<tr class="separator:a8e8436cced3a180e13bfafa0791fb82a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78d8722a95e4f7770d79c950bda2bfdc"><td class="memItemLeft" align="right" valign="top"><a id="a78d8722a95e4f7770d79c950bda2bfdc"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>nearPlane</b> = 0.01f</td></tr>
+<tr class="separator:a78d8722a95e4f7770d79c950bda2bfdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>@Position - a 3D vector @Up - @Front - @Yaw - @Pitch - </p>
+<div class="textblock"><p>the view into the 3D world, <a class="el" href="class_application.html" title="Main entry point into the graphics program and all game logic is written somewhere inside this.">Application</a> contains an <code>active_camera</code> instance of <a class="el" href="class_camera.html" title="the view into the 3D world, Application contains an active_camera instance of Camera that can be used...">Camera</a> that can be used to change the position of the view in the world (via the <code>view_matrix</code>) </p>
 </div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>engine/core/include/<a class="el" href="camera_8h_source.html">camera.h</a></li>
 </ul>

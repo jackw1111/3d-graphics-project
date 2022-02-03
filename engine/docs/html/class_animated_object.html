@@ -72,6 +72,11 @@ $(function() {
 <div class="title">AnimatedObject Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>game logic facing class used to instantiate a skinned object in the scene  
+ <a href="class_animated_object.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="animated__model_8h_source.html">animated_model.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -93,15 +98,39 @@ vec3&#160;</td><td class="memItemRight" valign="bottom"><b>getColor</b> ()</td><
 <tr class="memitem:afc3c2c3157757b67b0225334e46ee9ce"><td class="memItemLeft" align="right" valign="top"><a id="afc3c2c3157757b67b0225334e46ee9ce"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>setColor</b> (vec3 c)</td></tr>
 <tr class="separator:afc3c2c3157757b67b0225334e46ee9ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28adfa8e75e84361d2502c78f7b9c9f7"><td class="memItemLeft" align="right" valign="top"><a id="a28adfa8e75e84361d2502c78f7b9c9f7"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>getDrawBoundingBox</b> ()</td></tr>
+<tr class="separator:a28adfa8e75e84361d2502c78f7b9c9f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab73b99dd5ad2db902e749313dedfafa5"><td class="memItemLeft" align="right" valign="top"><a id="ab73b99dd5ad2db902e749313dedfafa5"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>setDrawBoundingBox</b> (bool value)</td></tr>
+<tr class="separator:ab73b99dd5ad2db902e749313dedfafa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53d0193c409f210b88ad30886883a79f"><td class="memItemLeft" align="right" valign="top"><a id="a53d0193c409f210b88ad30886883a79f"></a>
 <a class="el" href="class_animated_model.html">AnimatedModel</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getModel</b> ()</td></tr>
 <tr class="separator:a53d0193c409f210b88ad30886883a79f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c2233e832f00fc0d043394af0c47fd4"><td class="memItemLeft" align="right" valign="top"><a id="a8c2233e832f00fc0d043394af0c47fd4"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setFrames</b> (float start, float end, float offset)</td></tr>
 <tr class="separator:a8c2233e832f00fc0d043394af0c47fd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b19eaafd84e9fb68ab8d9f42771efd7"><td class="memItemLeft" align="right" valign="top"><a id="a2b19eaafd84e9fb68ab8d9f42771efd7"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>getToDraw</b> ()</td></tr>
+<tr class="separator:a2b19eaafd84e9fb68ab8d9f42771efd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18a226c2f0c3747daf801ddc204c6a6c"><td class="memItemLeft" align="right" valign="top"><a id="a18a226c2f0c3747daf801ddc204c6a6c"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setToDraw</b> (int b)</td></tr>
 <tr class="separator:a18a226c2f0c3747daf801ddc204c6a6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e82e79d8cf5f02ab30e495984e02bc7"><td class="memItemLeft" align="right" valign="top"><a id="a8e82e79d8cf5f02ab30e495984e02bc7"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>getUseCustomShader</b> ()</td></tr>
+<tr class="separator:a8e82e79d8cf5f02ab30e495984e02bc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8b287fd09574c0a1d056102e34a8495"><td class="memItemLeft" align="right" valign="top"><a id="ae8b287fd09574c0a1d056102e34a8495"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setUseCustomShader</b> (int b)</td></tr>
+<tr class="separator:ae8b287fd09574c0a1d056102e34a8495"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06542588041345ab1cffda1e641375c2"><td class="memItemLeft" align="right" valign="top"><a id="a06542588041345ab1cffda1e641375c2"></a>
+vector&lt; mat4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getBoneTransforms</b> ()</td></tr>
+<tr class="separator:a06542588041345ab1cffda1e641375c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18961425fae3b094c423af3c43863d4f"><td class="memItemLeft" align="right" valign="top"><a id="a18961425fae3b094c423af3c43863d4f"></a>
+vector&lt; vector&lt; vec3 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getAnimatedVertices</b> ()</td></tr>
+<tr class="separator:a18961425fae3b094c423af3c43863d4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cb169d8da09b67cc598c7ea9de7de3f"><td class="memItemLeft" align="right" valign="top"><a id="a6cb169d8da09b67cc598c7ea9de7de3f"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>setAABB</b> ()</td></tr>
+<tr class="separator:a6cb169d8da09b67cc598c7ea9de7de3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -114,6 +143,9 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:ac22b20d3ab09b0ecbde9e9f58b3893a4"><td class="memItemLeft" align="right" valign="top"><a id="ac22b20d3ab09b0ecbde9e9f58b3893a4"></a>
 mat4&#160;</td><td class="memItemRight" valign="bottom"><b>modelMatrix</b></td></tr>
 <tr class="separator:ac22b20d3ab09b0ecbde9e9f58b3893a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42ee5800a732012927a3f973a7773645"><td class="memItemLeft" align="right" valign="top"><a id="a42ee5800a732012927a3f973a7773645"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>drawBoundingBox</b> = false</td></tr>
+<tr class="separator:a42ee5800a732012927a3f973a7773645"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30951c0af9cb963ddf18de9f88eb0d06"><td class="memItemLeft" align="right" valign="top"><a id="a30951c0af9cb963ddf18de9f88eb0d06"></a>
 std::shared_ptr&lt; <a class="el" href="class_animated_model.html">AnimatedModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>model</b></td></tr>
 <tr class="separator:a30951c0af9cb963ddf18de9f88eb0d06"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -150,12 +182,39 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>end_frame</b> = 0.0f
 <tr class="memitem:a14b1d885b7499a6b15cccb13037bd68b"><td class="memItemLeft" align="right" valign="top"><a id="a14b1d885b7499a6b15cccb13037bd68b"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>offset</b> = 0.0f</td></tr>
 <tr class="separator:a14b1d885b7499a6b15cccb13037bd68b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75f99728503730ff5b80f9d1ae9bfc23"><td class="memItemLeft" align="right" valign="top"><a id="a75f99728503730ff5b80f9d1ae9bfc23"></a>
+<a class="el" href="class_bounding_box.html">BoundingBox</a>&#160;</td><td class="memItemRight" valign="bottom"><b>boundingBox</b></td></tr>
+<tr class="separator:a75f99728503730ff5b80f9d1ae9bfc23"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5c8aebe57933aaa0b449ad0aa7a3dcd"><td class="memItemLeft" align="right" valign="top"><a id="ab5c8aebe57933aaa0b449ad0aa7a3dcd"></a>
-vec3&#160;</td><td class="memItemRight" valign="bottom"><b>color</b> = vec3(0.0, 0.0, 0.0)</td></tr>
+vec3&#160;</td><td class="memItemRight" valign="bottom"><b>color</b> = vec3(0.0f, 0.0f, 0.0f)</td></tr>
 <tr class="separator:ab5c8aebe57933aaa0b449ad0aa7a3dcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae91c6e8788ca69154c4478c18612f113"><td class="memItemLeft" align="right" valign="top"><a id="ae91c6e8788ca69154c4478c18612f113"></a>
 vector&lt; mat4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>boneTransforms</b> = {}</td></tr>
 <tr class="separator:ae91c6e8788ca69154c4478c18612f113"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6819508e775a39cabec88888fcb0b06"><td class="memItemLeft" align="right" valign="top"><a id="af6819508e775a39cabec88888fcb0b06"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>useCustomShader</b> = 0</td></tr>
+<tr class="separator:af6819508e775a39cabec88888fcb0b06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a298b105b9fbc5b8c6ff70042246e71c8"><td class="memItemLeft" align="right" valign="top"><a id="a298b105b9fbc5b8c6ff70042246e71c8"></a>
+vector&lt; vector&lt; vec3 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>animatedVertices</b> = {}</td></tr>
+<tr class="separator:a298b105b9fbc5b8c6ff70042246e71c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa706a0d09331c104ff1a5c8102301a3d"><td class="memItemLeft" align="right" valign="top"><a id="aa706a0d09331c104ff1a5c8102301a3d"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>minX</b> = numeric_limits&lt;float&gt;::max()</td></tr>
+<tr class="separator:aa706a0d09331c104ff1a5c8102301a3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a230d198398f58ba04f0a3fc8c5099cb8"><td class="memItemLeft" align="right" valign="top"><a id="a230d198398f58ba04f0a3fc8c5099cb8"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>maxX</b> = numeric_limits&lt;float&gt;::min()</td></tr>
+<tr class="separator:a230d198398f58ba04f0a3fc8c5099cb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2166344f1d494ccfafda0874a51f3f0a"><td class="memItemLeft" align="right" valign="top"><a id="a2166344f1d494ccfafda0874a51f3f0a"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>minY</b> = numeric_limits&lt;float&gt;::max()</td></tr>
+<tr class="separator:a2166344f1d494ccfafda0874a51f3f0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad38a6ded99cc40891cbc7aa1c4d29a80"><td class="memItemLeft" align="right" valign="top"><a id="ad38a6ded99cc40891cbc7aa1c4d29a80"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>maxY</b> = numeric_limits&lt;float&gt;::min()</td></tr>
+<tr class="separator:ad38a6ded99cc40891cbc7aa1c4d29a80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a925247354a3f9f75a9dd1cb3e101d482"><td class="memItemLeft" align="right" valign="top"><a id="a925247354a3f9f75a9dd1cb3e101d482"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>minZ</b> = numeric_limits&lt;float&gt;::max()</td></tr>
+<tr class="separator:a925247354a3f9f75a9dd1cb3e101d482"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59343e11601fafec9ca2ff6e59d70d5c"><td class="memItemLeft" align="right" valign="top"><a id="a59343e11601fafec9ca2ff6e59d70d5c"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>maxZ</b> = numeric_limits&lt;float&gt;::min()</td></tr>
+<tr class="separator:a59343e11601fafec9ca2ff6e59d70d5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -172,7 +231,12 @@ Static Private Member Functions</h2></td></tr>
 static vector&lt; mat4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getObjectTransforms</b> (const vector&lt; <a class="el" href="class_animated_object.html">AnimatedObject</a> &gt; &amp;objectStore)</td></tr>
 <tr class="separator:a9dbb5e18393923229eecdd7f8ad6d0f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>game logic facing class used to instantiate a skinned object in the scene </p>
+<ul>
+<li>objects can point to the same underlying <a class="el" href="class_animated_model.html" title="internal class to load a skinned model from Blender FBX">AnimatedModel</a> to minimize duplicate object creation and drawing. </li>
+</ul>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>engine/core/include/<a class="el" href="animated__model_8h_source.html">animated_model.h</a></li>
 </ul>
 </div><!-- contents -->

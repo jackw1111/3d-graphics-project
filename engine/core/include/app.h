@@ -27,14 +27,20 @@
 #include "line3d.h"
 #include "sky_box.h"
 #include "culling.h"
+#include "physics.h"
 
+/*! @brief TODO */
 class Scene {
 public:
   Scene();
   std::vector<StaticModel*> models;
 };
 
-
+/*! @brief Main entry point into the graphics program and all game logic is written somewhere inside this.
+- 1 created per program (see Scene for WIP on more than one graphics application per context)
+- Must be overriden (can be overriden from Python)
+- Responsible for updating, drawing, input handling and context handling
+*/
 class Application {
 
 public:
@@ -70,9 +76,20 @@ public:
   glm::mat4 lightSpaceMatrix;
   glm::mat4 farLightSpaceMatrix;
 
-  float farPlane = 100.0f;
-
   bool debug = false;
+
+  unsigned int ditherMap;
+
+  bool useCustomViewMatrix = false;
+
+  BoundingBox *bcube;
+
+  unsigned int maxContacts = 256;
+  Contact contacts[256];
+  CollisionData cData;
+  ContactResolver resolver;
+  unsigned int boxes = 3;
+  CollisionBox* boxData[3];
 
 public:
 
@@ -82,6 +99,8 @@ public:
   Application();
   virtual ~Application();
   int gameLoop();
+  int draw();
+
   void drawScene(int shadowPass);
   void drawUI();
 
@@ -93,6 +112,8 @@ public:
   virtual void onMouseMoved(double xpos, double ypos){};
   virtual void onJoystickMoved(int jid, int event){};
   virtual void onMouseScrolled(double xpos, double ypos){};
+  int test();
+
   void onWindowClose(GLFWwindow* window) {
     glfwSetWindowShouldClose(window, true);
   }
@@ -102,8 +123,6 @@ public:
   float getFPS();
 
   void setBackgroundColor(vec3 color);
-
-  void setFarPlane(float farPlane);
 
 };
 

@@ -6,9 +6,8 @@ import math
 import numpy as np
 import cv2
 
-WIDTH = 25
-HEIGHT = 25
-
+WIDTH = 100
+HEIGHT = 100
 
 
 # TO DO's:
@@ -115,12 +114,12 @@ class Square(Entity):
             t1_xy = vec2(t1.x, t1.y)
 
             if (point_intersects_square(t1_xy, min_xy, max_xy)):
-                print (self.img.shape)
+                #print (self.img.shape)
                 rows,cols,_ = self.img.shape
                 x_index = int(lerp(t1.x, -self.size, self.size, 0, 1) * cols)
                 y_index = int(lerp(t1.y, -self.size, self.size, 0, 1) * rows)
                 pixel= self.img[x_index, y_index]
-                print (x_index, y_index)
+                #print (x_index, y_index)
                 self.color = pixel
                 return _t1
 
@@ -264,6 +263,24 @@ class Plane(Entity):
     def get_normal(self, world_pos):
         return self.normal
 
+class Triangle(Entity):
+    def __init__(self, v1, v2, v3, color):
+        Entity.__init__(self)
+
+        self.position = (v1 + v2 + v3) * 0.333
+        self.normal = cross(v2-v1, v3-v1)
+        self.color = color
+        self.v1 = v1
+        self.v2 = v2
+        self.v3 = v3
+
+    def intersect(self, ray):
+        t = ray_intersect_triangle(ray.origin, ray.direction, self.v1, self.v2, self.v3)
+        return t
+
+    def get_normal(self, world_pos):
+        return self.normal    
+
 class Lamp():
     scene_lights = []
     def __init__(self, position):
@@ -282,23 +299,25 @@ class App(Application):
     def __init__(self, *args, **kwargs):
 
         Application.__init__(self, *args, **kwargs)
-        set_cursor_visible(self.window, False)
+        set_cursor_visible(self.window, True)
         self.set_background_color(vec3(0,0,0))
 
         self.sky_box.load_skybox = False
         self.light = Light(vec3(0, 1, 4), vec3(1,1,1))
 
-        self.ball = StaticObject("./data/ball.obj")
+        self.monkey = StaticObject("./data/monkey.obj")
+        self.monkey.model_matrix = rotate(self.monkey.model_matrix, math.radians(-90.0), vec3(1,0,0))
+        #self.ball = StaticObject("./data/ball.obj")
 
-        self.ball2 = StaticObject("./data/ball.obj")
-        self.ball2.model_matrix = translate(scale(mat4(1.0), vec3(0.05, 0.05, 0.05)), vec3(-1,0,0))
-        self.ball3 = StaticObject("./data/ball.obj")
-        self.ball3.model_matrix = scale(mat4(1.0), vec3(0.05, 0.05, 0.05))
+        #self.ball2 = StaticObject("./data/ball.obj")
+        #self.ball2.model_matrix = translate(scale(mat4(1.0), vec3(0.05, 0.05, 0.05)), vec3(-1,0,0))
+        #self.ball3 = StaticObject("./data/ball.obj")
+        #self.ball3.model_matrix = scale(mat4(1.0), vec3(0.05, 0.05, 0.05))
 
         self.plane1 = StaticObject("./data/plane.obj")
         self.plane1.model_matrix = translate(mat4(1.0), vec3(0,-1,0))
 
-        self.box = StaticObject("./data/cube.obj")
+        #self.box = StaticObject("./data/cube.obj")
 
         self.start_pos = vec3(2,2,2)
         self.ray_dir = vec3(0,0,-1)
@@ -314,9 +333,26 @@ class App(Application):
 
         self.scene_square = Square(vec3(0,0,-10), vec3(0,0,1), 50, "/home/me/Documents/3d-graphics-project/tests/ray-sphere-intersection/data/front.jpg")
         self.scene_plane = Plane(vec3(0,-1, 0), vec3(0,1,0), [0,0,0])
-        self.scene_sphere_large = Sphere(vec3(2.5,0,0), 1.2, [255,0,0])
-        self.scene_box = Cube(vec3(0,0,0), 1)
-        self.scene_sphere = Sphere(vec3(-2,0,0), 1, [0,255,0])
+        #self.scene_sphere_large = Sphere(vec3(2.5,0,0), 1.2, [255,0,0])
+        #self.scene_box = Cube(vec3(0,0,0), 1)
+        #self.scene_sphere = Sphere(vec3(-2,0,0), 1, [0,255,0])
+        self.scene_triangles = []
+        
+        for i in range(len(self.monkey.model.meshes)):
+            verts = self.monkey.model.meshes[i].vertices
+            inds = self.monkey.model.meshes[i].indices
+            
+            for i in range(len(inds)-3):
+                v1 = verts[inds[i+0]]
+                v2 = verts[inds[i+1]]
+                v3 = verts[inds[i+2]]
+                v1_pos_vec4 = self.monkey.model_matrix * vec4(v1.Position.x, v1.Position.y, v1.Position.z, 1.0)
+                v2_pos_vec4 = self.monkey.model_matrix * vec4(v2.Position.x, v2.Position.y, v2.Position.z, 1.0)
+                v3_pos_vec4 = self.monkey.model_matrix * vec4(v3.Position.x, v3.Position.y, v3.Position.z, 1.0)
+
+                self.tri = Triangle(vec3(v1_pos_vec4.x, v1_pos_vec4.y, v1_pos_vec4.z), vec3(v2_pos_vec4.x, v2_pos_vec4.y, v2_pos_vec4.z), vec3(v3_pos_vec4.x, v3_pos_vec4.y, v3_pos_vec4.z), [255, 0, 0])
+                self.scene_triangles.append(self.tri)
+
         self.scene_light = Lamp(vec3(3,2,3))
         self.scene_light = Lamp(vec3(-3,2,3))
 
@@ -355,7 +391,11 @@ class App(Application):
 
     def light_pixel(self, normal, world_position, color, light):
         # TO DO fix lighting
-        r,g,b = color
+        #print (color)
+        if (isinstance(color, vec3)):
+            r,g,b = color.x, color.y, color.z
+        else:
+            r,g,b = color
         light_direction = normalize(light.position - world_position)
         diffuse = max(dot(normal, light_direction), 0.0)
         ambient = 0.05
@@ -386,11 +426,11 @@ class App(Application):
 
                 pixelRayDirection = normalize(self.active_camera.right * a + self.active_camera.up * b + self.active_camera.front)
                 pixelRay = Ray(self.active_camera.position, pixelRayDirection)
-                #print (i,j)
+                print (i,j)
                 # shoot a ray from the each pixel into the screen
                 pixel_screen_direction = ray_cast(i, j, self.active_camera.projection_matrix, self.active_camera.view_matrix)
                 screen_ray = Ray(self.active_camera.position, pixel_screen_direction)
-                print (pixelRayDirection, pixel_screen_direction)
+                #print (pixelRayDirection, pixel_screen_direction)
 
                 nearest_object = None
                 nearest_t = None
@@ -416,7 +456,11 @@ class App(Application):
                         for scene_light in Lamp.scene_lights:
 
                             # accumulate lighting for each light
-                            lit_pixel = self.light_pixel(normal, world_pos, current_object.color, scene_light)
+                            if (isinstance(current_object, Triangle)):
+                                color = get_pixel(int(self.lastX), int(self.lastY))
+                            else:
+                                color = current_object.color
+                            lit_pixel = self.light_pixel(normal, world_pos, color, scene_light)
                             total_lit_pixel = np.add(total_lit_pixel, lit_pixel)
 
                             # accumulate shadow for each light
@@ -460,10 +504,10 @@ class App(Application):
 
     def update(self):
 
-        self.processInput(self.window)
+        self.process_input(self.window)
+        #print (get_pixel(int(self.lastX), int(self.lastY)))
 
-
-    def processInput(self, window):
+    def process_input(self, window):
         if (get_key(window, KEY_ESCAPE) == PRESS):
             set_window_should_close(self.window, True);
 
@@ -483,19 +527,19 @@ class App(Application):
             self.render()
             self.save_file("test.pnm")
 
-    def onMouseMoved(self, xpos, ypos):
+    def on_mouse_moved(self, xpos, ypos):
         xoffset = xpos - self.lastX
         yoffset = self.lastY - ypos #reversed since y-coordinates go from bottom to top
-
+        #print (self.lastX, self.lastY)
         self.lastX = xpos
         self.lastY = ypos
-        self.active_camera.ProcessMouseMovement(xoffset, yoffset, True)
+        self.active_camera.ProcessMouseMovement(xoffset, yoffset*100, True)
 
-    def onMouseClicked(self, button, action, mods):
+    def on_mouse_clicked(self, button, action, mods):
         ray = ray_cast(WIDTH/2, HEIGHT/2, self.active_camera.projection_matrix, self.active_camera.view_matrix)
         self.start_point = self.active_camera.position
         self.end_point = self.active_camera.position + ray * 2.0
-        self.ball2.model_matrix = scale(translate(mat4(1.0), self.start_point), vec3(0.05, 0.05, 0.05))
+        #self.ball2.model_matrix = scale(translate(mat4(1.0), self.start_point), vec3(0.05, 0.05, 0.05))
         t = ray_sphere_intersection(self.sphere_radius, self.start_point, ray)
         if (t is not None):
             self.end_point = self.active_camera.position + ray * t
@@ -503,7 +547,7 @@ class App(Application):
             self.ball3.model_matrix = scale(translate(mat4(1.0), self.end_point), vec3(0.05, 0.05, 0.05))
         else:
             t1 = math.fabs(ray_intersect_plane(vec3(0,1,0), vec3(0,-2,0), self.active_camera.position, ray))
-            print ("intersect plane t: ", t1)
+            #print ("intersect plane t: ", t1)
             if (t1 > 0 and t1 != float('inf')):
                 self.end_point = self.active_camera.position + ray * t1
                 self.ray.set_endpoints(self.start_point, self.end_point)
@@ -514,7 +558,7 @@ class App(Application):
                 if (t3 is not None):
                     self.shadow_ray.set_endpoints(world_pos, self.light_pos)
 
-    def onKeyPressed(self, window, key, action, mods):
+    def on_key_pressed(self, window, key, action, mods):
         pass
 
 if __name__ == "__main__":

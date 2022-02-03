@@ -32,15 +32,9 @@ const float PITCH       =  0.0f;
 const float SPEED       =  2.0f;
 const float SENSITIVITY =  0.03f;
 const float ZOOM        =  90.0f;
-//  *Camera: An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
-
-/**
- *@Position - a 3D vector
- *@Up -
- *@Front - 
- *@Yaw -
- *@Pitch -
- **/
+/*! @brief the view into the 3D world, Application contains an `active_camera` instance of Camera
+that can be used to change the position of the view in the world (via the `view_matrix`)
+*/
 class Camera
 {
 public:
@@ -64,6 +58,9 @@ public:
     mat4 view_matrix;
     vec3 dPosition;
 
+    float farPlane = 100.0f;
+    float nearPlane = 0.01f;
+  
     Camera();
     Camera(glm::vec3 position, glm::vec3 front, glm::vec3 up, float yaw, float pitch);
     int _setup(glm::vec3 position, glm::vec3 front, glm::vec3 up, float yaw, float pitch);
@@ -86,6 +83,8 @@ public:
     void setYaw(float yaw);
     float getFOV();
     void setFOV(float f);
+    void setNearPlane(float nearPlane);
+    void setFarPlane(float farPlane);
 
     // Calculates the front vector from the Camera's (updated) Euler Angles
     virtual void updateCameraVectors();

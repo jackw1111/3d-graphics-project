@@ -1,6 +1,6 @@
 import sys
-sys.path.append("/home/me/Documents/3d-graphics-project/engine/bin")
-sys.path.append("/home/me/Documents/3d-graphics-project/engine/utils")
+sys.path.append("../../engine/bin")
+sys.path.append("../../engine/utils")
 from console import *
 from axis_3d import *
 from engine.graphics import *
@@ -64,6 +64,8 @@ class App(Application):
         Application.__init__(self, *args, **kwargs)
         set_cursor_visible(self.window, True)
 
+        self.active_camera.position = vec3(0,0,10)
+
         self.all_blocks = []
         self.all_blocks_transforms = []
 
@@ -72,7 +74,7 @@ class App(Application):
             for j in range(-1, 2):
                 for i in range(-1, 2):
 
-                    tmp_model = StaticModel("./data/block.obj")
+                    tmp_model = StaticObject("./data/block.obj")
                     tmp_model.id = self.counter
                     self.counter+=1
                     self.all_blocks.append(tmp_model)
@@ -83,11 +85,11 @@ class App(Application):
 
         self.console = Console(WIDTH, HEIGHT)
 
-        self.rect = Rect(vec2(100,100),vec2(100,100), "")
+        self.cross_hair = Rect2D(vec2(50,50), vec2(WIDTH/2, HEIGHT/2),"./data/crosshair.png",1,1)
+        self.rect = Rect2D(vec2(100,100),vec2(100,100), "",1,1)
         self.rect.color = vec3(0,1,0)
         self.label = Label("text", vec2(100,100), "../minecraft/data/Minecraftia.ttf", 1)
         self.fps_label = Label("", vec2(30,HEIGHT - 50), "../minecraft/data/Minecraftia.ttf", 0.5)
-        self.rect.setup_with_color(vec3(1,0,0))
         self.show_shadows = True
         self.show_ssao = False
         self.light = Light(vec3(0, 1, 4), vec3(1,1,1))
@@ -384,10 +386,10 @@ class App(Application):
 
     def update(self):
 
-        self.processInput(self.window)
+        self.process_input(self.window)
         self.fps_label.text = str(int(1.0/(self.deltaTime+0.00001)))
         self.console.update(self.currentFrame, self.deltaTime)
-        self.light.position = self.active_camera.position
+        #self.light.position = self.active_camera.position
         cartesian_coords = vec3(self.active_camera.position.x, -self.active_camera.position.z, self.active_camera.position.y)
         normalized_position = normalize(cartesian_coords)
         self.set_front_face(normalized_position.x, normalized_position.y)
@@ -408,9 +410,10 @@ class App(Application):
             for i in range(len(face)):
                self.all_blocks[face[i]] = new_blocks[rotate_face[i]]
                self.all_blocks_transforms[face[i]] = new_blocks_transforms[rotate_face[i]]             
+               self.all_blocks[face[i]].model_matrix = new_blocks_transforms[rotate_face[i]] 
 
 
-    def processInput(self, window):
+    def process_input(self, window):
         if (get_key(window, KEY_ESCAPE) == PRESS):
             set_window_should_close(self.window, True);
 
@@ -437,7 +440,7 @@ class App(Application):
         if (get_key(window, KEY_Y) == PRESS):
             self.use_normal_map = True
 
-    def onMouseMoved(self, xpos, ypos):
+    def on_mouse_moved(self, xpos, ypos):
         xoffset = xpos - self.lastX
         yoffset = self.lastY - ypos #reversed since y-coordinates go from bottom to top
 
@@ -445,7 +448,7 @@ class App(Application):
         self.lastY = ypos
         self.active_camera.ProcessMouseMovement(xoffset, yoffset, True)
 
-    def onMouseClicked(self, button, action, mods):
+    def on_mouse_clicked(self, button, action, mods):
         if (button == 2 and action == 1):
             set_cursor_visible(self.window, False)
         if (button == 2 and action == 0):
@@ -463,11 +466,11 @@ class App(Application):
                 if (btn.cursor_in_bounds(self.lastX, HEIGHT - self.lastY)):
                     self.queue_animation(self.axes_map[btn.text])
 
-    def onWindowResized(self, width, height):
+    def on_window_resized(self, width, height):
         pass
 
-    def onKeyPressed(self, key, scancode, action, mods):
-        self.console.onKeyPressed(key, scancode, action, mods)
+    def on_key_pressed(self, key, scancode, action, mods):
+        self.console.on_key_pressed(key, scancode, action, mods)
         
 if __name__ == "__main__":
     app = App("Rubik's Cube", WIDTH, HEIGHT, False)

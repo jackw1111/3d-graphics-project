@@ -3,7 +3,7 @@
 
 #include "math_utils.h"
 #include "animated_model.h"
-
+/*! @brief helper class for culling objects behind the Camera */
 class Frustum {
 public:
     float fov;

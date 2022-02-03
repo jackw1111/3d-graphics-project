@@ -108,8 +108,10 @@ int StaticShader::setup(const char* vertexPath, const char* fragmentPath, const 
     // delete the shaders as they're linked into our program now and no longer necessery
     glDeleteShader(vertex);
     glDeleteShader(fragment);
-    if(geometryPath != nullptr)
+    if(geometryPath != nullptr) {
+        geometry = 1;
         glDeleteShader(geometry);
+    }
     _isInit = true;
     _isBound = false;
     return 1;

@@ -1,5 +1,5 @@
 
-#include "_engine.h"
+#include "engine.h"
 
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
@@ -50,6 +50,7 @@ void wrap_vec3();
 void wrap_vec4();
 void wrap_mat4();
 void wrap_mat3();
+void wrap_quat();
 
 // Declare the following in each translation unit
 struct void_ {};
@@ -116,7 +117,7 @@ struct iterable_converter
   }
 };
 
-
+glm::vec3 getPixel(unsigned int x, unsigned int y);
 
 struct custom_deleter {
    glm::mat4 operator()(glm::mat4* f);
@@ -128,6 +129,15 @@ struct mat4Wrap : glm::mat4, boost::python::wrapper<glm::mat4>
 
   glm::mat4* operator*(glm::mat4 const &mat);
   glm::mat4* __lookAt (glm::vec3 const &eye, glm::vec3 const &center, glm::vec3 const &up);
+};
+
+struct quatWrap : glm::quat, boost::python::wrapper<glm::quat>
+{
+
+};
+
+struct custom_deleter_quat {
+   glm::quat operator()(glm::quat* m);
 };
 
 struct custom_deleter_mat4 {
@@ -193,6 +203,8 @@ float* _dot(glm::vec3 const &v1,  glm::vec3 const &v2)*/
 glm::mat4* _inverse(glm::mat4 const &m);
 glm::vec3* _normalize(glm::vec3 const &v);
 
+glm::vec2* _normalize_vec2(glm::vec2 const &m);
+
 glm::mat4* _translate(glm::mat4 const &m, glm::vec3 const &v);
 glm::mat4* _rotate (glm::mat4 const &m, const float &rot, glm::vec3 const &v);
 
@@ -214,7 +226,12 @@ glm::vec4* get_index_mat4(glm::mat4 const &mat, int index);
 
 void set_index_mat4(glm::mat4 &mat, int index, glm::vec4 value);
 
+glm::quat* _normalize_quat(glm::quat const &m);
+glm::mat4* quat_mat4_cast(glm::quat const &q);
+glm::quat* mul_quat_float(glm::quat const &mat1, float v);
 
+glm::quat* add_quat(glm::quat const &mat1, glm::quat const &mat2);
+glm::quat* mul_quat(glm::quat const &mat1, glm::quat const &mat2);
 glm::mat4* mul_mat4(glm::mat4 const &mat1, glm::mat4 const &mat2);
 glm::vec4* mul_mat4_vec4(glm::mat4 const &mat, glm::vec4 const &vec);
 
@@ -227,6 +244,7 @@ std::string print_mat3(glm::mat3 const &m);
 std::string print_mat4(glm::mat4 const &m);
 boost::shared_ptr<glm::mat4> make_mat4(float m);
 
+boost::shared_ptr<glm::quat> make_quat(float w, float x, float y, float z);
 
 glm::vec4* mul_vec4(glm::vec4 const &v1, float const &f);
 

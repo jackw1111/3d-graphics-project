@@ -72,6 +72,11 @@ $(function() {
 <div class="title">StaticObject Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>non-updating scene object. Doesn't cast shadows, but has shadows cast on to.  
+ <a href="class_static_object.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="static__model_8h_source.html">static_model.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -87,6 +92,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>setModelMatrix</b> (ma
 <tr class="memitem:afb2372b51f7809c92eb8a89ef6589838"><td class="memItemLeft" align="right" valign="top"><a id="afb2372b51f7809c92eb8a89ef6589838"></a>
 mat4&#160;</td><td class="memItemRight" valign="bottom"><b>getModelMatrix</b> ()</td></tr>
 <tr class="separator:afb2372b51f7809c92eb8a89ef6589838"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40130c1b1970b737b0851887f6c7f2c1"><td class="memItemLeft" align="right" valign="top"><a id="a40130c1b1970b737b0851887f6c7f2c1"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>getToDraw</b> ()</td></tr>
+<tr class="separator:a40130c1b1970b737b0851887f6c7f2c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a541273c2de9c0cfcf7d5a72f7edeca32"><td class="memItemLeft" align="right" valign="top"><a id="a541273c2de9c0cfcf7d5a72f7edeca32"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setToDraw</b> (int b)</td></tr>
 <tr class="separator:a541273c2de9c0cfcf7d5a72f7edeca32"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -96,6 +104,12 @@ vec3&#160;</td><td class="memItemRight" valign="bottom"><b>getColor</b> ()</td><
 <tr class="memitem:a9764de6a4d00f556941618fa879869eb"><td class="memItemLeft" align="right" valign="top"><a id="a9764de6a4d00f556941618fa879869eb"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>setColor</b> (vec3 c)</td></tr>
 <tr class="separator:a9764de6a4d00f556941618fa879869eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd4053123caa7d34e7ad4829bc6626ea"><td class="memItemLeft" align="right" valign="top"><a id="abd4053123caa7d34e7ad4829bc6626ea"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>getDrawBoundingBox</b> ()</td></tr>
+<tr class="separator:abd4053123caa7d34e7ad4829bc6626ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a782d009355a314a5067ed123225e3326"><td class="memItemLeft" align="right" valign="top"><a id="a782d009355a314a5067ed123225e3326"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>setDrawBoundingBox</b> (bool value)</td></tr>
+<tr class="separator:a782d009355a314a5067ed123225e3326"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae36345dbb55ea3c0a3f5d0702d562d5"><td class="memItemLeft" align="right" valign="top"><a id="aae36345dbb55ea3c0a3f5d0702d562d5"></a>
 <a class="el" href="class_static_model.html">StaticModel</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getModel</b> ()</td></tr>
 <tr class="separator:aae36345dbb55ea3c0a3f5d0702d562d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -120,6 +134,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>renderToUI</b> = 0</td
 <tr class="memitem:ad2f8e873666b7d5621dc4e45f066ae9a"><td class="memItemLeft" align="right" valign="top"><a id="ad2f8e873666b7d5621dc4e45f066ae9a"></a>
 vec3&#160;</td><td class="memItemRight" valign="bottom"><b>color</b> = vec3(0.0, 0.0, 0.0)</td></tr>
 <tr class="separator:ad2f8e873666b7d5621dc4e45f066ae9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9eb1752a31312e528068e0da94764c34"><td class="memItemLeft" align="right" valign="top"><a id="a9eb1752a31312e528068e0da94764c34"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>drawBoundingBox</b> = false</td></tr>
+<tr class="separator:a9eb1752a31312e528068e0da94764c34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafc86fb1677f8f7ae85b2d3fbd68715c"><td class="memItemLeft" align="right" valign="top"><a id="aafc86fb1677f8f7ae85b2d3fbd68715c"></a>
+<a class="el" href="class_bounding_box.html">BoundingBox</a>&#160;</td><td class="memItemRight" valign="bottom"><b>boundingBox</b></td></tr>
+<tr class="separator:aafc86fb1677f8f7ae85b2d3fbd68715c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a663cf1206a4db867d3b4e65fd5e63e4d"><td class="memItemLeft" align="right" valign="top"><a id="a663cf1206a4db867d3b4e65fd5e63e4d"></a>
 std::shared_ptr&lt; <a class="el" href="class_static_model.html">StaticModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>model</b></td></tr>
 <tr class="separator:a663cf1206a4db867d3b4e65fd5e63e4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -157,7 +177,15 @@ Static Private Member Functions</h2></td></tr>
 static vector&lt; mat4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getObjectTransforms</b> (const vector&lt; <a class="el" href="class_static_object.html">StaticObject</a> &gt; &amp;objectStore)</td></tr>
 <tr class="separator:a648d5958a060b741196741c0b4c8b13d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>non-updating scene object. Doesn't cast shadows, but has shadows cast on to. </p>
+<ul>
+<li>useful for maps</li>
+<li>static non-moving objects</li>
+<li>non-interactable</li>
+<li>collision meshes (with set_to_draw = false) </li>
+</ul>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>engine/core/include/<a class="el" href="static__model_8h_source.html">static_model.h</a></li>
 </ul>
 </div><!-- contents -->

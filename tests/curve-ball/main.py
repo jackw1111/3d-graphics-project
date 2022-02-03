@@ -1,5 +1,6 @@
 import sys
 sys.path.append("../../engine/bin")
+sys.path.append("../../engine/utils")
 from engine.graphics import *
 from keys import *
 import math
@@ -22,7 +23,7 @@ class App(Application):
 
         self.map = StaticObject("./data/map.obj")
 
-        self.paddle = Rect(vec2(WIDTH/2, HEIGHT/2), vec2(100,50), "./data/paddle.png")
+        self.paddle = Rect2D(vec2(WIDTH/2, HEIGHT/2), vec2(100,50), "./data/paddle.png",1,1)
         self.paddle_pos = vec2(WIDTH/2, HEIGHT/2)
 
         self.score = Label("Score: ", vec2(0, HEIGHT*5/6), "./data/Minecraftia.ttf", 1.0)
@@ -42,7 +43,7 @@ class App(Application):
 
     def update(self):
 
-        self.processInput(self.window)
+        self.process_input(self.window)
 
         if (self.running):
             if (self.ball_pos.z < -85.0):
@@ -89,11 +90,11 @@ class App(Application):
         self.score.text = "Score: " + str(self.score_value)
         self.high_score.text = "High Score: " + str(self.high_score_value)
 
-    def processInput(self, window):
+    def process_input(self, window):
         if (get_key(window, KEY_ESCAPE) == PRESS):
             set_window_should_close(self.window, True);
 
-    def onMouseMoved(self, xpos, ypos):
+    def on_mouse_moved(self, xpos, ypos):
         xoffset = xpos - self.lastX
         yoffset = self.lastY - ypos #reversed since y-coordinates go from bottom to top
 
@@ -105,7 +106,7 @@ class App(Application):
         # restrict paddle to screen boundary
         self.paddle_pos = vec2(max(min(_x, WIDTH), 0), max(min(_y, HEIGHT), 0))
 
-    def onMouseClicked(self, button, action, mods):
+    def on_mouse_clicked(self, button, action, mods):
         if (self.running == False and button == 0 and action == 1):
             self.running = True
             self.ball_pos = vec3(0,0,-3)

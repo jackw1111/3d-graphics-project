@@ -1,6 +1,6 @@
 import sys
-sys.path.append("/home/me/Documents/3d-graphics-project/engine/bin")
-sys.path.append("/home/me/Documents/3d-graphics-project/engine/utils")
+sys.path.append("../../engine/bin")
+sys.path.append("../../engine/utils")
 from engine.graphics import *
 from keys import *
 import random
@@ -22,34 +22,41 @@ class App(Application):
         self.active_camera.position = vec3(0.0, 6.0, 0.0)
         self.map_model = StaticObject("./data/map.obj")
         self.map_model.model_matrix = translate(mat4(1.0), vec3(0,-3,0))
-        self.crosshair = Rect(vec2(WIDTH/2, HEIGHT/2), vec2(25, 25), "./data/crosshair.png")
+        self.crosshair = Rect2D(vec2(WIDTH/2, HEIGHT/2), vec2(25, 25), "./data/crosshair.png",1,1)
+        self.crosshair.ordering = 1
         self.all_arrows = []
         self.bow = AnimatedObject("./data/bow.dae")
         self.bow.set_frames(0.0, 0.01, 0.0)      
         self.animation_time = 0
         self.lmb_down = False
         self.arrow_placeholder = StaticObject("./data/arrow.obj")
-        self.character = StaticObject("./data/character.obj")
-        
+        self.character = AnimatedObject("./data/character.dae")
+        self.character.model_matrix = translate(self.character.model_matrix, vec3(0,-2.5,0))
+        self.character.model_matrix = scale(self.character.model_matrix, vec3(0.5, 0.5, 0.5))
+        self.character.model_matrix = rotate(self.character.model_matrix, math.radians(-90.0), vec3(1,0,0))
+
+
         self.map_position =self.map_model.model_matrix
         collision_objects = [self.map_position]
         v = [self.map_model.model]
         self.entity = CharacterEntity(v, collision_objects, vec3(0.7, 1.2, 0.7))
-
-        self.active_camera.MovementSpeed = 70.0
+        self.entity.add_static_model(v, collision_objects)
         self.gravity = vec3(0,-10,0)
         self.jump = vec3(0,0,0)
+        self.t = 0
+        self.player_position = vec3(0,0,0)
+        self.player_velocity = vec3(0,0,0)
+
+        self.label1 = Label("no intersect", vec2(100,100), "../minecraft/data/Minecraftia.ttf", 1)
 
     def update(self):
-        self.processInput(self.window)
+
+        self.process_input(self.window)
 
         #update all arrows
         for arrow_model in self.all_arrows:
             if (arrow_model.intersect_position != vec3(-1,-1,-1)):
-                sign = dot(arrow_model.intersect_position - arrow_model.position, arrow_model.direction)
-                if (sign < 0):
-                    continue
-                if distance(arrow_model.intersect_position, arrow_model.position) < 0.1:
+                if (distance(arrow_model.start_position, arrow_model.intersect_position) < distance(arrow_model.start_position, arrow_model.position)):
                     continue
             #arrow_model.pitch -= 0.5
             #arrow_model.velocity += self.gravity * self.deltaTime
@@ -60,21 +67,20 @@ class App(Application):
 
 
         # update entity
-        self.entity.velocity.x *= 0.1
-        self.entity.velocity.z *= 0.1
-        self.entity.velocity.y *= 0.1
-        self.entity.velocity += self.gravity * self.deltaTime
-        self.entity.velocity += self.jump * self.deltaTime
-        self.entity.update()
+        self.player_velocity += self.gravity * self.deltaTime
+        self.player_position += self.player_velocity * self.deltaTime
 
-        if (self.entity.grounded):
-            self.jump.y = 0
-
-        if (self.jump.y > 0):
-            self.jump.y -= self.deltaTime * 20
-        else:
-            self.jump.y = 0
-        self.active_camera.position = self.entity.position
+        collision_info = sphere_intersect_object(self.player_position, self.player_velocity, self.deltaTime, 1.0, self.map_model)
+        t = collision_info.depth
+        normal = collision_info.normal
+        #print (t)
+        if (t <= 1.0 and t > 0.0):
+            t2 = 1.0 - t
+            self.collision_point = self.player_position - normal * t
+            self.player_position += normal * t2
+            self.player_velocity = vec3(0,0,0)
+            self.player_velocity = reflect(self.player_velocity, normal)
+        self.active_camera.position = self.player_position
 
         # update bow
         self.bow.model_matrix = translate(mat4(1.0), self.active_camera.position + self.active_camera.front*0.2 + self.active_camera.up * 0.11)
@@ -105,7 +111,10 @@ class App(Application):
         self.arrow_placeholder.model_matrix = rotate(self.arrow_placeholder.model_matrix, math.radians(self.arrow_placeholder.pitch), vec3(1,0,0))
 
 
-    def processInput(self, window):
+        self.t += self.deltaTime
+        self.character.set_frames(0.0, 2.5, self.t)      
+
+    def process_input(self, window):
         speed = self.active_camera.MovementSpeed * self.deltaTime;
         total_velocity = vec3(0,0,0)
         if (get_key(window, KEY_W) == PRESS):
@@ -117,9 +126,9 @@ class App(Application):
         if (get_key(window, KEY_D) == PRESS):
             total_velocity += self.active_camera.right
 
-        self.entity.velocity = normalize(total_velocity) * speed
+        self.player_position += normalize(total_velocity) * speed
 
-    def onMouseMoved(self, xpos, ypos):
+    def on_mouse_moved(self, xpos, ypos):
         xoffset = xpos - self.lastX
         yoffset = self.lastY - ypos #reversed since y-coordinates go from bottom to top
 
@@ -127,7 +136,22 @@ class App(Application):
         self.lastY = ypos
         self.active_camera.ProcessMouseMovement(xoffset, yoffset, True)
 
-    def onMouseClicked(self, button, action, mods):
+        ray_wor = ray_cast(WIDTH/2, HEIGHT/2, self.active_camera.projection_matrix, self.active_camera.view_matrix)
+        t = ray_intersect_object(self.active_camera.position, self.active_camera.front, self.map_model)
+        if (t):
+            self.label1.text = "intersect!"
+        else:
+            self.label1.text = "no intersect!"
+
+        # if (ray_intersect_sphere(self.entity.position, ray_wor, self.other_player.position, 2.0)):
+        #     print ("player 2 hit!")
+        #     self.other_player.color = vec3(1,0,0)
+        #     self.other_player.set_frames(6.0, 8.0, 0.0)   
+        # else:
+        #     self.other_player.color = vec3(-1,-1,-1)
+        #     self.other_player.set_frames(0.2, 2.7, 0.0)  
+
+    def on_mouse_clicked(self, button, action, mods):
         if (button == 0 and action == 1):
             self.lmb_down = True
             self.arrow_placeholder.set_to_draw = True
@@ -143,7 +167,8 @@ class App(Application):
             #self.arrow_model.model_matrix = rotate(self.arrow_model.model_matrix, math.radians(-self.active_camera.yaw-90.0), self.active_camera.up)
             #self.arrow_model.model_matrix = rotate(self.arrow_model.model_matrix, math.radians(self.active_camera.pitch), self.active_camera.right)
             self.arrow_model.direction = self.active_camera.front
-            self.arrow_model.position = self.active_camera.position + self.active_camera.front * 0.15 + self.active_camera.right * 0.2
+            self.arrow_model.position = self.active_camera.position
+            self.arrow_model.start_position = self.arrow_model.position
             self.arrow_model.velocity = self.arrow_model.direction * self.arrow_model.speed
             self.arrow_model.yaw = -self.active_camera.yaw-90.0
             self.arrow_model.pitch = self.active_camera.pitch
@@ -154,16 +179,21 @@ class App(Application):
             t = ray_intersect_object(self.active_camera.position, self.active_camera.front, self.map_model)
             if (t):
                 self.arrow_model.intersect_position = self.active_camera.position + self.active_camera.front * t
+            t =  ray_intersect_animated_object(self.active_camera.position, self.active_camera.front, self.character)
+            if (t):
+                self.arrow_model.intersect_position = self.active_camera.position + self.active_camera.front * t
 
-    def onWindowResized(self, width, height):
+    def on_window_resized(self, width, height):
         pass
 
-    def onKeyPressed(self, key, scancode, action, mods):
+    def on_key_pressed(self, key, scancode, action, mods):
         if (key == KEY_ESCAPE and action == 1):
             set_window_should_close(self.window, True);
         if (key == KEY_SPACE and action == 1):
             if (self.jump == vec3(0,0,0)):
                 self.jump = vec3(0,16,0)
+        if (key == KEY_R and action == 1):
+            self.player_position = vec3(0,2,0)
 
 if __name__ == "__main__":
     app = App("bow-and-arrow", WIDTH, HEIGHT, False)

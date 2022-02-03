@@ -2,6 +2,11 @@
 #define STATIC_SHADER_H
 
 #define GLM_ENABLE_EXPERIMENTAL
+// #define GLM_FORCE_SSE2
+// #define GLM_FORCE_ALIGNED
+// #define GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
+// #include <glm/glm.hpp>
+// #include <xmmintrin.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
