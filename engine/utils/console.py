@@ -20,6 +20,7 @@ class Console():
         self.show = False
 
         self.custom_cmds = []
+        self.shift_pressed = False
 
     def update(self, currentFrame, deltaTime, MVP=mat4(1.0)):
         self.console.text = ">" + self.cmd + " "
@@ -40,27 +41,18 @@ class Console():
         self.custom_cmds.append([key, cmd])
 
     def on_key_pressed(self, key, scancode, action, mods):
-        if (self.show == True and action == 1):
-            try:
-                ch = chr(ascii_map[scancode])
-                if (mods == MOD_SHIFT):
-                    ch = ch.capitalize()
-                    if (ch == '_'):
-                        ch = '-'
-                self.cmd += ch
-            except(KeyError):
-                pass
-
         if (self.show == True and key == KEY_BACKSPACE and action == 1):
             self.cmd = self.cmd[:len(self.cmd)-1]
 
         if (self.show == True and key == KEY_ENTER and action == 1):
-            print (self.cmd)
+            data = self.cmd.split()
+            self.cmd = data[0]
+            arg = data[1]
             # process custom cmds assigned with new_command()
             for cmd in self.custom_cmds:
                 _cmd, _func = cmd[0], cmd[1]
                 if (self.cmd == _cmd):
-                    _func()
+                    _func(arg)
 
             if (self.cmd == "reset"):
                 pass
@@ -81,10 +73,14 @@ class Console():
                 print (str(output))
                 self.cmd = str(output)
 
-
-        if (key == KEY_GRAVE_ACCENT and action == 1):
+    def on_char_pressed(self, c):
+        c = chr(c)
+        if c == '`':
             if self.show == True:
                 self.show = False
                 self.cmd = ""
             else:
                 self.show = True
+        else:
+            self.cmd += c
+

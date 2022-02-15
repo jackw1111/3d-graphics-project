@@ -1,6 +1,6 @@
 # 3D-graphics-project
 
-\image{inline} html engine.png "caption"
+![alt text](https://github.com/jackw1111/3d-graphics-project/blob/master/engine.png)
 
 ### Features:
 

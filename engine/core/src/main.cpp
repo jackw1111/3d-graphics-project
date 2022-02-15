@@ -30,6 +30,10 @@ static void onKeyPressed(GLFWwindow* window, int key, int scancode, int action, 
 {
     app->onKeyPressed(key, scancode, action, mods);
 }
+static void onCharPressed(GLFWwindow* window, unsigned int _char)
+{
+    app->onCharPressed(_char);
+}
 static void onWindowResized(GLFWwindow* window, int width, int height)
 {
     glViewport(0,0, width, height);
@@ -98,6 +102,7 @@ int main(int argc, char** argv)
         app = getApplication();
         glfwSetJoystickCallback(joystick_callback);
         glfwSetKeyCallback(app->window, onKeyPressed);
+        glfwSetCharCallback(app->window, onCharPressed);
         glfwSetCursorPosCallback(app->window, onMouseMoved);
         glfwSetMouseButtonCallback(app->window, onMouseClicked);
         glfwSetFramebufferSizeCallback(app->window, onWindowResized);

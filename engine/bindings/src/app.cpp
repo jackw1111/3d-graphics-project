@@ -37,6 +37,17 @@ void ApplicationWrap::onKeyPressed(int key, int scancode, int action, int mods)
 
 }
 
+void ApplicationWrap::onCharPressed(unsigned int _char) 
+{
+    if (boost::python::override f = this->get_override("on_char_pressed")) {
+        f(_char);
+        Application::onCharPressed(_char);
+    } else {
+        Application::onCharPressed(_char);
+    }
+
+}
+
 void ApplicationWrap::onMouseClicked(int button, int action, int mods)
 {
     if (boost::python::override f = this->get_override("on_mouse_clicked")) {
@@ -125,6 +136,7 @@ void wrap_Application() {
       .add_property("window", boost::python::make_function(&Application::getWindow, boost::python::return_value_policy<boost::python::return_opaque_pointer>()), &Application::setWindow)
       .def("update", &ApplicationWrap::update)
       .def("on_key_pressed", &ApplicationWrap::onKeyPressed)
+      .def("on_char_pressed", &ApplicationWrap::onCharPressed)
       .def("on_mouse_clicked", &ApplicationWrap::onMouseClicked)
       .def("on_window_resized", &ApplicationWrap::onWindowResized)
       .def("on_mouse_scrolled", &ApplicationWrap::onMouseScrolled)
@@ -153,6 +165,10 @@ static void onKeyPressed(GLFWwindow* window, int key, int scancode, int action, 
 {
     app->onKeyPressed(key, scancode, action, mods);
 }
+static void onCharPressed(GLFWwindow* window, unsigned int _char)
+{
+    app->onCharPressed(_char);
+}
 static void onWindowResized(GLFWwindow* window, int width, int height)
 {
     glViewport(0,0, width, height);
@@ -177,6 +193,8 @@ void run(python::object obj) {
   glfwSetFramebufferSizeCallback(app->window, onWindowResized);
   glfwSetScrollCallback(app->window, onMouseScrolled);
   glfwSetKeyCallback(app->window, onKeyPressed);
+  glfwSetCharCallback(app->window, onCharPressed);
+
   while(!glfwWindowShouldClose(app->window))
   {
       app->gameLoop();

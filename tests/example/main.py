@@ -135,6 +135,7 @@ class App(Application):
         if (action == 1):
             if (key == KEY_1):
                 self.tmp_model = AnimatedObject("./data/astroboy.dae")
+                self.tmp_model.shininess = 1.0
                 self.tmp_model.color = vec3(random.randrange(0,2,1), random.randrange(0,2,1), random.randrange(0,2,1))
                 self.tmp_transform = mat4(1.0)
                 self.tmp_transform = rotate(translate(self.tmp_transform, vec3(self.val,3,0)), math.radians(-90.0), vec3(1,0,0))

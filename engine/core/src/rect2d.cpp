@@ -13,6 +13,14 @@ bool Rect2D::setup = false;
 mat4 Rect2D::viewProjection;
 std::map<std::string, unsigned int> Rect2D::textureMap;
 
+glm::vec2 rotatePoint(glm::vec2 pt, float angle) {
+    float x = pt.x;
+    float y = pt.y;
+    float _x = x * cos(radians(angle)) - y * sin(radians(angle));
+    float _y = x * sin(radians(angle)) + y * cos(radians(angle));
+    return glm::vec2(_x, _y);
+}
+
 Rect2D::Rect2D(glm::vec2 pos, glm::vec2 sz, std::string _filePath, unsigned int _cols, unsigned int _rows) {
 
     filePath = _filePath;
@@ -170,11 +178,52 @@ void Rect2D::setPosition(glm::vec2 pos) {
     float hw = width / 2.0f;//(float)WIDTH;
     float hh = height / 2.0f;//(float)HEIGHT;
 
+    glm::mat4 m = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f + order * 0.01));
+    m = glm::rotate(m, glm::radians(orientation), glm::vec3(0,0,1));
+    m = glm::scale(m, glm::vec3(hw, hh, 1.0f));
 
-	topRight = glm::vec4(x + hw,  y + hh, 0.0f + order * 0.01, 1.0f);
-	bottomRight = glm::vec4(x + hw,  y - hh, 0.0f + order * 0.01, 1.0f);
-	bottomLeft = glm::vec4(x - hw,  y - hh, 0.0f + order * 0.01, 1.0f);
-	topLeft = glm::vec4(x - hw,  y + hh, 0.0f + order * 0.01, 1.0f);
+    topRight = m * glm::vec4(0.5f,  0.5f, 0.0f, 1.0f);
+    bottomRight = m * glm::vec4(0.5f, -0.5f, 0.0f, 1.0f);
+    bottomLeft = m * glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f);
+    topLeft = m * glm::vec4(-0.5f,  0.5f, 0.0f, 1.0f);
+
+	// topRight = glm::vec4(rotatePoint(glm::vec2(x + hw,  y + hh), orientation), 0.0f + order * 0.01, 1.0f);
+	// bottomRight = glm::vec4(rotatePoint(glm::vec2(x + hw,  y - hh), orientation), 0.0f + order * 0.01, 1.0f);
+	// bottomLeft = glm::vec4(rotatePoint(glm::vec2(x - hw,  y - hh), orientation), 0.0f + order * 0.01, 1.0f);
+	// topLeft = glm::vec4(rotatePoint(glm::vec2(x - hw,  y + hh), orientation), 0.0f + order * 0.01, 1.0f);
+
+}
+
+float Rect2D::getOrientation() {
+	return orientation;
+}
+
+void Rect2D::setOrientation(float o) {
+	orientation = o;
+
+    float width = size.x;
+    float height = size.y;
+
+    float x = position.x;//2*position.x / WIDTH - 1;
+    float y = position.y;//2*position.y / HEIGHT- 1;
+
+    float hw = width / 2.0f;//(float)WIDTH;
+    float hh = height / 2.0f;//(float)HEIGHT;
+
+    glm::mat4 m = glm::translate(glm::mat4(1.0f), glm::vec3(position, 0.0f + order * 0.01));
+    m = glm::rotate(m, glm::radians(orientation), glm::vec3(0,0,1));
+    m = glm::scale(m, glm::vec3(hw, hh, 1.0f));
+
+    topRight = m * glm::vec4(0.5f,  0.5f, 0.0f, 1.0f);
+    bottomRight = m * glm::vec4(0.5f, -0.5f, 0.0f, 1.0f);
+    bottomLeft = m * glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f);
+    topLeft = m * glm::vec4(-0.5f,  0.5f, 0.0f, 1.0f);
+
+	// topRight = glm::vec4(rotatePoint(glm::vec2(x + hw,  y + hh), orientation), 0.0f + order * 0.01, 1.0f);
+	// bottomRight = glm::vec4(rotatePoint(glm::vec2(x + hw,  y - hh), orientation), 0.0f + order * 0.01, 1.0f);
+	// bottomLeft = glm::vec4(rotatePoint(glm::vec2(x - hw,  y - hh), orientation), 0.0f + order * 0.01, 1.0f);
+	// topLeft = glm::vec4(rotatePoint(glm::vec2(x - hw,  y + hh), orientation), 0.0f + order * 0.01, 1.0f);
+
 }
 
 glm::vec2 Rect2D::getSize() {

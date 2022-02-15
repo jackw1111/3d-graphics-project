@@ -9,6 +9,7 @@ void wrap_Rect2D() {
     .add_property("ordering", &Rect2D::getOrdering, &Rect2D::setOrdering)
 	.add_property("size", &Rect2D::getSize, &Rect2D::setSize)
     .add_property("position", &Rect2D::getPosition, &Rect2D::setPosition)
+    .add_property("orientation", &Rect2D::getOrientation, &Rect2D::setOrientation)
     .add_property("to_draw", &Rect2D::getToDraw, &Rect2D::setToDraw)
 	;
 }

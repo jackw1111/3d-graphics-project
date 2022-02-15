@@ -33,6 +33,7 @@ void wrap_AnimatedModel() {
     python::class_<AnimatedObject>("AnimatedObject", python::init<std::string>())
     .add_property("model", &AnimatedObject::getModel)
     .add_property("model_matrix",&AnimatedObject::getModelMatrix, &AnimatedObject::setModelMatrix)
+    .add_property("shininess", &AnimatedObject::getShininess, &AnimatedObject::setShininess)
     .add_property("color",&AnimatedObject::getColor, &AnimatedObject::setColor)
     .def_readwrite("start_frame", &AnimatedObject::start_frame)
     .def_readwrite("end_frame", &AnimatedObject::end_frame)

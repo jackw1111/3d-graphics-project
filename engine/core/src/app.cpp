@@ -217,8 +217,6 @@ int Application::setup(std::string title, unsigned int WIDTH, unsigned int HEIGH
     std::cout << "Time difference (sec) = " <<  (std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) /1000000.0  <<std::endl;
 
     simpleDepthShader = new AnimatedShader("/home/me/Documents/3d-graphics-project/shaders/shadow_mapping_depth.vs", "/home/me/Documents/3d-graphics-project/shaders/shadow_mapping_depth.fs");
-    debugDepthQuad = new StaticShader("/home/me/Documents/3d-graphics-project/shaders/debug_quad.vs", "/home/me/Documents/3d-graphics-project/shaders/debug_quad_depth.fs");
-
 
 
     glGenFramebuffers(1, &depthMapFBO);
@@ -398,6 +396,10 @@ void Application::drawScene(int shadowPass) {
             AnimatedModel::shader.setFloat("nearPlane", active_camera.nearPlane); 
             AnimatedModel::shader.setFloat("farPlane", active_camera.farPlane); 
 
+            glActiveTexture(GL_TEXTURE13);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, sky_box.cubemapTexture);
+            AnimatedModel::shader.setInt("skybox", 13); 
+            
             AnimatedObject::drawAllObjects(active_camera, currentFrame, shadowPass); 
            
         }
@@ -571,17 +573,6 @@ int Application::gameLoop() {
         drawUI();
         glFlush();
 
-        
-    // if (debug) {
-    //     std::cout << "debug!"<< std::endl;
-    //     debugDepthQuad->use();
-    //     debugDepthQuad->setFloat("near_plane", 0.1f);
-    //     debugDepthQuad->setFloat("far_plane", farPlane);
-    //     glActiveTexture(GL_TEXTURE0);
-    //     glBindTexture(GL_TEXTURE_2D, depthMap);
-    //     renderQuad();        
-    // }
-
 
     return 1;
 }
@@ -603,3 +594,11 @@ void Application::onKeyPressed(int key, int scancode, int action, int mods){
     //     statModel->on_key_pressed(key, scancode, action, mods);
     // }
 };
+
+void Application::onCharPressed(unsigned int _char){
+
+    // for (unsigned int i = 0; i < StaticModel::models.size(); i++) {
+    //     StaticModel *statModel = StaticModel::models.at(i);
+    //     statModel->on_key_pressed(key, scancode, action, mods);
+    // }
+}

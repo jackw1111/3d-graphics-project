@@ -16,6 +16,23 @@ HEIGHT = 600
 
 import png
 
+def create_mtl_file(filename):
+
+    file_contents = """newmtl None
+    Ns 0.000000
+    Ka 1.000000 1.000000 1.000000
+    Kd 0.800000 0.800000 0.800000
+    Ks 0.800000 0.800000 0.800000
+    Ke 0.000000 0.000000 0.000000
+    Ni 1.450000
+    d 1.000000
+    illum 2
+    map_Kd gradient.png"""
+
+    with open(filename, "w") as f:
+        f.write(file_contents)
+
+
 def create_png(color):
 
     width = 255
@@ -229,6 +246,7 @@ def create_mesh(equation, color=vec3(-1,-1,-1), detail=2.5, xdomain=[-2,2], ydom
 
     print (color)
     create_png(color)
+    create_mtl_file("./data/" + equation + ".mtl")
 
 
     mesh = mesh_method1(equation, detail, xdomain, ydomain, reversed_normals)
@@ -269,14 +287,14 @@ class App(Application):
         self.meshes = []
         self.graph_label = Label("no graph", vec2(100,20), "../minecraft/data/Minecraftia.ttf", 0.5)
 
-    def new_mesh(self):
+    def new_mesh(self, equation):
         if (len(self.meshes)):
             for m in self.meshes:
                 m.set_to_draw = False
         self.mesh_equations = ["(x**2+3*y**2)*math.e**(-x**2-y**2)", "0.125*(math.sin(4*x)-math.cos(5*y))", "0.25*math.sin(4*(x**2-y**2))", "0.25*math.sin(4*(x**2 + y**2))", "x*y**3-y*x**3", "math.cos(math.fabs(x) + math.fabs(y))", "math.cos(x**2+y**2-0.5)-0.5"]
         eq = random.choice(self.mesh_equations)
-        self.graph_label.text = eq
-        m = create_mesh(eq, xdomain=[-2,2], ydomain=[-2,2], detail=15, reversed_normals=False, filename=eq)
+        self.graph_label.text = equation
+        m = create_mesh(equation, xdomain=[-2,2], ydomain=[-2,2], detail=15, reversed_normals=False, filename=eq)
         self.meshes.append(m)
         self.console.show = False
 
@@ -318,6 +336,9 @@ class App(Application):
 
     def on_window_resized(self, width, height):
         pass
+
+    def on_char_pressed(self, char):
+        self.console.on_char_pressed(char)
 
     def on_key_pressed(self, key, scancode, action, mods):
         self.console.on_key_pressed(key, scancode, action, mods)

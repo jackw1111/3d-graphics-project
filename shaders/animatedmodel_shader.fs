@@ -16,6 +16,9 @@ uniform int shadowPass;
 uniform vec3 backgroundColor;
 uniform vec3 viewPos;
 uniform vec3 lightPos;
+uniform float shininess;
+uniform samplerCube skybox;
+
 
 float ambient = 0.15;           
 
@@ -45,6 +48,10 @@ void main()
 	vec3 halfwayDir = normalize(lightDir + viewDir);
 
     FragColor.rgb =  (color != vec3(-1,-1,-1) ? FragColor.rgb + fresnelSchlick(dot(normal, viewDir), F0) * color : FragColor.rgb);
+
+    vec3 I = normalize(FragPos - viewPos);
+    vec3 R = reflect(I, normalize(normal));
+    FragColor = (shininess == 1.0f ? FragColor * vec4(texture(skybox, R).rgb,1.0) : FragColor);
 }
 
 

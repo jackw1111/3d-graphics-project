@@ -22,6 +22,7 @@ struct ApplicationWrap : Application, boost::python::wrapper<Application>
 
   void update();
   void onKeyPressed(int key, int scancode, int action, int mods);
+  void onCharPressed(unsigned int _char);
   void onMouseClicked(int button, int action, int mods);
   void onWindowResized(int width, int height);
   void onMouseMoved(double xpos, double ypos);

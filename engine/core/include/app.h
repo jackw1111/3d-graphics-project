@@ -108,6 +108,7 @@ public:
   virtual void update();
   virtual void onMouseClicked(int button, int action, int mods){};
   virtual void onKeyPressed(int key, int scancode, int action, int mods);
+  virtual void onCharPressed(unsigned int _char);
   virtual void onWindowResized(int width, int height){};
   virtual void onMouseMoved(double xpos, double ypos){};
   virtual void onJoystickMoved(int jid, int event){};

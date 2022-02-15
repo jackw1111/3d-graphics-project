@@ -39,6 +39,8 @@ public:
 
     int frame = 0;
 
+    float orientation = 0.0f;
+
     unsigned int blendMode = GL_ONE_MINUS_SRC_ALPHA;
 
     ~Rect2D();
@@ -47,6 +49,10 @@ public:
 
     glm::vec2 getPosition();
     void setPosition(glm::vec2 pos);
+
+
+    float getOrientation();
+    void setOrientation(float o);
 
     glm::vec2 getSize();
     void setSize(glm::vec2 pos);

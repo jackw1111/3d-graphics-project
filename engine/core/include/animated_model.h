@@ -158,6 +158,10 @@ public:
     vector<vector<vec3>> getAnimatedVertices();
     int setAABB();
 
+    float shininess = 0.0f;
+
+    float getShininess();
+    void setShininess(float b);
 
 private:
 

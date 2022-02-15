@@ -26,6 +26,10 @@
 - convert application to a registry based approach (maybe change it to scene?) and each c++ class type is subclassed from a class with onMouseMoved, onKeyPress, to make scripting easier
 - modularize render code so eventual vulkan backend swap
 - ~~frustum culling~~
+- problems with rect class model matrix, simplify api
+- make all file paths relative paths, not absolute paths
+- vec3(value) constructor
+- add a util py file for circles, and add possibility for axis defined circles
 
 Possible engine conversion to C:
 

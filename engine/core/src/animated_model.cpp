@@ -233,6 +233,8 @@ int AnimatedObject::drawAllObjects(Camera &active_camera, float currentFrame, bo
             // glDepthMask(GL_TRUE);
             // glEnable(GL_DEPTH_TEST);
 
+            AnimatedModel::shader.setFloat("shininess", (*currentObjects)[0].shininess);
+
 
             // draw only those that arent culled
             pModel->meshes[i].DrawInstanced(AnimatedModel::shader, visibleModelTransforms);
@@ -284,10 +286,15 @@ void AnimatedObject::setFrames(float start, float end, float offset) {
 int AnimatedObject::getToDraw() {
     return AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).toDraw;
 }
-
-
 void AnimatedObject::setToDraw(int b) {
     AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).toDraw = b;
+}
+
+float AnimatedObject::getShininess() {
+    return AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).shininess;
+}
+void AnimatedObject::setShininess(float b) {
+    AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).shininess = b;
 }
 
 int AnimatedObject::getUseCustomShader() {
