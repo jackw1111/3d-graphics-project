@@ -186,5 +186,5 @@ class App(Application):
     def on_key_pressed(self, key, scancode, action, mods):
         pass
 
-app = App("gorillaz", WIDTH, HEIGHT, False)
+app = App("gorillaz", WIDTH, HEIGHT, False, False)
 run(app)

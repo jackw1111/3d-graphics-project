@@ -27,7 +27,9 @@ class App(Application):
         self.rect = Rect2D(vec2(100,100),vec2(100,100), "./data/cube.png",1,1)
         self.rect.ordering = 1
         self.rect.color = vec3(0,1,0)
-        self.label = Label("text", vec2(100,100), "../minecraft/data/Minecraftia.ttf", 1)
+        self.label = Label2D("text", vec2(100,100), "../minecraft/data/Minecraftia.ttf", 1)
+        self.label3d = Label3D("text", vec2(0,0), "../minecraft/data/Minecraftia.ttf", 1)
+
         self.light = Light(vec3(-4, 8,-2), vec3(1,1,1))
         self.val = 0
         self.use_normal_map = True
@@ -46,7 +48,7 @@ class App(Application):
         self.plane = StaticObject("data/plane.obj")
         self.plane.model_matrix = translate(mat4(1.0), vec3(0,3,0))
         self.plane.model_matrix = scale(self.plane.model_matrix, vec3(5,5,5))
-
+        self.plane.draw_bounding_box = True
         self.mountains = StaticObject("./data/cube.obj")
         # set fog color
         #set_clear_color(0.4, 0.2, 1.0)
@@ -58,16 +60,16 @@ class App(Application):
         self._offset = 0
 
     def update(self):
-
+        print (self.get_fps())
         self.x = 1
         self.shadow_map_center = vec3(0,0,0)
         #self.light.position = vec3(math.cos(time.time()), 3, math.sin(time.time()))
         self.process_input(self.window)
 
 
-        for m in self.all_models:
-            m.offset += 0.01
-            m.set_frames(0.0, 1.11, m.offset)
+        # for m in self.all_models:
+        #     m.offset += 0.01
+        #     m.set_frames(0.0, 1.11, m.offset)
 
     def process_input(self, window):
         if (get_key(window, KEY_ESCAPE) == PRESS):
@@ -131,18 +133,26 @@ class App(Application):
             if key == KEY_R:
                 self._line.set_endpoints(self.active_camera.position, self.active_camera.position + self.active_camera.front * 15)
 
+        if (key == KEY_P and action == 1):
+            if self.debug:
+                self.debug = False
+            else:
+                self.debug = True
+
         #self.console.on_key_pressed(key, scancode, action, mods)
         if (action == 1):
             if (key == KEY_1):
                 self.tmp_model = AnimatedObject("./data/astroboy.dae")
                 self.tmp_model.shininess = 1.0
-                self.tmp_model.color = vec3(random.randrange(0,2,1), random.randrange(0,2,1), random.randrange(0,2,1))
+                self.tmp_model.draw_bounding_box = True
+                # BUG: have to set color otherwise AnimatedObject doesnt draw!
+                self.tmp_model.color = vec4(random.randrange(0,2,1), random.randrange(0,2,1), random.randrange(0,2,1), 1.0)
                 self.tmp_transform = mat4(1.0)
                 self.tmp_transform = rotate(translate(self.tmp_transform, vec3(self.val,3,0)), math.radians(-90.0), vec3(1,0,0))
                 self.tmp_model.model_matrix = self.tmp_transform
                 offset = random.uniform(0, 10)
-                self.tmp_model.offset = offset
-                self.tmp_model.set_frames(0.0, 1.0, self.tmp_model.offset)
+                #self.tmp_model.offset = offset
+                #self.tmp_model.set_frames(0.0, 1.0, self.tmp_model.offset)
                 self.val += 3
                 #self.tmp_model.draw_bounding_box = True
                 self.all_models.append(self.tmp_model)
@@ -171,7 +181,7 @@ class App(Application):
 
 
 if __name__ == "__main__":
-    app = App("example", WIDTH, HEIGHT, False)
+    app = App("example", WIDTH, HEIGHT, False, True)
     run(app)
 
 

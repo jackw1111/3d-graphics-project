@@ -26,10 +26,10 @@ class App(Application):
         self.paddle = Rect2D(vec2(WIDTH/2, HEIGHT/2), vec2(100,50), "./data/paddle.png",1,1)
         self.paddle_pos = vec2(WIDTH/2, HEIGHT/2)
 
-        self.score = Label("Score: ", vec2(0, HEIGHT*5/6), "./data/Minecraftia.ttf", 1.0)
+        self.score = Label2D("Score: ", vec2(0, HEIGHT*5/6), "./data/Minecraftia.ttf", 1.0)
         self.score_value = 0
 
-        self.high_score = Label("High Score: ", vec2(0, HEIGHT*3/4), "./data/Minecraftia.ttf", 1.0)
+        self.high_score = Label2D("High Score: ", vec2(0, HEIGHT*3/4), "./data/Minecraftia.ttf", 1.0)
         self.high_score_value = 0
 
         self.ballModel = StaticObject("./data/ball.obj")
@@ -112,5 +112,5 @@ class App(Application):
             self.ball_pos = vec3(0,0,-3)
 
 if __name__ == "__main__":
-    app = App("curve-ball", WIDTH, HEIGHT, False)
+    app = App("curve-ball", WIDTH, HEIGHT, False, False)
     run(app)

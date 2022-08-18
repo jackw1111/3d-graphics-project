@@ -198,5 +198,5 @@ class App(Application):
             if (self.jump == vec3(0,0,0)):
                 self.jump = vec3(0,20,0)
 
-app = App("spongebob", WIDTH, HEIGHT, False)
+app = App("spongebob", WIDTH, HEIGHT, False, False)
 run(app)

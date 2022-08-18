@@ -7,6 +7,7 @@ import random
 import time
 import math
 from OpenGL.GL import *
+from third_person_camera import *
 
 WIDTH = 800
 HEIGHT = 600
@@ -35,7 +36,6 @@ class App(Application):
         self.character.model_matrix = scale(self.character.model_matrix, vec3(0.5, 0.5, 0.5))
         self.character.model_matrix = rotate(self.character.model_matrix, math.radians(-90.0), vec3(1,0,0))
 
-
         self.map_position =self.map_model.model_matrix
         collision_objects = [self.map_position]
         v = [self.map_model.model]
@@ -47,7 +47,11 @@ class App(Application):
         self.player_position = vec3(0,0,0)
         self.player_velocity = vec3(0,0,0)
 
-        self.label1 = Label("no intersect", vec2(100,100), "../minecraft/data/Minecraftia.ttf", 1)
+        self.label1 = Label2D("no intersect", vec2(100,100), "../minecraft/data/Minecraftia.ttf", 1)
+
+        self.third_person_camera = ThirdPersonCamera(vec3(0,0,0), vec3(0,0,-1), vec3(0,1,0), 0.0, -90.0)
+        self.third_person_camera.distance = 10.0
+        self.third_person = False
 
     def update(self):
 
@@ -59,7 +63,7 @@ class App(Application):
                 if (distance(arrow_model.start_position, arrow_model.intersect_position) < distance(arrow_model.start_position, arrow_model.position)):
                     continue
             #arrow_model.pitch -= 0.5
-            #arrow_model.velocity += self.gravity * self.deltaTime
+            arrow_model.velocity += self.gravity * self.deltaTime
             arrow_model.position += arrow_model.velocity * self.deltaTime
             arrow_model.model_matrix = translate(mat4(1.0), arrow_model.position)
             arrow_model.model_matrix = rotate(arrow_model.model_matrix, math.radians(arrow_model.yaw), vec3(0,1,0))
@@ -88,7 +92,7 @@ class App(Application):
         self.bow.model_matrix = rotate(self.bow.model_matrix, math.radians(self.active_camera.pitch), self.active_camera.right)
         self.bow.model_matrix = rotate(self.bow.model_matrix, math.radians(-180-self.active_camera.yaw), vec3(0,1,0))
         self.bow.model_matrix = rotate(self.bow.model_matrix, math.radians(-90), vec3(1,0,0))
-
+        self.bow.position = get_position(self.bow.model_matrix)
         self.bow.model_matrix = scale(self.bow.model_matrix, vec3(0.05, 0.05, 0.05))
 
 
@@ -114,6 +118,12 @@ class App(Application):
         self.t += self.deltaTime
         self.character.set_frames(0.0, 2.5, self.t)      
 
+        if (self.third_person):
+            if len(self.all_arrows):
+                arrow = self.all_arrows[len(self.all_arrows)-1]
+                self.active_camera.position = self.third_person_camera.get_position(self.active_camera, arrow.position)
+
+
     def process_input(self, window):
         speed = self.active_camera.MovementSpeed * self.deltaTime;
         total_velocity = vec3(0,0,0)
@@ -136,7 +146,7 @@ class App(Application):
         self.lastY = ypos
         self.active_camera.ProcessMouseMovement(xoffset, yoffset, True)
 
-        ray_wor = ray_cast(WIDTH/2, HEIGHT/2, self.active_camera.projection_matrix, self.active_camera.view_matrix)
+        ray_wor = ray_cast(WIDTH/2, HEIGHT/2, self.active_camera.view_matrix, self.active_camera.projection_matrix, WIDTH, HEIGHT)
         t = ray_intersect_object(self.active_camera.position, self.active_camera.front, self.map_model)
         if (t):
             self.label1.text = "intersect!"
@@ -152,6 +162,11 @@ class App(Application):
         #     self.other_player.set_frames(0.2, 2.7, 0.0)  
 
     def on_mouse_clicked(self, button, action, mods):
+
+        if (button == 2 and action == 1):
+            self.third_person = True
+        else:
+            self.third_person = False
         if (button == 0 and action == 1):
             self.lmb_down = True
             self.arrow_placeholder.set_to_draw = True
@@ -163,11 +178,23 @@ class App(Application):
 
             self.arrow_model = StaticObject("./data/arrow.obj")
             self.arrow_model.speed = 20.0
+            self.arrow_model.intersect_position = vec3(-1,-1,-1)
+
             #self.arrow_model.model_matrix = translate(mat4(1.0), self.active_camera.position)
             #self.arrow_model.model_matrix = rotate(self.arrow_model.model_matrix, math.radians(-self.active_camera.yaw-90.0), self.active_camera.up)
             #self.arrow_model.model_matrix = rotate(self.arrow_model.model_matrix, math.radians(self.active_camera.pitch), self.active_camera.right)
-            self.arrow_model.direction = self.active_camera.front
-            self.arrow_model.position = self.active_camera.position
+            t = 20
+            self.arrow_model.intersect_position = self.active_camera.position + self.active_camera.front * t
+
+            t = ray_intersect_object(self.active_camera.position, self.active_camera.front, self.map_model)
+            if (t):
+                self.arrow_model.intersect_position = self.active_camera.position + self.active_camera.front * t
+            t =  ray_intersect_animated_object(self.active_camera.position, self.active_camera.front, self.character)
+            if (t):
+                self.arrow_model.intersect_position = self.active_camera.position + self.active_camera.front * t
+
+            self.arrow_model.direction = normalize(self.arrow_model.intersect_position - self.bow.position)
+            self.arrow_model.position = self.bow.position
             self.arrow_model.start_position = self.arrow_model.position
             self.arrow_model.velocity = self.arrow_model.direction * self.arrow_model.speed
             self.arrow_model.yaw = -self.active_camera.yaw-90.0
@@ -175,13 +202,6 @@ class App(Application):
             self.arrow_model.up = self.active_camera.up
             self.arrow_model.right = self.active_camera.right
             self.all_arrows.append(self.arrow_model)
-            self.arrow_model.intersect_position = vec3(-1,-1,-1)
-            t = ray_intersect_object(self.active_camera.position, self.active_camera.front, self.map_model)
-            if (t):
-                self.arrow_model.intersect_position = self.active_camera.position + self.active_camera.front * t
-            t =  ray_intersect_animated_object(self.active_camera.position, self.active_camera.front, self.character)
-            if (t):
-                self.arrow_model.intersect_position = self.active_camera.position + self.active_camera.front * t
 
     def on_window_resized(self, width, height):
         pass
@@ -196,5 +216,5 @@ class App(Application):
             self.player_position = vec3(0,2,0)
 
 if __name__ == "__main__":
-    app = App("bow-and-arrow", WIDTH, HEIGHT, False)
+    app = App("bow-and-arrow", WIDTH, HEIGHT, False, False)
     run(app)

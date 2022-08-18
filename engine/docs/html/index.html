@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>3d-graphics-project: 3D-graphics-project</title>
+<title>3d-graphics-project: Main Page</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -60,41 +60,11 @@ $(function() {
 </iframe>
 </div>
 
-<div class="PageDoc"><div class="header">
+<div class="header">
   <div class="headertitle">
-<div class="title">3D-graphics-project </div>  </div>
+<div class="title">3d-graphics-project Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><img src="engine.png" alt="" class="inline" title="caption"/></p>
-<h2><a class="anchor" id="autotoc_md1"></a>
-Features:</h2>
-<ul>
-<li>3D renderer (C++11, Python3, OpenGL3.3), built on Intel 3000 iGPU (bottom 2% GPU on userbenchmark.com) so compatible and performant across many GPUs (every rect and line is batched, every model is instanced, vertex lighting to save on perf, frustum culling, caching)</li>
-<li>shadow maps, multiple lights, skeletal animations, basic particle system, skybox</li>
-<li>ellipsoid character collision detection with collision resolution</li>
-<li>basic audio</li>
-<li>gamepad support</li>
-<li>python bindings allows short iteration cycle for fast prototyping of ideas, Python and C++ API are similar enough that Python prototypes can be easily rewritten in C++ for release and allows seamless integration with PyOpenGL(shares the same OpenGL context, mostly seamless), PyGTK, numpy, and many Python libraries, seamless extentability from C++ during prototyping phase</li>
-<li>10 basic game examples to demonstrate how to program against the engine (WIP)</li>
-<li>iPython-like console for easily switching/setting some common flags (WIP)</li>
-<li>program with or without included IDE (WIP)</li>
-<li>documentation included (WIP)</li>
-<li>github.io with realtime-demos with emscripten (WIP)</li>
-</ul>
-<h1><a class="anchor" id="autotoc_md2"></a>
-Resume clout</h1>
-<ul>
-<li>Proficient in C++ and Python, and can rewrite sections of slow Python apps in C++</li>
-<li>Working knowledge in mid-scale software engineering design patterns (10k LOC project)</li>
-<li>Building maintainable and scalable code (Fully documented API, released) (WIP)</li>
-</ul>
-<h1><a class="anchor" id="autotoc_md3"></a>
-troubleshoot</h1>
-<ul>
-<li>there is a strange bug when exporting .obj files for <code><a class="el" href="class_static_object.html" title="non-updating scene object. Doesn&#39;t cast shadows, but has shadows cast on to.">StaticObject</a></code>'s, you will need to flip forward and up axis in the export settings for the object to appear the correct orientation in the engine. Eg. if you want to export -z forward and y up, you will have to apply y forward and -z up in the blender export settings.</li>
-<li>TO DO example on how to export .dae/.fbx for <code><a class="el" href="class_animated_object.html" title="game logic facing class used to instantiate a skinned object in the scene">AnimatedObject</a></code>'s. </li>
-</ul>
-</div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -13,13 +13,12 @@ using namespace boost::python;
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/ext.hpp>
 
-#include "_engine.h"
+#include "engine.h"
 
 
-
- StaticModel* uv_sphere(int n_slices, int n_stacks)
+ StaticObject* uv_sphere(int n_slices, int n_stacks)
 {
-	StaticModel *model = new StaticModel("./data/grass_block.obj");
+	StaticObject *model = new StaticObject("./data/grass_block.obj");
 	// add top vertex
 	auto v0 = Vertex(0, 1, 0);
 	auto v1 = Vertex(0, 1, 1);

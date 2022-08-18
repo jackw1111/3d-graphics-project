@@ -11,51 +11,10 @@ import time
 import math
 from OpenGL.GL import *
 from aa_bounding_box import *
+from line_circle import *
 
 WIDTH = 800
 HEIGHT = 600
-
-# circle drawing class
-class Circle():
-
-    def __init__(self, position=vec3(0,0,0), radius1=5, radius2=5):
-        self.position = position
-        self.radius1 = radius1
-        self.radius2 = radius2
-        self.points = []
-        self.lines = []
-        self.generate_circle()
-
-    def generate_circle(self):
-        # create points on circumference of circle
-        for i in range(50):
-            angle = math.radians(360.0/50.0 * i)
-            x = self.radius1*math.cos(angle)
-            y = self.radius2*math.sin(angle)
-            point = self.position + vec3(x,0,y)
-            self.points.append(point)
-
-        self.end_points = []
-        # join points with lines
-        for i in range(50):
-            start = i
-            end = (i+1)%50 # loop back around at end of circle
-            start_point = self.points[start]
-            end_point = self.points[end]
-            self.end_points.append([start_point, end_point])
-            self.line = Line3D(start_point, end_point)
-            self.line.color = vec3(0,1,0)
-            self.lines.append(self.line)
-
-    def set_position(self, position):
-        x = position.x
-        y = position.y
-        z = position.z
-        for i in range(50):
-            line = self.lines[i]
-            start_point = self.end_points[i][0] + vec3(x, 0, z)
-            end_point = self.end_points[i][1] + vec3(x, 0, z)
-            line.set_endpoints(start_point, end_point)
 
 class App(Application):
 
@@ -71,10 +30,12 @@ class App(Application):
         self.earth_orbit = Circle(vec3(0,0,0), radius1=24, radius2=16)
         self.moon = StaticObject("./data/moon.obj")
         self.moon.model_matrix = translate(mat4(1.0), vec3(0,0,6))
-        self.moon_orbit = Circle(vec3(0,0,0), radius1=5, radius2=4)
+        self.moon_orbit = Circle(vec3(0,0,0), up=vec3(1,1,1), radius1=5, radius2=4)
         self.sun = StaticObject("./data/sun.obj")
         self.sun.model_matrix = scale(mat4(1.0), vec3(3,3,3))
-        self.not_to_scale_label = Label("NOT TO SCALE", vec2(WIDTH-330, HEIGHT-50), "./data/default.ttf", 1)
+        self.not_to_scale_label = Label2D("NOT TO SCALE", vec2(WIDTH-330, HEIGHT-50), "./data/default.ttf", 1)
+        self.axis_3d = Axis3D()
+        self.axis_3d.object.model_matrix = scale(mat4(1.0), vec3(3,3,3))
 
     def update(self):
         
@@ -95,7 +56,7 @@ class App(Application):
         x,y =5*math.cos(12*angle), 4*math.sin(12*angle)
         self.moon_pos = self.earth_pos + vec3(x,0,y)
         self.moon.model_matrix = translate(mat4(1.0), self.moon_pos)
-        self.moon_orbit.set_position(self.earth_pos)
+        self.moon_orbit.update(self.earth_pos, self.moon_orbit.up, self.moon_orbit.radius1, self.moon_orbit.radius2)
         self.process_input(self.window)
 
         self.end_time = time.time()
@@ -147,5 +108,5 @@ class App(Application):
         #self.console.on_key_pressed(key, scancode, action, mods)
         pass
 if __name__ == "__main__":
-    app = App("solar-system", WIDTH, HEIGHT, False)
+    app = App("solar-system", WIDTH, HEIGHT, False, False)
     run(app)

@@ -10,16 +10,17 @@ import time
 import math
 from OpenGL.GL import *
 
-WIDTH = 1280
-HEIGHT = 720
+WIDTH = 800
+HEIGHT = 600
 
 class Ball():
     def __init__(self, position, offset, position_offset):
         self.model = AnimatedObject("./data/ball.dae")
         self.model.shininess = 1.0
+        self.model.color = vec4(1,1,1,1)
         self.model.set_to_draw = True
         self.model.position = position
-        self.model.model_matrix = scale(translate(mat4(1.0), self.model.position), vec3(0.2, 0.2, 0.2))
+        self.model.model_matrix = scale(translate(mat4(1.0), self.model.position), vec3(0.3, 0.3, 0.3))
         self.offset = offset
         self.animated_position = position
         self.position_offset = position_offset
@@ -30,21 +31,28 @@ class Ball():
         x = 5*math.sin(t+self.offset)/math.sqrt(1+0.2*z)
         p = self.position_offset + vec3(x, y, z)
         self.animated_position = p
-        self.model.model_matrix = scale(translate(mat4(1.0), p), vec3(0.2, 0.2, 0.2))
+        self.model.model_matrix = scale(translate(mat4(1.0), p), vec3(0.3, 0.3, 0.3))
+
+    def update_model_matrix(self, model):
+        self.model.model_matrix = model * self.model.model_matrix
 
 def set_cylinder_to_line(cylinder, start_point, end_point):
     cylinder.model_matrix = mat4(1.0)
     dir_vec = start_point - end_point
-    cylinder.model_matrix = scale(cylinder.model_matrix * inverse(lookAt((start_point + end_point) * 0.5, end_point, vec3(0,1,0))), vec3(0.2, 0.2, 0.5*length(dir_vec))) 
+    cylinder.model_matrix = scale(cylinder.model_matrix * inverse(lookAt((start_point + end_point) * 0.5, end_point, vec3(0,1,0))), vec3(0.3, 0.3, 0.5*length(dir_vec))) 
 
 class Cylinder():
     def __init__(self, start, end, draw=False):
         self.cylinder = AnimatedObject("./data/cylinder.dae")
         self.cylinder.shininess = 1.0
         self.cylinder.set_to_draw = draw
+        self.cylinder.color = vec4(1,1,1,1)
 
     def set_endpoints(self, start, end):
         set_cylinder_to_line(self.cylinder, start, end)
+
+    def update_model_matrix(self, model):
+        self.cylinder.model_matrix = model * self.cylinder.model_matrix
 
 class App(Application):
 
@@ -52,9 +60,11 @@ class App(Application):
         Application.__init__(self, *args, **kwargs)
         make_context_current(self.window)
         set_cursor_visible(self.window, False)
+        self.shadow_resolution = 2048
+        self.msaa = False
         #self.sky_box.load_skybox = False
         self.start_time = time.time()
-        self.active_camera.set_far_plane(50.0)
+        self.active_camera.set_far_plane(100.0)
         self.active_camera.position = vec3(0,0,5)
         self.active_camera.MovementSpeed = 20.0
         self.paused = False
@@ -62,6 +72,10 @@ class App(Application):
         self.plane = StaticObject("./data/plane.obj")
         self.plane.model_matrix = scale(translate(mat4(1.0), vec3(0,-10,0)), vec3(10,10,10))
         self.plane.model_matrix = rotate(self.plane.model_matrix, math.radians(45.0),vec3(1,0,-1))
+
+        self.plane.normal_matrix = transpose(inverse(mat3_cast(self.plane.model_matrix)))
+        self.plane.normal = vec3(0,1,0)
+        self.plane.normal = normalize(self.plane.normal_matrix * self.plane.normal)
 
         self.light = Light(vec3(0.9, 1.7, 1.8), vec3(1,1,1))
         self.light.position = vec3(3.109959, 8.199944, 6.099957)
@@ -100,14 +114,16 @@ class App(Application):
             c.color = vec3(0,1,0)
             self.lines.append(c)
 
+        self.x = 0
+
     def update(self):
 
         self.process_input(self.window)
         self.end_time = time.time()
         self.elapsed_time = self.end_time - self.start_time
 
-        if not self.paused:
-            self.v += 0.01
+        # if not self.paused:
+        #     self.v += 0.01
 
         # draw ball corners
         for b in self.balls:
@@ -153,6 +169,13 @@ class App(Application):
         self.lines[29].set_endpoints(self.balls[1].animated_position+offset, self.balls[5].animated_position)
         self.lines[30].set_endpoints(self.balls[11].animated_position+offset, self.balls[15].animated_position)
         self.lines[31].set_endpoints(self.balls[3].animated_position+offset, self.balls[7].animated_position)
+
+        self.tesseract_rotation_matrix = rotate(mat4(1.0), math.radians(self.x), normalize(self.light.position))
+        self.x += 1
+        for l in self.lines:
+            l.update_model_matrix(self.tesseract_rotation_matrix)
+        for b in self.balls:
+            b.update_model_matrix(self.tesseract_rotation_matrix)
 
         #print (self.v)
         # print (self.light.position)
@@ -222,5 +245,5 @@ class App(Application):
             self.v += 0.01   
 
 if __name__ == "__main__":
-    app = App("tesseract", WIDTH, HEIGHT, True)
+    app = App("tesseract", WIDTH, HEIGHT, False, True)
     run(app)

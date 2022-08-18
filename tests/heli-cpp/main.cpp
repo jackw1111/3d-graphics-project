@@ -350,6 +350,6 @@ public:
 };
 
 Application *getApplication() {
-	return new HeliDemo("heli-cpp", WIDTH, HEIGHT, true);
+	return new HeliDemo("heli-cpp", WIDTH, HEIGHT, true, false);
 }
 

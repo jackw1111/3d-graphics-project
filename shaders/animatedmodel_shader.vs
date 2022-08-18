@@ -10,14 +10,14 @@ layout (location = 7) in mat4 instanceMatrix;
 
 out vec2 TexCoord;
 out float diffuse;
-out vec3 color;
+out vec4 color;
 out vec3 FragPos;
 out vec3 normal;
 
 
 uniform mat4 proj_view;
 uniform mat4 gBones[20][50];
-uniform vec3 colors[20];
+uniform vec4 colors[20];
 uniform mat4 lightSpaceMatrix;
 uniform int shadowPass;
 uniform vec3 lightPos;
@@ -30,7 +30,7 @@ out float alpha;
 out float alpha2;
 
 
-/*float getFogFactor(float d, float nearPlane, float farPlane)
+float getFogFactor(float d, float nearPlane, float farPlane)
 {
     float FogMax = 1.0f * farPlane;
     float FogMin = 0.5f * farPlane;
@@ -38,7 +38,7 @@ out float alpha2;
     if (d>=FogMax) return 1.0f;
     if (d<=FogMin) return 0.0f;
 
-    return farPlane;//1.0f - (FogMax - d) / (FogMax - FogMin);
+    return 1.0f - (FogMax - d) / (FogMax - FogMin);
 }
 
 float getFogFactorAlpha(float d, float nearPlane, float farPlane)
@@ -50,7 +50,7 @@ float getFogFactorAlpha(float d, float nearPlane, float farPlane)
     if (d<=FogMin) return 0.0f;
 
     return 1.0f - (FogMax - d) / (FogMax - FogMin);
-}*/
+}
 
 void main()
 {   
@@ -76,10 +76,9 @@ void main()
     diffuse =  max(dot(Normal, lightDir), 0.0);
 
     normal = Normal;
-
-    //float d = distance(viewPos, FragPos);
-    //alpha = getFogFactor(d, nearPlane, farPlane);
-    //alpha2 = getFogFactorAlpha(d, nearPlane, farPlane);
     FragPos = fragPos.xyz;
+    float d = distance(viewPos, FragPos);
+    alpha = getFogFactor(d, nearPlane, farPlane);
+    alpha2 = getFogFactorAlpha(d, nearPlane, farPlane);
 
 }

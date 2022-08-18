@@ -1,0 +1,408 @@
+# c1a4i_w1c
+newmtl material_0
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_0.tga
+
+# c1a4tnnl1d
+newmtl material_1
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_1.tga
+
+# crate02
+newmtl material_2
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_2.tga
+
+# crete3_flr04
+newmtl material_3
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_3.tga
+
+# tnnl_flr3b
+newmtl material_4
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_4.tga
+
+# basewall04b
+newmtl material_5
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_5.tga
+
+# crete4_flr03
+newmtl material_6
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_6.tga
+
+# tnnl_flr1a
+newmtl material_7
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_7.tga
+
+# +0~light2a
+newmtl material_8
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_8.tga
+
+# crate05
+newmtl material_9
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_9.tga
+
+# crate21
+newmtl material_10
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_10.tga
+
+# +0~fifties_lgt2
+newmtl material_11
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_11.tga
+
+# generic028
+newmtl material_12
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_12.tga
+
+# crate22
+newmtl material_13
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_13.tga
+
+# fities_dr03
+newmtl material_14
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_14.tga
+
+# crate10
+newmtl material_15
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_15.tga
+
+# fiftsfile2
+newmtl material_16
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_16.tga
+
+# crate11
+newmtl material_17
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_17.tga
+
+# crate13
+newmtl material_18
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_18.tga
+
+# +0~fifts_lght4
+newmtl material_19
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_19.tga
+
+# babtech_bordl9
+newmtl material_20
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_20.tga
+
+# crate03
+newmtl material_21
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_21.tga
+
+# crate09b
+newmtl material_22
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_22.tga
+
+# crate09
+newmtl material_23
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_23.tga
+
+# tnnl_flr4
+newmtl material_24
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_24.tga
+
+# tnnl_w12c3
+newmtl material_25
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_25.tga
+
+# out_boxb
+newmtl material_26
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_26.tga
+
+# tnnl_c3c
+newmtl material_27
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_27.tga
+
+# tnnl_brd1
+newmtl material_28
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_28.tga
+
+# out_wall6
+newmtl material_29
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_29.tga
+
+# lab1_trim3
+newmtl material_30
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_30.tga
+
+# -0tnnl_flr7
+newmtl material_31
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_31.tga
+
+# out_dirt1
+newmtl material_32
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_32.tga
+
+# out_boxa
+newmtl material_33
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_33.tga
+
+# duct_wall02
+newmtl material_34
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_34.tga
+
+# tnnl_flr12
+newmtl material_35
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_35.tga
+
+# tnnl_w14e
+newmtl material_36
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_36.tga
+
+# ammo01
+newmtl material_37
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_37.tga
+
+# +0~tnnl_lgt3
+newmtl material_38
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_38.tga
+
+# lab1_stair1b
+newmtl material_39
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_39.tga
+
+# lab1_stair2b
+newmtl material_40
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_40.tga
+
+# tnnl_brd1b
+newmtl material_41
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_41.tga
+
+# +0~generic85
+newmtl material_42
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_42.tga
+
+# babtech_dr4c
+newmtl material_43
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_43.tga
+
+# ammo04
+newmtl material_44
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_44.tga
+
+# barreltop
+newmtl material_45
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_45.tga
+
+# nwbarrel
+newmtl material_46
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_46.tga
+
+# xcrate10a
+newmtl material_47
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_47.tga
+
+# flatbed_lite1
+newmtl material_48
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_48.tga
+
+# flatbed_hlite2
+newmtl material_49
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_49.tga
+
+# c1a1_names1
+newmtl material_50
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_50.tga
+
+# crate06
+newmtl material_51
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_51.tga
+
+# crate08
+newmtl material_52
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_52.tga
+
+# generic_110c
+newmtl material_53
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_53.tga
+
+# +0medkit
+newmtl material_54
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_54.tga
+
+# {ladder3a
+newmtl material_55
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_55.tga
+
+# rechargeedge1
+newmtl material_56
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_56.tga
+
+# +0recharge
+newmtl material_57
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_57.tga
+
+# sign87
+newmtl material_58
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_58.tga
+
+# c2a2a_sign4
+newmtl material_59
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_59.tga
+
+# +0metswitch1
+newmtl material_60
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_60.tga
+
+# pfab_vent3
+newmtl material_61
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_61.tga
+
+# pfab_vent2
+newmtl material_62
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_62.tga
+
+# {duct_vnt2
+newmtl material_63
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_63.tga
+
+# rechargec
+newmtl material_64
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_64.tga
+
+# rechargeb
+newmtl material_65
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_65.tga
+
+# rechargea
+newmtl material_66
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_66.tga
+
+# sign60
+newmtl material_67
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd hl_mp_stalkyard_material_67.tga
+

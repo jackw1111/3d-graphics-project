@@ -285,7 +285,7 @@ class App(Application):
         self.console = Console(WIDTH, HEIGHT)
         self.console.new_command("newmesh", self.new_mesh)
         self.meshes = []
-        self.graph_label = Label("no graph", vec2(100,20), "../minecraft/data/Minecraftia.ttf", 0.5)
+        self.graph_label = Label2D("no graph", vec2(100,20), "../minecraft/data/Minecraftia.ttf", 0.5)
 
     def new_mesh(self, equation):
         if (len(self.meshes)):
@@ -344,5 +344,5 @@ class App(Application):
         self.console.on_key_pressed(key, scancode, action, mods)
 
 if __name__ == "__main__":
-    app = App("grapher3D", WIDTH, HEIGHT, False)
+    app = App("grapher3D", WIDTH, HEIGHT, False, False)
     run(app)

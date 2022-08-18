@@ -88,8 +88,8 @@ class App(Application):
         self.cross_hair = Rect2D(vec2(50,50), vec2(WIDTH/2, HEIGHT/2),"./data/crosshair.png",1,1)
         self.rect = Rect2D(vec2(100,100),vec2(100,100), "",1,1)
         self.rect.color = vec3(0,1,0)
-        self.label = Label("text", vec2(100,100), "../minecraft/data/Minecraftia.ttf", 1)
-        self.fps_label = Label("", vec2(30,HEIGHT - 50), "../minecraft/data/Minecraftia.ttf", 0.5)
+        self.label = Label2D("text", vec2(100,100), "../minecraft/data/Minecraftia.ttf", 1)
+        self.fps_label = Label2D("", vec2(30,HEIGHT - 50), "../minecraft/data/Minecraftia.ttf", 0.5)
         self.show_shadows = True
         self.show_ssao = False
         self.light = Light(vec3(0, 1, 4), vec3(1,1,1))
@@ -473,5 +473,5 @@ class App(Application):
         self.console.on_key_pressed(key, scancode, action, mods)
         
 if __name__ == "__main__":
-    app = App("Rubik's Cube", WIDTH, HEIGHT, False)
+    app = App("Rubik's Cube", WIDTH, HEIGHT, False, False)
     run(app)

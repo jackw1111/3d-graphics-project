@@ -3,8 +3,9 @@ sys.path.append("../../engine/bin")
 sys.path.append("../../engine/utils")
 from console import *
 from axis_3d import *
+from third_person_camera import *
 from engine.graphics import *
-#from engine.core.physics import collision_SAT
+from engine.physics import *
 from keys import *
 from player import *
 import random
@@ -24,12 +25,52 @@ class App(Application):
         make_context_current(self.window)
         set_cursor_visible(self.window, False)
 
+
+        self.gravity = vec3(0,-10,0)
+        self.contacts = ContactVector()
+        self.joints = SphericalJointVector()
+        self.aBodies = RigidBodyVector()
+        self.object_models = []
+        self.dt = 0.02
+
+        body = RigidBody2()
+        body.friction = 0.0
+        body.coefficient_of_restitution = 0.0
+        body.dX2 = 0.5
+        body.dY2 = 0.5
+        body.dZ2 = 0.5
+        init_sphere(body)
+        self.sphere = StaticObject("../dice/data/red_ball.dae")
+        self.sphere.set_to_draw = False
+        body.inverse_body_inertia_tensor = mat3(vec3(0,0,0),
+                                               vec3(0,0,0),
+                                               vec3(0,0,0))
+        body.cm_position = vec3(0,7,0)
+        #body.object.set_to_draw = False
+        body.mass = 1.0
+        body.one_over_mass = 1.0 / body.mass
+
+        self.aBodies.append(body)
+        self.object_models.append(StaticObject("../dice/data/capsule.obj"))
+        self.object_models[0].set_to_draw = False
+        self.triangle_mesh = StaticObject("../csgo/data/de_dust2/de_dust2.dae")
+        self.triangle_mesh.set_to_draw = True
+
+        raw_vertices = []
+        for m in self.triangle_mesh.model.meshes:
+            for v in m.vertices:
+                raw_vertices.append(v.Position)
+        tris = init_triangle_mesh(raw_vertices)
+        for tri in tris:
+            self.aBodies.append(tri)
+            self.object_models.append(None)
+
         self.light = Light(vec3(-4,8,-2), vec3(1,1,1))
 
-        self.ak47_icon = Rect2D(vec2(100 ,HEIGHT - 100), vec2(100,100), "./data/ak47.png",1,1)
-        self.awp_icon = Rect2D(vec2(100 , HEIGHT - 100), vec2(100,100), "./data/awp.png",1,1)
-        self.ak47_icon.ordering = 1
-        self.awp_icon.ordering = 1
+        # self.ak47_icon = Rect2D(vec2(100 ,HEIGHT - 100), vec2(100,100), "./data/ak47.png",1,1)
+        # self.awp_icon = Rect2D(vec2(100 , HEIGHT - 100), vec2(100,100), "./data/awp.png",1,1)
+        # self.ak47_icon.ordering = 1
+        # self.awp_icon.ordering = 1
 
         # simple UI
         self.crosshair = Rect2D(vec2(WIDTH/2, HEIGHT/2), vec2(25, 25), "./data/crosshair.png",1,1)
@@ -38,13 +79,15 @@ class App(Application):
         self.scope.to_draw = False
         self.scope.ordering = 1
 
-        # FPS gun
+        #FPS gun
+        # BUG: have to set color otherwise AnimatedObject doesnt draw!
+        # self.gun1 = AnimatedObject("./data/fps_hands_aks74u.fbx")
+        # self.gun1.color = vec4(0,0,0,1)
+        # self.gun1.set_frames(0.1, 0.101, 0.0)
+        # self.gun2 = AnimatedObject("./data/AWP/fps_hands_awp.dae")
+        # self.gun2.color = vec4(0,0,0,1)
 
-        self.gun1 = AnimatedObject("./data/fps_hands_aks74u.fbx")
-        self.gun1.set_frames(0.1, 0.101, 0.0)
-        self.gun2 = AnimatedObject("./data/AWP/fps_hands_awp.dae")
-
-        self.gun = self.gun1
+        # self.gun = self.gun1
 
         # create a 2nd player
         # "../angry-bots/data/unity_player.fbx")
@@ -60,13 +103,6 @@ class App(Application):
         #self.audio_window.play("./data/theme.wav")
         #self.audio_window.set_volume("./data/theme.wav", 0.1)
 
-        self.map = StaticObject("./data/de_dust2/de_dust2.dae")
-        #self.map.set_to_draw = False
-        self.map.model_matrix = translate(self.map.model_matrix, vec3(21.2147, 30.0086, 28.7207) * -1.0)
-        #self.map.model_matrix = translate(mat4(1.0), vec3(-1,0,0))
-        #self.map.model_matrix = scale(self.map.model_matrix, vec3(3,3,3))
-
-
         self.console = Console(WIDTH, HEIGHT)
 
         self.show_shadows = True
@@ -75,11 +111,6 @@ class App(Application):
         self.rlastY = 0
         self.speed = 1
 
-        self.map_position =self.map.model_matrix
-        collision_objects = [self.map_position]
-        v = [self.map.model]
-        self.entity = CharacterEntity(v, collision_objects, vec3(0.7, 1.2, 0.7))
-        self.entity.add_static_model(v, collision_objects)
         self.active_camera.MovementSpeed = 70.0
 
         self.set_background_color(vec3(0.8, 0.9, 1.0))
@@ -89,17 +120,95 @@ class App(Application):
         self.t  = 0
         glLineWidth(5)
         self.i = 0
-        #self.entity.add_animated_object(self.other_player)
+
+        self.last_jump_value = None
+        self.current_jump_value = None
+
+
+        self.third_person_camera = ThirdPersonCamera(body.cm_position, vec3(0,0,-1), vec3(0,1,0), math.radians(0.0), math.radians(90.0))
+        self.third_person_camera.distance = 10.0
+        self.is_third_person = False
+        self.kinematic_force = vec3(0,0,0)
+
+    def wireframe_box(self, hw, pos):
+        points =[vec3(-hw, hw, hw),
+                vec3(-hw,-hw, hw),
+                vec3( hw,-hw, hw),
+                vec3( hw, hw, hw),
+                vec3(-hw, hw,-hw),
+                vec3(-hw,-hw,-hw),
+                vec3( hw,-hw,-hw),
+                vec3( hw, hw,-hw)]
+
+        for i in range(len(points)):
+            points[i] += pos
+
+
+        self.l1 = Line3D(points[0], points[1])
+        self.l2 = Line3D(points[1], points[2])
+        self.l3 = Line3D(points[2], points[3])
+        self.l4 = Line3D(points[3], points[0])
+
+        self.l5 = Line3D(points[4], points[5])
+        self.l6 = Line3D(points[5], points[6])
+        self.l7 = Line3D(points[6], points[7])
+        self.l8 = Line3D(points[7], points[4])
+
+        self.l9 =  Line3D(points[0], points[4])
+        self.l10 = Line3D(points[1], points[5])
+        self.l11 = Line3D(points[2], points[6])
+        self.l12 = Line3D(points[3], points[7])
+
+        self.lines.append(self.l1)
+        self.lines.append(self.l2)
+        self.lines.append(self.l3)
+        self.lines.append(self.l4)
+        self.lines.append(self.l5)
+        self.lines.append(self.l6)
+        self.lines.append(self.l7)
+        self.lines.append(self.l8)
+        self.lines.append(self.l9)
+        self.lines.append(self.l10)
+        self.lines.append(self.l11)
+        self.lines.append(self.l12)
 
     def update(self):
 
         self.t += 0.01
 
-        #if (self.t > 1.0 and self.t < 1.05):
-            #self.entity.add_animated_object(self.other_player)
-
         self.process_input(self.window)
         self.console.update(self.currentFrame, self.deltaTime)
+
+        body = self.aBodies[0]
+        body.cm_force += self.gravity
+        body.cm_force += self.jump_force
+        self.kinematic_force -= body.cm_velocity * 2.0
+        body.cm_force += self.kinematic_force
+        simulate(self.aBodies, self.contacts, self.joints, self.dt)
+
+        #print (self.get_fps())
+        #for i in range(len(self.aBodies)):
+        self.object_models[0].model_matrix = self.aBodies[0].get_model_matrix()
+        self.sphere.model_matrix =  self.aBodies[0].get_model_matrix()
+        ids = self.aBodies[0].tri_ids
+        self.lines = []
+        if self.debug:
+            for _id in ids:
+                verts = self.aBodies[_id].faces[0].verts_ws
+                self.l1 = Line3D(verts[0], verts[1])
+                self.l2 = Line3D(verts[1], verts[2])
+                self.l3 = Line3D(verts[2], verts[0])
+                self.l1.color = vec3(0,1,0)
+                self.l2.color = vec3(0,1,0)
+                self.l3.color = vec3(0,1,0)
+                self.lines.append(self.l1)
+                self.lines.append(self.l2)
+                self.lines.append(self.l3)
+            boxes = get_all_nodes()
+            for box in boxes:
+                pos = vec3(box.x, box.y, box.z)
+                hw = box.w
+                self.wireframe_box(hw, pos)
 
         if (is_joystick_present()):
             print ('joysticks')
@@ -127,76 +236,71 @@ class App(Application):
             self.rlastY = rypos
             tolerance = 25.0
 
-            self.entity.velocity -= self.active_camera.front * axes[1] * self.deltaTime * speed
-            self.entity.velocity += self.active_camera.right * axes[0] * self.deltaTime * speed
-
-
             if (math.fabs(WIDTH/2 - rxpos) > tolerance):
                 self.active_camera.ProcessKeyboard(0, self.deltaTime*(WIDTH/2 - rxpos)*0.003)
             if (math.fabs(HEIGHT/2 - rypos) > tolerance):
                 self.active_camera.ProcessKeyboard(2, self.deltaTime*(HEIGHT/2 - rypos)*-0.003)
 
-        #self.gun.getFrame(self.currentFrame % 60)
-        self.entity.velocity.x *= 0.1
-        self.entity.velocity.z *= 0.1
-        self.entity.velocity.y *= 0.1
-        self.entity.velocity += self.jump * self.deltaTime
-        self.entity.gravity = self.gravity * self.deltaTime
 
-        self.entity.update()
+        # if (self.gun == self.gun1):
+        #     self.gun.model_matrix = translate(mat4(1.0), self.active_camera.position)
+        #     self.gun.model_matrix = rotate(self.gun.model_matrix, -math.radians(self.active_camera.yaw + 90.0), vec3(0,1,0))
+        #     self.gun.model_matrix = rotate(self.gun.model_matrix, math.radians(self.active_camera.pitch), vec3(1,0,0))
+        #     self.gun.model_matrix = translate(self.gun.model_matrix, vec3(0.2,-0.5, -0.1))
+        #     self.gun2.set_to_draw = False
+        #     self.gun1.set_to_draw = True
+        #     self.gun1.render_to_ui = 1
+        #     self.ak47_icon.to_draw = True
+        #     self.awp_icon.to_draw = False
 
-        if (self.entity.grounded):
-            self.jump.y = 0
-
-        if (self.jump.y > 0):
-            self.jump.y -= self.deltaTime * 20
-        else:
-            self.jump.y = 0
-        self.active_camera.position = self.entity.position
-
-        if (self.gun == self.gun1):
-            self.gun.model_matrix = translate(mat4(1.0), self.active_camera.position)
-            self.gun.model_matrix = rotate(self.gun.model_matrix, -math.radians(self.active_camera.yaw + 90.0), vec3(0,1,0))
-            self.gun.model_matrix = rotate(self.gun.model_matrix, math.radians(self.active_camera.pitch), vec3(1,0,0))
-            self.gun.model_matrix = translate(self.gun.model_matrix, vec3(0.2,-0.5, -0.1))
-            self.gun2.set_to_draw = False
-            self.gun1.set_to_draw = True
-            self.gun1.render_to_ui = 1
-            self.ak47_icon.to_draw = True
-            self.awp_icon.to_draw = False
-
-        elif (self.gun == self.gun2):
-            self.gun.model_matrix = translate(mat4(1.0), self.active_camera.position)
-            self.gun.model_matrix = scale(self.gun.model_matrix, vec3(3,3,3))
-            self.gun.model_matrix = rotate(self.gun.model_matrix, -math.radians(self.active_camera.yaw + 90.0), vec3(0,1,0))
-            self.gun.model_matrix = rotate(self.gun.model_matrix, math.radians(self.active_camera.pitch), vec3(1,0,0))
-            self.gun.model_matrix = translate(self.gun.model_matrix, vec3(0.1,-0.0, 0))
-            self.gun2.set_to_draw =  True
-            self.gun1.set_to_draw =  False
-            self.ak47_icon.to_draw = False
-            self.awp_icon.to_draw = True
+        # elif (self.gun == self.gun2):
+        #     self.gun.model_matrix = translate(mat4(1.0), self.active_camera.position)
+        #     self.gun.model_matrix = scale(self.gun.model_matrix, vec3(3,3,3))
+        #     self.gun.model_matrix = rotate(self.gun.model_matrix, -math.radians(self.active_camera.yaw + 90.0), vec3(0,1,0))
+        #     self.gun.model_matrix = rotate(self.gun.model_matrix, math.radians(self.active_camera.pitch), vec3(1,0,0))
+        #     self.gun.model_matrix = translate(self.gun.model_matrix, vec3(0.1,-0.0, 0))
+        #     self.gun2.set_to_draw =  True
+        #     self.gun1.set_to_draw =  False
+        #     self.ak47_icon.to_draw = False
+        #     self.awp_icon.to_draw = True
         #self.other_player.set_frames(0, 5.0, self.t)
     def process_input(self, window):
         if (get_key(window, KEY_ESCAPE) == PRESS):
             set_window_should_close(self.window, True);
-        speed = self.active_camera.MovementSpeed * self.deltaTime;
-        total_velocity = vec3(0,0,0)
+
+        self.active_camera.MovementSpeed = 20.0
+        keypress = 0
+        self.kinematic_force_forward = vec3(0,0,0)
+        self.kinematic_force_side = vec3(0,0,0)
+
         if (get_key(window, KEY_W) == PRESS):
-            total_velocity += self.active_camera.front
-        if (get_key(window, KEY_S) == PRESS):
-            total_velocity -= self.active_camera.front
+            self.kinematic_force_forward += self.active_camera.front
+            keypress = 1
+        elif (get_key(window, KEY_S) == PRESS):
+            self.kinematic_force_forward  -= self.active_camera.front
+            keypress = 1
         if (get_key(window, KEY_A) == PRESS):
-            total_velocity -= self.active_camera.right
-        if (get_key(window, KEY_D) == PRESS):
-            total_velocity += self.active_camera.right
-        #total_velocity.y = 0.0
-        self.entity.velocity = normalize(total_velocity) * speed
+            self.kinematic_force_side  -= self.active_camera.right
+            keypress = 1
+        elif (get_key(window, KEY_D) == PRESS):
+            self.kinematic_force_side  += self.active_camera.right
+            keypress = 1
 
-        if (get_key(window, KEY_R) == PRESS):
-            self.entity.position = vec3(-24, -4.5, 53) + vec3(21.2147, 30.0086, 28.7207) * -1.0
+        self.kinematic_force_forward = normalize(self.kinematic_force_forward) * 10.0
+        self.kinematic_force_side = normalize(self.kinematic_force_side) * 10.0
+        self.kinematic_force = self.kinematic_force_forward + self.kinematic_force_side
 
-        # if (get_key(self.window, KEY_ESCAPE) == PRESS):
-        #     set_window_should_close(self.window, True);
+        self.current_jump_value = get_key(window, KEY_SPACE)
+        if self.last_jump_value == RELEASE and self.current_jump_value == PRESS:
+            self.jump_force = vec3(0,300,0)
+        else:
+            self.jump_force = vec3(0,0,0)
+        self.last_jump_value = self.current_jump_value
+
+        if (self.is_third_person):
+            self.active_camera.position = self.third_person_camera.get_position(self.active_camera, self.aBodies[0].cm_position)
+        else:
+            self.active_camera.position = self.aBodies[0].cm_position + vec3(0,1,0)
 
     def on_mouse_moved(self, xpos, ypos):
         xoffset = xpos - self.lastX
@@ -228,14 +332,7 @@ class App(Application):
             inv_ray_wor = (inverse(self.active_camera.view_matrix) * ray_eye)
             ray_wor = vec3(inv_ray_wor.x, inv_ray_wor.y, inv_ray_wor.z)
             ray_wor = normalize(ray_wor)
-            print (ray_wor)
-            # if (ray_intersect_sphere(self.entity.position, ray_wor, self.other_player.position, 2.0)):
-            #     print ("player 2 hit!")
-            #     self.other_player.color = vec3(1,0,0)
-            #     self.other_player.set_frames(6.0, 8.0, 0.0)   
-            # else:
-            #     self.other_player.color = vec3(-1,-1,-1)
-            #     self.other_player.set_frames(0.2, 2.7, 0.0)  
+
 
         if (button == MOUSE_BUTTON_2 and action == 0):
             # toggle scope on rmb click
@@ -263,14 +360,23 @@ class App(Application):
             self.gun = self.gun2
         if (key == KEY_3 and action == 1):
             self.i += 3
-        if (key == KEY_V and action == 1):
-            self.debug = True
-        elif (key == KEY_V and action == 0):
-            self.debug = False
+
         if (key == KEY_SPACE and action == 1):
             if (self.jump == vec3(0,0,0)):
                 self.jump = vec3(0,16,0)
 
+        if (key == KEY_F and action == PRESS):
+            if self.is_third_person:
+                self.is_third_person = False
+            else:
+                self.is_third_person = True
+
+        if (key == KEY_V and action == 1):
+            if self.debug:
+                self.debug = False
+            else:
+                self.debug = True
+
 if __name__ == "__main__":
-    app = App("csgo", WIDTH, HEIGHT, False)
+    app = App("csgo", WIDTH, HEIGHT, False, False)
     run(app)

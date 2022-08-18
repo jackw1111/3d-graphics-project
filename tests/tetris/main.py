@@ -3,7 +3,6 @@ sys.path.append("../../engine/bin")
 sys.path.append("../../engine/utils")
 from engine.graphics import *
 from keys import *
-from player import *
 import random
 import time
 import math
@@ -234,7 +233,7 @@ class App(Application):
         self.rect = Rect2D(vec2(WIDTH/2, HEIGHT/2), vec2(WIDTH, HEIGHT), "./data/bg.png",1,1)
         #self.rect.alpha = 0.2
         self.rect.ordering = 1
-        self.score = Label("score: 0", vec2(WIDTH - 150,HEIGHT - 50), "../minecraft/data/Minecraftia.ttf", 0.5)
+        self.score = Label2D("score: 0", vec2(WIDTH - 150,HEIGHT - 50), "../minecraft/data/Minecraftia.ttf", 0.5)
         self.score.color = vec3(0,0,0)
         self.score_value = 0
         start_pos = vec2(0,0)
@@ -363,5 +362,5 @@ class App(Application):
             self.current_brick.position += vec2(20,0)
 
 if __name__ == "__main__":
-    app = App("tetris", WIDTH, HEIGHT, False)
+    app = App("tetris", WIDTH, HEIGHT, False, False)
     run(app)

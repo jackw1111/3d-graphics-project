@@ -53,6 +53,8 @@ class App(Application):
         #set_cursor_visible(self.window, False)
         self.console = Console(WIDTH, HEIGHT)
         self.player =  AnimatedObject("./data/player.fbx")
+        # BUG: have to set color otherwise AnimatedObject doesnt draw!
+        self.player.color = vec4(0,0,0,1)
         self.planeModel = StaticObject("./data/plane.obj")
         self.player_model = scale(mat4(1.0), vec3(0.01, 0.01, 0.01))
         self.player.model_matrix = self.player_model 
@@ -175,5 +177,5 @@ class App(Application):
         self.console.on_key_pressed(key, scancode, action, mods)
 
 if __name__ == "__main__":
-    app = App("angry-bots", WIDTH, HEIGHT, False)
+    app = App("angry-bots", WIDTH, HEIGHT, False, False)
     run(app)

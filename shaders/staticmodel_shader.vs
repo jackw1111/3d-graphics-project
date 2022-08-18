@@ -10,8 +10,10 @@ out float diffuse;
 out vec4 FragPosLightSpace;
 out vec3 FragPos;
 out vec3 Normal;
+out vec4 color;
 
 uniform mat4 proj_view;
+uniform vec4 colors[1000];
 uniform mat4 lightSpaceMatrix;
 uniform vec3 viewPos;
 uniform vec3 lightPos;
@@ -49,6 +51,8 @@ void main()
 {
     vec4 fragPos = instanceMatrix * vec4(aPos, 1.0);
     TexCoord = aTexCoords;
+    
+    color = colors[gl_InstanceID];
     
     mat3 normalMatrix = transpose(inverse(mat3(instanceMatrix)));
     Normal = normalize(normalMatrix * aNormal);

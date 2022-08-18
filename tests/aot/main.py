@@ -282,5 +282,5 @@ class App(Application):
                 self.jump = vec3(0,24,0)
 
 if __name__ == "__main__":
-    app = App("aot", WIDTH, HEIGHT, False)
+    app = App("aot", WIDTH, HEIGHT, False, False)
     run(app)

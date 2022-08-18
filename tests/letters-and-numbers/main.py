@@ -168,7 +168,7 @@ class LettersGameScene():
         self.offset = 0
         self.all_cards = []
         self.click_count = 0
-        self.answer = Label("", vec2(WIDTH/2, HEIGHT/2), "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 1)
+        self.answer = Label2D("", vec2(WIDTH/2, HEIGHT/2), "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 1)
 
     def generate_best_word(self):
         new_list = []
@@ -313,8 +313,8 @@ class NumbersGameScene():
         self.offset = 0
         self.all_cards = []
         self.click_count = 0
-        self.answer = Label("", vec2(WIDTH/2, HEIGHT/2), "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 1)
-        self.target = Label("", vec2(WIDTH/2, 200), "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 1)
+        self.answer = Label2D("", vec2(WIDTH/2, HEIGHT/2), "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 1)
+        self.target = Label2D("", vec2(WIDTH/2, 200), "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 1)
 
     def generate_solution(self):
         self.target.text = str(random.randrange(101,999,1))
@@ -460,7 +460,7 @@ class App(Application):
                             self.set_scene(self.main_menu_scene)
                         else:
                             self.current_scene.click_count += 1
-                            self.current_scene.answer = Label(self.current_scene.best_word, vec2(WIDTH/2, HEIGHT/2), "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 1)
+                            self.current_scene.answer = Label2D(self.current_scene.best_word, vec2(WIDTH/2, HEIGHT/2), "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 1)
 
             elif (isinstance(self.current_scene, NumbersGameScene)):
                 if (self.current_scene.get_elapsed_time() > NumbersGameScene.duration):
@@ -476,7 +476,7 @@ class App(Application):
                             self.set_scene(self.main_menu_scene)
                         else:
                             self.current_scene.click_count += 1
-                            self.current_scene.answer = Label(best_solution, vec2(WIDTH/4, HEIGHT/2), "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 1)                            
+                            self.current_scene.answer = Label2D(best_solution, vec2(WIDTH/4, HEIGHT/2), "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 1)                            
 
             elif (isinstance(self.current_scene, NumbersScene)):
 
@@ -538,5 +538,5 @@ class App(Application):
         pass
 
 if __name__ == "__main__":
-    app = App("letters-and-numbers", WIDTH, HEIGHT, False)
+    app = App("letters-and-numbers", WIDTH, HEIGHT, False, False)
     run(app)

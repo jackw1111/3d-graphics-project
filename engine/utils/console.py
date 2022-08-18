@@ -13,7 +13,7 @@ class Console():
         self.cmd = ""
         self.spacing = 30.0
 
-        self.console = Label(">" + self.cmd + " ", vec2(self.spacing, self.height-self.spacing), "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 0.5)
+        self.console = Label2D(">" + self.cmd + " ", vec2(self.spacing, self.height-self.spacing), "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 0.5)
         self.bg = Rect2D(vec2(0, self.height), vec2(int(self.width*2), int(self.height/3)), "./data/console_bg.png",1,1)
         self.bg.ordering = 1
         self.debug_mode = False

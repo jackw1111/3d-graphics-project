@@ -77,12 +77,12 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a088690bca7b4678e61173d86eb81dcb1"><td class="memItemLeft" align="right" valign="top"><a id="a088690bca7b4678e61173d86eb81dcb1"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Application</b> (std::string title, unsigned int WIDTH, unsigned int HEIGHT, bool fullscreen)</td></tr>
-<tr class="separator:a088690bca7b4678e61173d86eb81dcb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc93bcec159e71f90a7b5bb459b79e1d"><td class="memItemLeft" align="right" valign="top"><a id="afc93bcec159e71f90a7b5bb459b79e1d"></a>
-virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>setup</b> (std::string title, unsigned int WIDTH, unsigned int HEIGHT, bool fullscreen)</td></tr>
-<tr class="separator:afc93bcec159e71f90a7b5bb459b79e1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada986fcb788d03e7e36d4df7246bdd65"><td class="memItemLeft" align="right" valign="top"><a id="ada986fcb788d03e7e36d4df7246bdd65"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Application</b> (std::string title, unsigned int WIDTH, unsigned int HEIGHT, bool fullscreen, bool MSAA)</td></tr>
+<tr class="separator:ada986fcb788d03e7e36d4df7246bdd65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a103c108ef251ff7a7a5cae4fdfd7d021"><td class="memItemLeft" align="right" valign="top"><a id="a103c108ef251ff7a7a5cae4fdfd7d021"></a>
+virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>setup</b> (std::string title, unsigned int WIDTH, unsigned int HEIGHT, bool fullscreen, bool MSAA)</td></tr>
+<tr class="separator:a103c108ef251ff7a7a5cae4fdfd7d021"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3cccee3c10b46727e07d403d0ae75916"><td class="memItemLeft" align="right" valign="top"><a id="a3cccee3c10b46727e07d403d0ae75916"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>gameLoop</b> ()</td></tr>
 <tr class="separator:a3cccee3c10b46727e07d403d0ae75916"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -95,6 +95,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>drawScene</b> (int sh
 <tr class="memitem:a34ef06290ce97b5dcd84fd6bc4f5d888"><td class="memItemLeft" align="right" valign="top"><a id="a34ef06290ce97b5dcd84fd6bc4f5d888"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>drawUI</b> ()</td></tr>
 <tr class="separator:a34ef06290ce97b5dcd84fd6bc4f5d888"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a961be998736ef6e61baee535c3c3b2d1"><td class="memItemLeft" align="right" valign="top"><a id="a961be998736ef6e61baee535c3c3b2d1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>createShadowFBO</b> ()</td></tr>
+<tr class="separator:a961be998736ef6e61baee535c3c3b2d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8486293c51bff1bd6762fb85ef09e14a"><td class="memItemLeft" align="right" valign="top"><a id="a8486293c51bff1bd6762fb85ef09e14a"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>getShadowMapResolution</b> ()</td></tr>
+<tr class="separator:a8486293c51bff1bd6762fb85ef09e14a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b7a26fd351b218e2e4a43038092a54e"><td class="memItemLeft" align="right" valign="top"><a id="a1b7a26fd351b218e2e4a43038092a54e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setShadowMapResolution</b> (unsigned int r)</td></tr>
+<tr class="separator:a1b7a26fd351b218e2e4a43038092a54e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a426b79c85cc06d5fe0030bd6b83546fd"><td class="memItemLeft" align="right" valign="top"><a id="a426b79c85cc06d5fe0030bd6b83546fd"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>update</b> ()</td></tr>
 <tr class="separator:a426b79c85cc06d5fe0030bd6b83546fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -104,6 +113,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>onMouseClicke
 <tr class="memitem:af77b04474b1005daec7ae4837c2579af"><td class="memItemLeft" align="right" valign="top"><a id="af77b04474b1005daec7ae4837c2579af"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>onKeyPressed</b> (int key, int scancode, int action, int mods)</td></tr>
 <tr class="separator:af77b04474b1005daec7ae4837c2579af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4943d2743ba5750498f1303040f1cc6a"><td class="memItemLeft" align="right" valign="top"><a id="a4943d2743ba5750498f1303040f1cc6a"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>onCharPressed</b> (unsigned int _char)</td></tr>
+<tr class="separator:a4943d2743ba5750498f1303040f1cc6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac75add6f4cb5094ca0856afbc8c219f4"><td class="memItemLeft" align="right" valign="top"><a id="ac75add6f4cb5094ca0856afbc8c219f4"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>onWindowResized</b> (int width, int height)</td></tr>
 <tr class="separator:ac75add6f4cb5094ca0856afbc8c219f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -182,12 +194,15 @@ vec3&#160;</td><td class="memItemRight" valign="bottom"><b>backgroundColor</b></
 <tr class="memitem:a5f024267cb38aeb2f7302fc12fee3da2"><td class="memItemLeft" align="right" valign="top"><a id="a5f024267cb38aeb2f7302fc12fee3da2"></a>
 <a class="el" href="class_static_shader.html">StaticShader</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>debugDepthQuad</b></td></tr>
 <tr class="separator:a5f024267cb38aeb2f7302fc12fee3da2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9cd9427bd86fe9ab7bd0e8ff869c06e"><td class="memItemLeft" align="right" valign="top"><a id="ac9cd9427bd86fe9ab7bd0e8ff869c06e"></a>
-const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>SHADOW_WIDTH</b> = 2048</td></tr>
-<tr class="separator:ac9cd9427bd86fe9ab7bd0e8ff869c06e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a131e33facd58cf1c8c7d1b82ab910f"><td class="memItemLeft" align="right" valign="top"><a id="a0a131e33facd58cf1c8c7d1b82ab910f"></a>
-const unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>SHADOW_HEIGHT</b> = 2048</td></tr>
-<tr class="separator:a0a131e33facd58cf1c8c7d1b82ab910f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6ffbec7269360535ddd3d58a5666def"><td class="memItemLeft" align="right" valign="top"><a id="ac6ffbec7269360535ddd3d58a5666def"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>shadowMapResolution</b> = 2048</td></tr>
+<tr class="separator:ac6ffbec7269360535ddd3d58a5666def"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3ea271e04011060b88082a340eef264"><td class="memItemLeft" align="right" valign="top"><a id="ad3ea271e04011060b88082a340eef264"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>SHADOW_WIDTH</b> = shadowMapResolution</td></tr>
+<tr class="separator:ad3ea271e04011060b88082a340eef264"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1eea961ec2ab4567b9651912d6ef8cd"><td class="memItemLeft" align="right" valign="top"><a id="ad1eea961ec2ab4567b9651912d6ef8cd"></a>
+unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>SHADOW_HEIGHT</b> = shadowMapResolution</td></tr>
+<tr class="separator:ad1eea961ec2ab4567b9651912d6ef8cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a192256497e04dbd0b4026b6938be281b"><td class="memItemLeft" align="right" valign="top"><a id="a192256497e04dbd0b4026b6938be281b"></a>
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>depthMapFBO</b></td></tr>
 <tr class="separator:a192256497e04dbd0b4026b6938be281b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -239,6 +254,9 @@ unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>boxes</b> = 3
 <tr class="memitem:ae26bdf210486ba7ab4f9b9baa1845495"><td class="memItemLeft" align="right" valign="top"><a id="ae26bdf210486ba7ab4f9b9baa1845495"></a>
 <a class="el" href="class_collision_box.html">CollisionBox</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>boxData</b> [3]</td></tr>
 <tr class="separator:ae26bdf210486ba7ab4f9b9baa1845495"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a1bdc396e1319a5d356c3aff74e7ee6"><td class="memItemLeft" align="right" valign="top"><a id="a2a1bdc396e1319a5d356c3aff74e7ee6"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>MSAA</b> = false</td></tr>
+<tr class="separator:a2a1bdc396e1319a5d356c3aff74e7ee6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Main entry point into the graphics program and all game logic is written somewhere inside this. </p>

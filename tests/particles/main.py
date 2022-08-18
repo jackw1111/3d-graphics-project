@@ -142,5 +142,5 @@ class App(Application):
         pass            
 
 if __name__ == "__main__":
-    app = App("test", WIDTH, HEIGHT, False)
+    app = App("test", WIDTH, HEIGHT, False, False)
     run(app)

@@ -215,16 +215,20 @@ $(function() {
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    vector&lt;vector&lt;vec3&gt;&gt; getAnimatedVertices();</div>
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keywordtype">int</span> setAABB();</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keyword">static</span> vector&lt;mat4&gt; getObjectTransforms(<span class="keyword">const</span> vector&lt;AnimatedObject&gt; &amp;objectStore);</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="keywordtype">float</span> shininess = 0.0f;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    <span class="keywordtype">float</span> getShininess();</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordtype">void</span> setShininess(<span class="keywordtype">float</span> b);</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;};</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="keywordtype">float</span> rayAnimatedObjectIntersect(glm::vec3 rayOrigin, glm::vec3 rayDirection, <a class="code" href="class_animated_object.html">AnimatedObject</a> <span class="keywordtype">object</span>);</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keyword">static</span> vector&lt;mat4&gt; getObjectTransforms(<span class="keyword">const</span> vector&lt;AnimatedObject&gt; &amp;objectStore);</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="preprocessor">#endif // ANIMATED_MODEL_H</span></div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;};</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="keywordtype">float</span> rayAnimatedObjectIntersect(glm::vec3 rayOrigin, glm::vec3 rayDirection, <a class="code" href="class_animated_object.html">AnimatedObject</a> <span class="keywordtype">object</span>);</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="preprocessor">#endif // ANIMATED_MODEL_H</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclass_animated_model_html"><div class="ttname"><a href="class_animated_model.html">AnimatedModel</a></div><div class="ttdoc">internal class to load a skinned model from Blender FBX</div><div class="ttdef"><b>Definition:</b> animated_model.h:17</div></div>
 <div class="ttc" id="aclass_animated_mesh_html"><div class="ttname"><a href="class_animated_mesh.html">AnimatedMesh</a></div><div class="ttdoc">Type to store skinned mesh data.</div><div class="ttdef"><b>Definition:</b> animated_mesh.h:58</div></div>

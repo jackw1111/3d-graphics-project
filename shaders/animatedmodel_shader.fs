@@ -2,7 +2,7 @@
 
 in vec2 TexCoord;
 in float diffuse;
-in vec3 color;
+in vec4 color;
 in float alpha;
 in float alpha2;
 in vec3 FragPos;
@@ -36,9 +36,9 @@ void main()
     vec4 dither = vec4(texture2D(ditherMap, gl_FragCoord.xy / 8.0).r / 32.0 - (1.0 / 128.0));
 
 
-    //FragColor = mix(FragColor, vec4(backgroundColor, 1.0), alpha);
-    //FragColor.a = 1-alpha2;
-    FragColor.rgb += dither.rgb*0.05;
+    FragColor = mix(FragColor, vec4(backgroundColor, 1.0), alpha);
+    FragColor.a = 1-alpha2;
+    //FragColor.rgb += dither.rgb*0.05;
 
     vec3 F0 = vec3(0.04);
 	F0      = mix(F0, FragColor.rgb, 0.0f);
@@ -47,7 +47,11 @@ void main()
 	vec3 viewDir    = normalize(viewPos - FragPos);
 	vec3 halfwayDir = normalize(lightDir + viewDir);
 
-    FragColor.rgb =  (color != vec3(-1,-1,-1) ? FragColor.rgb + fresnelSchlick(dot(normal, viewDir), F0) * color : FragColor.rgb);
+    FragColor.rgb =  (color != vec4(-1,-1,-1,-1) ? FragColor.rgb + fresnelSchlick(dot(normal, viewDir), F0) * color.rgb : FragColor.rgb);
+
+    if (color.a != -1) {
+        FragColor.a = color.a;
+    }
 
     vec3 I = normalize(FragPos - viewPos);
     vec3 R = reflect(I, normalize(normal));

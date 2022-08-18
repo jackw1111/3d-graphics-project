@@ -592,5 +592,5 @@ class App(Application):
                         self.start_coord = None
                         self.end_coord = None
 if __name__ == "__main__":
-    app = App("chess", WIDTH, HEIGHT, False)
+    app = App("chess", WIDTH, HEIGHT, False, False)
     run(app)

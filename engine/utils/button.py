@@ -13,7 +13,7 @@ class Button():
         self.text = txt
         self.position = pos
         self.size = sz
-        self.label = Label(self.text, self.position, "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 1)
+        self.label = Label2D(self.text, self.position, "/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf", 1)
         self.rect = Rect2D(self.position, self.size, bg,1,1)
         self.rect.color = vec3(0.2, 0.2, 0.2)
         self.rect.ordering = 0

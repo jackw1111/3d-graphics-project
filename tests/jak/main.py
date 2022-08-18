@@ -85,18 +85,22 @@ class App(Application):
         self.orbs = []
         for orb_count in range(10):
             self.orb = StaticObject("./data/metal_ellipsoid.obj")
+            self.orb.shininess = 1
             self.orbs.append(self.orb)
 
         self.i = 0
 
         self.power_cell = StaticObject("./data/power_cell.obj")
-
+        self.power_cell.shininess = 1
         self.ring = StaticObject("./data/ring.obj")
+        self.ring.shininess = 1
 
         self.ring.model_matrix = translate(mat4(1.0), vec3(0,4,0))
 
         self.eco_base = StaticObject("./data/eco_base.obj")
         self.eco_base.model_matrix = translate(mat4(1.0), vec3(-2,0,0))
+        self.eco_base.shininess = 1
+
         self.third_person = True
         self.third_person_camera = ThirdPersonCamera(vec3(0,0,0), vec3(0,0,-1), vec3(0,1,0), 0.0, -90.0)
         self.third_person_camera.distance = 15.0
@@ -111,12 +115,11 @@ class App(Application):
         self.orb_indicator.frame = 1
         self.orb_indicator.ordering = 1
 
-        self.orb_label = Label("1", vec2(100,HEIGHT-70), "../minecraft/data/Minecraftia.ttf", 1)
+        self.orb_label = Label2D("1", vec2(100,HEIGHT-70), "../minecraft/data/Minecraftia.ttf", 1)
         self.orb_label.value = 1
         self.lastFrame = time.time()
 
     def update(self):
-
         self.orb_indicator.frame += 1
         self.process_input(self.window)
         self.i += 1
@@ -272,5 +275,5 @@ class App(Application):
         self.console.on_key_pressed(key, scancode, action, mods)
 
 if __name__ == "__main__":
-    app = App("jak", WIDTH, HEIGHT, False)
+    app = App("jak", WIDTH, HEIGHT, False, False)
     run(app)

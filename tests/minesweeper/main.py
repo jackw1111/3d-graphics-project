@@ -8,9 +8,10 @@ import time
 import math
 from enum import IntEnum
 
-BLOCK_SIZE = 50
-BLOCKS_PER_COLUMN = 8
-BLOCKS_PER_ROW = 8
+BLOCK_SIZE = 30
+BLOCKS_PER_COLUMN = 20
+BLOCKS_PER_ROW = 20
+NO_OF_MINES = 20
 
 WIDTH =  BLOCKS_PER_ROW * BLOCK_SIZE
 HEIGHT = BLOCKS_PER_COLUMN * BLOCK_SIZE
@@ -183,7 +184,7 @@ class App(Application):
     
 
     def setup_board(self, r, c):
-        self.mines = 10
+        self.mines = NO_OF_MINES
         while (self.mines > 0):
             i,j = random.randrange(BLOCKS_PER_ROW), random.randrange(BLOCKS_PER_COLUMN)
             if (self.grid[i][j].icon_rect.frame_value != MINE and i != r and j != c):
@@ -306,5 +307,5 @@ class App(Application):
         pass
 
 if __name__ == "__main__":
-    app = App("Mines", WIDTH, HEIGHT, False)
+    app = App("Mines", WIDTH, HEIGHT, False, False)
     run(app)

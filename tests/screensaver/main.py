@@ -131,7 +131,7 @@ class App(Application):
         self.lastX = xpos
         self.lastY = ypos
         #self.active_camera.ProcessMouseMovement(xoffset, yoffset, True)
-        self.world_pos = ray_cast(self.lastX, self.lastY, self.active_camera.projection_matrix, self.active_camera.view_matrix)
+        self.world_pos = ray_cast(self.lastX, self.lastY, self.active_camera.view_matrix, self.active_camera.projection_matrix, WIDTH, HEIGHT)
         #self.start_pos = self.active_camera + self.world_pos * 1.0
 
     def on_mouse_clicked(self, button, action, mods):
@@ -144,5 +144,5 @@ class App(Application):
         #self.console.onKeyPressed(key, scancode, action, mods)
         pass
 if __name__ == "__main__":
-    app = App("test", WIDTH, HEIGHT, False)
+    app = App("test", WIDTH, HEIGHT, False, False)
     run(app)
