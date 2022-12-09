@@ -83,6 +83,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae3e5ca15b9114e10ccb109ad3e45cf80"><td class="memItemLeft" align="right" valign="top"><a id="ae3e5ca15b9114e10ccb109ad3e45cf80"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>StaticObject</b> (const std::string &amp;filePath)</td></tr>
 <tr class="separator:ae3e5ca15b9114e10ccb109ad3e45cf80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a556a4dcd099e961cd1a740b6896f48f5"><td class="memItemLeft" align="right" valign="top"><a id="a556a4dcd099e961cd1a740b6896f48f5"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>load</b> (const std::string &amp;filePath)</td></tr>
+<tr class="separator:a556a4dcd099e961cd1a740b6896f48f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b0b47f88cbe5010a8a396af0bc5cc3e"><td class="memItemLeft" align="right" valign="top"><a id="a7b0b47f88cbe5010a8a396af0bc5cc3e"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>getShininess</b> ()</td></tr>
 <tr class="separator:a7b0b47f88cbe5010a8a396af0bc5cc3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -104,21 +107,33 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>getToDraw</b> ()</td><
 <tr class="memitem:a541273c2de9c0cfcf7d5a72f7edeca32"><td class="memItemLeft" align="right" valign="top"><a id="a541273c2de9c0cfcf7d5a72f7edeca32"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setToDraw</b> (int b)</td></tr>
 <tr class="separator:a541273c2de9c0cfcf7d5a72f7edeca32"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53985c0e206a7359692bd2639d71845a"><td class="memItemLeft" align="right" valign="top"><a id="a53985c0e206a7359692bd2639d71845a"></a>
-vec3&#160;</td><td class="memItemRight" valign="bottom"><b>getColor</b> ()</td></tr>
-<tr class="separator:a53985c0e206a7359692bd2639d71845a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9764de6a4d00f556941618fa879869eb"><td class="memItemLeft" align="right" valign="top"><a id="a9764de6a4d00f556941618fa879869eb"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>setColor</b> (vec3 c)</td></tr>
-<tr class="separator:a9764de6a4d00f556941618fa879869eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac633555abdc55c07e94e93194b0072fa"><td class="memItemLeft" align="right" valign="top"><a id="ac633555abdc55c07e94e93194b0072fa"></a>
+vec4&#160;</td><td class="memItemRight" valign="bottom"><b>getColor</b> ()</td></tr>
+<tr class="separator:ac633555abdc55c07e94e93194b0072fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab299ba45f83d1c87c03edcfa0fca2ac7"><td class="memItemLeft" align="right" valign="top"><a id="ab299ba45f83d1c87c03edcfa0fca2ac7"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>setColor</b> (vec4 c)</td></tr>
+<tr class="separator:ab299ba45f83d1c87c03edcfa0fca2ac7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd4053123caa7d34e7ad4829bc6626ea"><td class="memItemLeft" align="right" valign="top"><a id="abd4053123caa7d34e7ad4829bc6626ea"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>getDrawBoundingBox</b> ()</td></tr>
 <tr class="separator:abd4053123caa7d34e7ad4829bc6626ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a782d009355a314a5067ed123225e3326"><td class="memItemLeft" align="right" valign="top"><a id="a782d009355a314a5067ed123225e3326"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>setDrawBoundingBox</b> (bool value)</td></tr>
 <tr class="separator:a782d009355a314a5067ed123225e3326"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae36345dbb55ea3c0a3f5d0702d562d5"><td class="memItemLeft" align="right" valign="top"><a id="aae36345dbb55ea3c0a3f5d0702d562d5"></a>
-<a class="el" href="class_static_model.html">StaticModel</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getModel</b> ()</td></tr>
-<tr class="separator:aae36345dbb55ea3c0a3f5d0702d562d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a979fe02cda7f96c58a81e6e8329a24d9"><td class="memItemLeft" align="right" valign="top"><a id="a979fe02cda7f96c58a81e6e8329a24d9"></a>
+vec3&#160;</td><td class="memItemRight" valign="bottom"><b>getAABBMin</b> ()</td></tr>
+<tr class="separator:a979fe02cda7f96c58a81e6e8329a24d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac41600cab5b479eade2fc003f4aa1a29"><td class="memItemLeft" align="right" valign="top"><a id="ac41600cab5b479eade2fc003f4aa1a29"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>setAABBMin</b> (vec3 value)</td></tr>
+<tr class="separator:ac41600cab5b479eade2fc003f4aa1a29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2be9ecfe528031dde91ea8ac53ef610d"><td class="memItemLeft" align="right" valign="top"><a id="a2be9ecfe528031dde91ea8ac53ef610d"></a>
+vec3&#160;</td><td class="memItemRight" valign="bottom"><b>getAABBMax</b> ()</td></tr>
+<tr class="separator:a2be9ecfe528031dde91ea8ac53ef610d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4c79ab8bacf53b4b09a150afef9f260"><td class="memItemLeft" align="right" valign="top"><a id="ac4c79ab8bacf53b4b09a150afef9f260"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>setAABBMax</b> (vec3 value)</td></tr>
+<tr class="separator:ac4c79ab8bacf53b4b09a150afef9f260"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79872420880efbba1d728b7647b864ff"><td class="memItemLeft" align="right" valign="top"><a id="a79872420880efbba1d728b7647b864ff"></a>
+std::shared_ptr&lt; <a class="el" href="class_static_model.html">StaticModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getModel</b> ()</td></tr>
+<tr class="separator:a79872420880efbba1d728b7647b864ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -140,9 +155,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>toDraw</b> = 1</td></t
 <tr class="memitem:a9eb683fd20b938c2b8dbb942804a1c03"><td class="memItemLeft" align="right" valign="top"><a id="a9eb683fd20b938c2b8dbb942804a1c03"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>renderToUI</b> = 0</td></tr>
 <tr class="separator:a9eb683fd20b938c2b8dbb942804a1c03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad2f8e873666b7d5621dc4e45f066ae9a"><td class="memItemLeft" align="right" valign="top"><a id="ad2f8e873666b7d5621dc4e45f066ae9a"></a>
-vec3&#160;</td><td class="memItemRight" valign="bottom"><b>color</b> = vec3(0.0, 0.0, 0.0)</td></tr>
-<tr class="separator:ad2f8e873666b7d5621dc4e45f066ae9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7dc05a0a745d13c32a44c1320f7ab25"><td class="memItemLeft" align="right" valign="top"><a id="aa7dc05a0a745d13c32a44c1320f7ab25"></a>
+vec4&#160;</td><td class="memItemRight" valign="bottom"><b>color</b> = vec4(0.0, 0.0, 0.0, 0.0)</td></tr>
+<tr class="separator:aa7dc05a0a745d13c32a44c1320f7ab25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9eb1752a31312e528068e0da94764c34"><td class="memItemLeft" align="right" valign="top"><a id="a9eb1752a31312e528068e0da94764c34"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>drawBoundingBox</b> = false</td></tr>
 <tr class="separator:a9eb1752a31312e528068e0da94764c34"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -195,7 +210,7 @@ static vector&lt; mat4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><
 <li>collision meshes (with set_to_draw = false) </li>
 </ul>
 </div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>engine/core/include/<a class="el" href="static__model_8h_source.html">static_model.h</a></li>
+<li>engine/core/graphics/include/<a class="el" href="static__model_8h_source.html">static_model.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

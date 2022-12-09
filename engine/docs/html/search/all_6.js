@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['gettriangles_26',['getTriangles',['../class_static_mesh.html#a991c8f970ef2536097c2e6915d5dbcc1',1,'StaticMesh']]]
+  ['edge_20',['Edge',['../class_edge.html',1,'']]],
+  ['edge2_21',['Edge2',['../class_edge2.html',1,'']]]
 ];
