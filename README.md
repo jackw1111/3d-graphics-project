@@ -28,3 +28,7 @@
 - there is a strange bug when exporting .obj files for `StaticObject`'s, you will need to flip forward and up axis in the export settings for the object to appear the correct orientation in the engine. Eg. if you want to export -z forward and y up, you will have to apply y forward and -z up in the blender export settings.
 - TO DO example on how to export .dae/.fbx for `AnimatedObject`'s.
 
+# Documentation
+
+[Go to documentation](https://jackw1111.github.io/3d-graphics-project/engine/docs/html/index.html)
+
