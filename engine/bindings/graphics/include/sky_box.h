@@ -11,16 +11,5 @@
 using namespace boost;
 using namespace boost::python;
 
-struct SkyboxWrap : Skybox, boost::python::wrapper<Skybox>
-{
-    unsigned int loadCubemap(std::vector<std::string> faces);
-
-    void Draw(StaticShader skyboxShader);
-
-    void load(std::vector<std::string> faces);
-
-    void bindTexture();
-
-};
 
 void wrap_Skybox();

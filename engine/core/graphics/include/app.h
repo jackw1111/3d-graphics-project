@@ -15,10 +15,22 @@
 #include <vector>
 #include <random>
 #include <chrono>
+#include <array>
 
+#ifdef GAME_TOOL
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <emscripten/bind.h>
+using namespace emscripten;
+#define GL_GLEXT_PROTOTYPES
+#define EGL_EGLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GLES2/gl2.h>
+#endif
+#else
 #include <glad/glad.h>
+#endif
 #include <GLFW/glfw3.h>
-
 #include "audio.h"
 #include "fbo.h"
 #include "camera.h"
@@ -27,6 +39,7 @@
 #include "line3d.h"
 #include "sky_box.h"
 #include "culling.h"
+
 
 /*! @brief TODO */
 class Scene {
@@ -126,8 +139,12 @@ public:
   void onWindowClose(GLFWwindow* window) {
     glfwSetWindowShouldClose(window, true);
   }
+  #ifdef GAME_TOOL
+  //
+  #else
   GLFWwindow* getWindow() const { return window; }
   void setWindow(GLFWwindow *win) { window = win; }
+  #endif
 
   float getFPS();
 

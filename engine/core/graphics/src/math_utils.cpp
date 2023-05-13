@@ -144,7 +144,7 @@ void BoundingBox::setup(glm::vec3 min, glm::vec3 max) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    const char *vertexShaderSource = "#version 330 core\n"
+    const char *vertexShaderSource = "#version 300 es\n"
         "layout (location = 0) in vec3 aPos;\n"
         "uniform mat4 model;\n"
         "uniform mat4 view;\n"
@@ -155,7 +155,8 @@ void BoundingBox::setup(glm::vec3 min, glm::vec3 max) {
         "   gl_Position = projection * view * model * vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
         "   outColor = vec4(aPos,1.0f);\n"
         "}\0";
-    const char *fragmentShaderSource = "#version 330 core\n"
+    const char *fragmentShaderSource = "#version 300 es\n"
+        "precision mediump float;\n"
         "out vec4 FragColor;\n"
         "in vec4 outColor;\n"
         "void main()\n"

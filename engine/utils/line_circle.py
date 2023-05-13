@@ -16,7 +16,8 @@ class Circle():
         self.up = up
         self.radius1 = radius1
         self.radius2 = radius2
-
+        self.color = vec3(0,1,0)
+        
         self.update(self.position, self.up, self.radius1, self.radius2)
 
     def update(self, position, up, radius1, radius2):
@@ -47,7 +48,7 @@ class Circle():
                 end_point = self.points[end]
                 self.end_points.append([start_point, end_point])
                 self.line = Line3D(start_point, end_point)
-                self.line.color = vec3(0,1,0)
+                self.line.color = self.color
                 self.lines.append(self.line)
         else:
             for i in range(50):

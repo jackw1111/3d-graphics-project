@@ -14,6 +14,33 @@
 using namespace boost;
 using namespace boost::python;
 
+#ifdef GAME_TOOL
+
+struct ApplicationWrap : Application
+{
+  ApplicationWrap();
+  ApplicationWrap(PyObject *p, std::string title, unsigned int WIDTH, unsigned int HEIGHT, bool fullscreen, bool MSAA);
+  ApplicationWrap(PyObject *p, const Application& x);
+
+  int setup(std::string title, unsigned int WIDTH, unsigned int HEIGHT, bool fullscreen, bool MSAA);
+
+  void update();
+  void onKeyPressed(int key, int scancode, int action, int mods);
+  void onCharPressed(unsigned int _char);
+  void onMouseClicked(int button, int action, int mods);
+  void onWindowResized(int width, int height);
+  void onMouseMoved(double xpos, double ypos);
+  void onJoystickMoved(int jid, int event);
+  void onMouseScrolled(double xpos, double ypos);
+  void gameLoop();
+  void draw();
+
+  float getFPS();
+  private:
+    PyObject* self;
+};
+#else
+
 struct ApplicationWrap : Application, boost::python::wrapper<Application>
 {
   ApplicationWrap();
@@ -34,6 +61,7 @@ struct ApplicationWrap : Application, boost::python::wrapper<Application>
   float getFPS();
 };
 
+#endif
 
 void wrap_Application();
 void run(python::object obj);

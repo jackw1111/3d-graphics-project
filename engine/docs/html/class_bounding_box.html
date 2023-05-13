@@ -81,9 +81,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a28084f36f8bd2839e7891cf203a5d2ab"><td class="memItemLeft" align="right" valign="top"><a id="a28084f36f8bd2839e7891cf203a5d2ab"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>BoundingBox</b> (const <a class="el" href="class_bounding_box.html">BoundingBox</a> &amp;obj)</td></tr>
 <tr class="separator:a28084f36f8bd2839e7891cf203a5d2ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a798ed7610475e1ccdbc4f4eefd6c792d"><td class="memItemLeft" align="right" valign="top"><a id="a798ed7610475e1ccdbc4f4eefd6c792d"></a>
-std::vector&lt; glm::vec3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getTranslatedVertices</b> (glm::mat4 modelMatrix)</td></tr>
-<tr class="separator:a798ed7610475e1ccdbc4f4eefd6c792d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3604264279f89fb60de3d19d3149c183"><td class="memItemLeft" align="right" valign="top"><a id="a3604264279f89fb60de3d19d3149c183"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>getTranslatedVertices</b> (glm::mat4 modelMatrix)</td></tr>
+<tr class="separator:a3604264279f89fb60de3d19d3149c183"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5a7c514d65b4bc468cfcaeb8d1f0d98"><td class="memItemLeft" align="right" valign="top"><a id="ad5a7c514d65b4bc468cfcaeb8d1f0d98"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setup</b> (glm::vec3 min, glm::vec3 max)</td></tr>
 <tr class="separator:ad5a7c514d65b4bc468cfcaeb8d1f0d98"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -114,12 +114,6 @@ GLuint&#160;</td><td class="memItemRight" valign="bottom"><b>queryFront</b></td>
 <tr class="memitem:a6a69248622538f454cc86abaa900926b"><td class="memItemLeft" align="right" valign="top"><a id="a6a69248622538f454cc86abaa900926b"></a>
 GLuint&#160;</td><td class="memItemRight" valign="bottom"><b>queryBack</b></td></tr>
 <tr class="separator:a6a69248622538f454cc86abaa900926b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a583cf7b69f46b2dc9796be1d78f0af82"><td class="memItemLeft" align="right" valign="top"><a id="a583cf7b69f46b2dc9796be1d78f0af82"></a>
-glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><b>min</b></td></tr>
-<tr class="separator:a583cf7b69f46b2dc9796be1d78f0af82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae409e066fc1f88d05be7c891237afb53"><td class="memItemLeft" align="right" valign="top"><a id="ae409e066fc1f88d05be7c891237afb53"></a>
-glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><b>max</b></td></tr>
-<tr class="separator:ae409e066fc1f88d05be7c891237afb53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c4cc648b7ac1c0a03f1ad59a0c77ee0"><td class="memItemLeft" align="right" valign="top"><a id="a5c4cc648b7ac1c0a03f1ad59a0c77ee0"></a>
 std::vector&lt; glm::vec3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>translated_vertices</b> = {}</td></tr>
 <tr class="separator:a5c4cc648b7ac1c0a03f1ad59a0c77ee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -136,7 +130,7 @@ glm::vec3&#160;</td><td class="memItemRight" valign="bottom"><b>velocity</b></td
 glm::mat4&#160;</td><td class="memItemRight" valign="bottom"><b>modelMatrix</b> = mat4(1.0f)</td></tr>
 <tr class="separator:a8cb20852673aa28b1f29ceb41c45e66d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a9547b6cbf9097b72ac912506d3e4c8"><td class="memItemLeft" align="right" valign="top"><a id="a5a9547b6cbf9097b72ac912506d3e4c8"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>toDraw</b> = false</td></tr>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>toDraw</b> = true</td></tr>
 <tr class="separator:a5a9547b6cbf9097b72ac912506d3e4c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
@@ -152,7 +146,7 @@ static std::vector&lt; <a class="el" href="class_bounding_box.html">BoundingBox<
 <li>collision detection and response </li>
 </ul>
 </div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>engine/core/graphics/include/<a class="el" href="math__utils_8h_source.html">math_utils.h</a></li>
+<li>engine/core/include/<a class="el" href="math__utils_8h_source.html">math_utils.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

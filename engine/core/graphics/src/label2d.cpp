@@ -1,5 +1,7 @@
 #include "label2d.h"
 
+
+
 std::vector<Label2D*> Label2D::labels = {};
 
 Label2D::~Label2D() {
@@ -13,8 +15,41 @@ Label2D::Label2D(std::string _text, glm::vec2 _position, std::string _font, GLfl
     scale = _scale;
     color = glm::vec3(1.0, 1.0, 1.0);
     font = _font;
+
+    const char *vertexShader = 
+    "#version 300 es\n"
+    "layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>\n"
+    "out vec2 TexCoords;\n"
+    "out vec3 Pos;\n"
+    "uniform mat4 projection;\n"
+    "void main()\n"
+    "{\n"
+    "    gl_Position = projection * vec4(vertex.xy, 0.0, 1.0);\n"
+    "    TexCoords = vertex.zw;\n"
+    "    Pos = vec3(vertex.x, vertex.y, 1.0);\n"
+    "}\n";
+
+    const char *fragmentShader = 
+    "#version 300 es\n"
+    "precision mediump float;\n"
+    "in vec2 TexCoords;\n"
+    "in vec3 Pos;\n"
+    "layout (location = 0) out vec3 gPosition;\n"
+    "layout (location = 2) out vec4 gAlbedoSpec;\n"
+    "uniform sampler2D text;\n"
+    "uniform vec3 textColor;\n"
+    "void main()\n"
+    "{\n"
+    "    vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, TexCoords).r);\n"
+    "    if(sampled.a < 0.8)\n"
+    "        discard;\n"
+    "    vec4 color = vec4(textColor, 1.0) * sampled;\n"
+    "    gAlbedoSpec = color;\n"
+    "    gPosition = Pos;\n"
+    "}\n";
+
    // Compile and setup the shader
-    shader.setup("../../shaders/label2d_shader.vs", "../../shaders/label2d_shader.fs");
+    shader.setup(vertexShader, fragmentShader);
     glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(WIDTH), 0.0f, static_cast<GLfloat>(HEIGHT));
     shader.use();
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));

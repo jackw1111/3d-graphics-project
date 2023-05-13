@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  </head>
+  <body>
+      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+    <script type='text/javascript'>
+      var Module = {
+        preRun: [],
+        postRun: [],
+        canvas: (function() {
+          var canvas = document.getElementById('canvas');
+          return canvas;
+        })(),
+        setStatus: function(text) {
+          console.log("GOT Here");
+          if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+          if (text === Module.setStatus.last.text) return;
+          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+          var now = Date.now();
+          if (m && now - Module.setStatus.last.time < 30) return; // if this is a progress update, skip it if too soon
+          Module.setStatus.last.time = now;
+          Module.setStatus.last.text = text;
+          if (m) {
+            text = m[1];
+          } else {
+            if (!text) {
+              Module.cwrap("toggleInput","number",["number"])(1)
+              var file = readFile("./filelist.txt");
+              var fileArray = file.split('\n');
+              console.log(fileArray);
+              for (let i = 0; i < fileArray.length; i++) { 
+                if (fileArray[i] != "") {
+                  var data = readFile("./data/" + fileArray[i]);
+                  Module['FS_createDataFile']('./data', fileArray[i], data, true, true, true);                  
+                }
+              }
+              execute();
+            }
+          }
+        },
+      };
+      function readFile(filePath) {
+        var result = null;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", filePath, false);
+        xmlhttp.overrideMimeType("text/plain; charset=x-user-defined");
+        xmlhttp.send();
+        if (xmlhttp.status==200) {
+          result = xmlhttp.responseText;
+        }
+        return result;
+      }
+      // Initialize Python if not already
+      Module['onRuntimeInitialized'] = function() {
+        // Module.cwrap('Py_Initialize', 'number', [])();  // done in webprompt-main.c
+        ready = true;
+      }
+      function execute() {
+        if (!ready) {return; }
+        source_code = readFile("script.py");
+        const canvas = document.getElementById('canvas');
+        Module.cwrap('resetState', 'number', ['string'])(source_code);
+        Module.cwrap('runPythonCode', 'number', ['string'])(source_code);
+      }
+      var input = document.getElementById('input');
+      input.focus();
+    </script>
+    <script type='text/javascript' src="pythonhome-data.js"></script>
+    <script async type="text/javascript" src="asmjs.js"></script>
+  </body>
+</html>
+
+

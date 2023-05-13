@@ -79,12 +79,12 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa2ce8097a7c7fb4102704da0a58e12d3"><td class="memItemLeft" align="right" valign="top"><a id="aa2ce8097a7c7fb4102704da0a58e12d3"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Line2D</b> (vec2 start, vec2 end, float WIDTH, float HEIGHT)</td></tr>
-<tr class="separator:aa2ce8097a7c7fb4102704da0a58e12d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53e0d467494a9ecf58d195b183a6e5f0"><td class="memItemLeft" align="right" valign="top"><a id="a53e0d467494a9ecf58d195b183a6e5f0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setEndpoints</b> (vec2 start, vec2 end)</td></tr>
-<tr class="separator:a53e0d467494a9ecf58d195b183a6e5f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af51085a89f2a9a412d9e0ca7af68d8a0"><td class="memItemLeft" align="right" valign="top"><a id="af51085a89f2a9a412d9e0ca7af68d8a0"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Line2D</b> (vec3 start, vec3 end, float WIDTH, float HEIGHT)</td></tr>
+<tr class="separator:af51085a89f2a9a412d9e0ca7af68d8a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cc004d050abbb21e5df7b0c169e1d2d"><td class="memItemLeft" align="right" valign="top"><a id="a0cc004d050abbb21e5df7b0c169e1d2d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setEndpoints</b> (vec3 start, vec3 end)</td></tr>
+<tr class="separator:a0cc004d050abbb21e5df7b0c169e1d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a324516a6f0e505d66b6eaac24894bd16"><td class="memItemLeft" align="right" valign="top"><a id="a324516a6f0e505d66b6eaac24894bd16"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>setMVP</b> (mat4 mvp)</td></tr>
 <tr class="separator:a324516a6f0e505d66b6eaac24894bd16"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -97,15 +97,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>draw</b> ()</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:abca43de967561730aa2f41e16f346c72"><td class="memItemLeft" align="right" valign="top"><a id="abca43de967561730aa2f41e16f346c72"></a>
-vec2&#160;</td><td class="memItemRight" valign="bottom"><b>startPoint</b></td></tr>
-<tr class="separator:abca43de967561730aa2f41e16f346c72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68c8c2ee6d668fbbd56ace29e1ff1b8c"><td class="memItemLeft" align="right" valign="top"><a id="a68c8c2ee6d668fbbd56ace29e1ff1b8c"></a>
-vec2&#160;</td><td class="memItemRight" valign="bottom"><b>endPoint</b></td></tr>
-<tr class="separator:a68c8c2ee6d668fbbd56ace29e1ff1b8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ef75a0579f1ba87d1c1673e5332e5db"><td class="memItemLeft" align="right" valign="top"><a id="a9ef75a0579f1ba87d1c1673e5332e5db"></a>
-vec3&#160;</td><td class="memItemRight" valign="bottom"><b>lineColor</b></td></tr>
-<tr class="separator:a9ef75a0579f1ba87d1c1673e5332e5db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54183a58ddd4f9f8379249cab2ac05d6"><td class="memItemLeft" align="right" valign="top"><a id="a54183a58ddd4f9f8379249cab2ac05d6"></a>
+vec3&#160;</td><td class="memItemRight" valign="bottom"><b>startPoint</b></td></tr>
+<tr class="separator:a54183a58ddd4f9f8379249cab2ac05d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3219a0d4dd45f74c47fe5c6a26c836af"><td class="memItemLeft" align="right" valign="top"><a id="a3219a0d4dd45f74c47fe5c6a26c836af"></a>
+vec3&#160;</td><td class="memItemRight" valign="bottom"><b>endPoint</b></td></tr>
+<tr class="separator:a3219a0d4dd45f74c47fe5c6a26c836af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -130,6 +127,9 @@ vector&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>vert
 <tr class="memitem:a7cc42811ffc52911d176ccbab8e49dba"><td class="memItemLeft" align="right" valign="top"><a id="a7cc42811ffc52911d176ccbab8e49dba"></a>
 mat4&#160;</td><td class="memItemRight" valign="bottom"><b>MVP</b> = mat4(1.0)</td></tr>
 <tr class="separator:a7cc42811ffc52911d176ccbab8e49dba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ef75a0579f1ba87d1c1673e5332e5db"><td class="memItemLeft" align="right" valign="top"><a id="a9ef75a0579f1ba87d1c1673e5332e5db"></a>
+vec3&#160;</td><td class="memItemRight" valign="bottom"><b>lineColor</b></td></tr>
+<tr class="separator:a9ef75a0579f1ba87d1c1673e5332e5db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74ebb6038da6d190dd7c173f7ed7389d"><td class="memItemLeft" align="right" valign="top"><a id="a74ebb6038da6d190dd7c173f7ed7389d"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><b>w</b></td></tr>
 <tr class="separator:a74ebb6038da6d190dd7c173f7ed7389d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -140,7 +140,7 @@ float&#160;</td><td class="memItemRight" valign="bottom"><b>h</b></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>2D line drawing class, mainly used for debugging </p>
 </div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>engine/core/graphics/include/<a class="el" href="line2d_8h_source.html">line2d.h</a></li>
+<li>engine/core/include/<a class="el" href="line2d_8h_source.html">line2d.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

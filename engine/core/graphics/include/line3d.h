@@ -5,7 +5,20 @@
 #include <vector>
 #include <algorithm>
 #include <glm/glm.hpp>
+#ifdef GAME_TOOL
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <emscripten/bind.h>
+using namespace emscripten;
+#define GL_GLEXT_PROTOTYPES
+#define EGL_EGLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GLES2/gl2.h>
+#endif
+#else
 #include "glad/glad.h"
+#endif
+
 
 using std::vector;
 using glm::mat4;

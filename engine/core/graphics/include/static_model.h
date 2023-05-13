@@ -46,7 +46,7 @@ public:
     /// @param shader a StaticShader instance
     virtual int Draw();
     void DrawInstanced(std::vector<mat4> modelTransforms);
-    vector<StaticMesh> meshes;
+    std::vector<StaticMesh> meshes;
     /// @brief loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
     int loadModel(string path);
 
@@ -136,7 +136,7 @@ public:
 
     StaticObject(){}; // necessary for derived class constructor
     static int drawAllObjects(Camera &active_camera, StaticShader &shader);
-    static vector<vector<StaticObject>> modelRegistry;
+    static std::vector<std::vector<StaticObject>> modelRegistry;
     std::shared_ptr<StaticModel> model;
     std::vector<unsigned short> meshIsCulled = {};
     std::vector<unsigned short> meshIsOccluded = {};
@@ -148,7 +148,8 @@ public:
     static unsigned int uniqueObjectCount;
 private:
 
-    static vector<mat4> getObjectTransforms(const vector<StaticObject> &objectStore);
+    static vector<mat4> getObjectTransforms(vector<StaticObject> &objectStore);
+    static vector<unsigned int> getObjectIndices(vector<StaticObject> &objectStore);
 };
 
 float rayObjectIntersect(glm::vec3 rayOrigin, glm::vec3 rayDirection, StaticObject object);

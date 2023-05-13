@@ -27,7 +27,7 @@ Line3D::Line3D(vec3 start, vec3 end) {
     if (!Line3D::setup) {
         Line3D::viewProjection = mat4(1.0);
 
-        const char *vertexShaderSource = "#version 330 core\n"
+        const char *vertexShaderSource = "#version 300 es\n"
             "layout (location = 0) in vec3 aPos;\n"
             "layout (location = 1) in vec3 aColor;\n"
             "out vec3 color;\n"
@@ -37,7 +37,8 @@ Line3D::Line3D(vec3 start, vec3 end) {
             "   gl_Position = viewProjection * vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
             "   color = aColor;\n"
             "}\0";
-        const char *fragmentShaderSource = "#version 330 core\n"
+        const char *fragmentShaderSource = "#version 300 es\n"
+            "precision mediump float;\n"
             "in vec3 color;\n"
             "out vec4 FragColor;\n"
             "void main()\n"
@@ -84,7 +85,7 @@ Line3D::Line3D(vec3 start, vec3 end) {
         glDeleteShader(fragmentShader);
 
         Line3D::vertices = {
-        
+
         };
         
         glGenVertexArrays(1, &Line3D::VAO);
@@ -92,7 +93,7 @@ Line3D::Line3D(vec3 start, vec3 end) {
         glBindVertexArray(Line3D::VAO);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Line3D::vertices), Line3D::vertices.data(), GL_STATIC_DRAW);
+        //glBufferData(GL_ARRAY_BUFFER, sizeof(Line3D::vertices), Line3D::vertices.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));

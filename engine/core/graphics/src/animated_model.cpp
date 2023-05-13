@@ -106,16 +106,37 @@ int AnimatedObject::setColor(vec4 c) {
     return 0;
 }
 
-vector<mat4> AnimatedObject::getObjectTransforms(const vector<AnimatedObject> &currentObjects) {
+vector<mat4> AnimatedObject::getObjectTransforms(vector<AnimatedObject> &currentObjects, bool shadowPass) {
     vector<mat4> modelTransforms = {};
     for (unsigned int i = 0; i < currentObjects.size(); i++) {
-        if (currentObjects[i].toDraw) {
-            modelTransforms.push_back(currentObjects[i].modelMatrix);
+        if (!shadowPass) {
+            if (currentObjects[i].getToDraw()) {
+                modelTransforms.push_back(currentObjects[i].getModelMatrix());
+            }
+        } else {
+            if (currentObjects[i].getToDrawShadow()) {
+                modelTransforms.push_back(currentObjects[i].getModelMatrix());
+            }
         }
     }
     return modelTransforms;
 }
+vector<unsigned int> AnimatedObject::getObjectIndices(vector<AnimatedObject> &currentObjects, bool shadowPass) {
+    vector<unsigned int> modelIndices = {};
+    for (unsigned int i = 0; i < currentObjects.size(); i++) {
 
+        if (!shadowPass) {
+            if (currentObjects[i].getToDraw()) {
+                modelIndices.push_back(i);
+            }
+        } else {
+            if (currentObjects[i].getToDrawShadow()) {
+                modelIndices.push_back(i);
+            }
+        }
+    }
+    return modelIndices;
+}
 
 vector<vector<vec3>> AnimatedObject::getAnimatedVertices() {
     AnimatedObject *object = &AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID);
@@ -130,8 +151,9 @@ vector<vector<vec3>> AnimatedObject::getAnimatedVertices() {
 }
 
 
-int AnimatedObject::drawAllObjects(Camera &active_camera, float currentFrame, bool recalculateBones) {
+int AnimatedObject::drawAllObjects(Camera &active_camera, float currentFrame, bool shadowPass) {
     
+    bool recalculateBones = shadowPass;
 
     unsigned int totalMeshes = 0;
     unsigned int drawnMeshes = 0;
@@ -139,8 +161,9 @@ int AnimatedObject::drawAllObjects(Camera &active_camera, float currentFrame, bo
     // for every model in registry
     for (unsigned int index = 0; index <  AnimatedObject::modelRegistry.size(); index++) {
         vector<AnimatedObject> *currentObjects = &AnimatedObject::modelRegistry[index];
-        // get the modelMatrices for current objects
-        vector<mat4> modelTransforms = AnimatedObject::getObjectTransforms(*currentObjects);
+        // get the model matrices for current objects
+        vector<mat4> modelTransforms = AnimatedObject::getObjectTransforms(*currentObjects, shadowPass);
+        vector<unsigned int> objectIndices = AnimatedObject::getObjectIndices(*currentObjects, shadowPass);
 
         // get a reference to the underlying model data
         AnimatedModel *pModel = (*currentObjects)[0].model.get();
@@ -153,20 +176,24 @@ int AnimatedObject::drawAllObjects(Camera &active_camera, float currentFrame, bo
             vector<vec4> colors = {};
             //for each transform
             unsigned int id = 0;
-            for (unsigned int j = 0; j < modelTransforms.size(); j++) {  
+            for (unsigned int j = 0; j < objectIndices.size(); j++) {  
                 // get the current object
-                AnimatedObject *object = &(*currentObjects)[j];
+                AnimatedObject *object = &(*currentObjects).at(objectIndices.at(j));
                 AnimatedMesh *currentMesh = &(object->model.get()->meshes.at(i));
 
                 vector<float> AABB = currentMesh->getAABB();
                 glm::vec3 min = glm::vec3(AABB[0], AABB[1], AABB[2]);
                 glm::vec3 max = glm::vec3(AABB[3], AABB[4], AABB[5]);
                 currentMesh->boundingBox.setBoundary(min, max);
-
+                // since recalculateBones is also the variable shadowPass,
+                // ignore drawing to shadow map if drawShadow == false
+                if (shadowPass && !object->getToDrawShadow()) {
+                    continue;
+                }
 
                 if (object->drawBoundingBox) {
 
-                    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+                    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
                     glDisable(GL_CULL_FACE);
                     currentMesh->boundingBox.modelMatrix = object->getModelMatrix();
                     currentMesh->boundingBox.setMatrix("model", object->getModelMatrix());
@@ -175,7 +202,7 @@ int AnimatedObject::drawAllObjects(Camera &active_camera, float currentFrame, bo
 
                     currentMesh->boundingBox.draw();
                     AnimatedModel::shader.use();
-                    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+                    //glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
                     glEnable(GL_CULL_FACE);
                 }
                         
@@ -188,6 +215,8 @@ int AnimatedObject::drawAllObjects(Camera &active_camera, float currentFrame, bo
                         if (recalculateBones) {
                             object->boneTransforms = {};
                         }
+
+
                         pModel->getFrame(id, playFrames(object->start_frame, object->end_frame, object->offset), object->boneTransforms);
                         // create animated vertices for the frame
                         // @todo speed up with octree, raycast
@@ -207,9 +236,9 @@ int AnimatedObject::drawAllObjects(Camera &active_camera, float currentFrame, bo
                         /// consider how the indexing system works when objects are added/removed
                         /// but for now "it just werks"                    
                         colors.push_back(object->color);
-                        if (object->color != vec4(-1,-1,-1,-1)) {
-                            coloredVisibleModelTransforms.push_back(modelTransforms[j]);
-                        }
+                        // if (object->color != vec4(-1,-1,-1,-1)) {
+                        //     coloredVisibleModelTransforms.push_back(modelTransforms[j]);
+                        // }
                     }    
                 }
                                
@@ -243,15 +272,15 @@ int AnimatedObject::drawAllObjects(Camera &active_camera, float currentFrame, bo
             pModel->meshes[i].DrawInstanced(AnimatedModel::shader, visibleModelTransforms);
 
             
-            for (unsigned int j = 0; j < visibleModelTransforms.size(); j++) {
-                stringstream Name;
-                Name << "colors[" << j << "]";
-                AnimatedModel::shader.setVec4(Name.str().c_str(), vec4(-1,-1,-1,-1));                 
-            }   
+            // for (unsigned int j = 0; j < visibleModelTransforms.size(); j++) {
+            //     stringstream Name;
+            //     Name << "colors[" << j << "]";
+            //     AnimatedModel::shader.setVec4(Name.str().c_str(), vec4(-1,-1,-1,-1));                 
+            // }   
         }
     }
 
-    //std::cout << drawnMeshes << " of " << totalMeshes << " AnimatedModels drawn." << std::endl;
+    // std::cout << drawnMeshes << " of " << totalMeshes << " AnimatedModels drawn." << std::endl;
     return 0;
 }
 
@@ -292,6 +321,14 @@ int AnimatedObject::getToDraw() {
 void AnimatedObject::setToDraw(int b) {
     AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).toDraw = b;
 }
+
+int AnimatedObject::getToDrawShadow() {
+    return AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).toDrawShadow;
+}
+void AnimatedObject::setToDrawShadow(int b) {
+    AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).toDrawShadow = b;
+}
+
 
 float AnimatedObject::getShininess() {
     return AnimatedObject::modelRegistry.at(this->modelID).at(this->uniqueID).shininess;
@@ -489,8 +526,119 @@ int AnimatedModel::loadModel(string path) {
     const aiAnimation* pAnimation = m_pScene->mAnimations[animationIndex];
     storeNodeAnim(pAnimation);
 
-    AnimatedModel::shader.setup("../../shaders/animatedmodel_shader.vs","../../shaders/animatedmodel_shader.fs");
+    const char *_vShader = "#version 300 es\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aNormal;\n"
+    "layout (location = 2) in vec2 aTexCoord;\n"
+    "layout (location = 5) in ivec4 BoneIDs;\n"
+    "layout (location = 6) in vec4 Weights;\n"
+    "layout (location = 7) in mat4 instanceMatrix;\n"
+    "out vec2 TexCoord;\n"
+    "out float diffuse;\n"
+    "out vec4 color;\n"
+    "out vec3 FragPos;\n"
+    "out vec3 normal;\n"
+    "flat out int _shadowPass;\n"
+    "uniform mat4 proj_view;\n"
+    "uniform mat4 gBones[20*50];\n"
+    "uniform vec4 colors[20];\n"
+    "uniform mat4 lightSpaceMatrix;\n"
+    "uniform int shadowPass;\n"
+    "uniform vec3 lightPos;\n"
+    "uniform vec3 viewPos;\n"
+    "out vec3 _viewPos;\n"
+    "out vec3 _lightPos;\n"
+    "uniform float nearPlane;\n"
+    "uniform float farPlane;\n"
+    "out float alpha;\n"
+    "out float alpha2;\n"
+    "float getFogFactor(float d, float nearPlane, float farPlane)\n"
+    "{\n"
+        "float FogMax = 1.0f * farPlane;\n"
+        "float FogMin = 0.5f * farPlane;\n"
+        "if (d>=FogMax) return 1.0f;\n"
+        "if (d<=FogMin) return 0.0f;\n"
+        "return 1.0f - (FogMax - d) / (FogMax - FogMin);\n"
+    "}\n"
+    "float getFogFactorAlpha(float d, float nearPlane, float farPlane)\n"
+    "{\n"
+        "float FogMax = 1.0f * farPlane;\n"
+        "float FogMin = 0.7f * farPlane;\n"
+        "if (d>=FogMax) return 1.0f;\n"
+        "if (d<=FogMin) return 0.0f;\n"
+        "return 1.0f - (FogMax - d) / (FogMax - FogMin);\n"
+    "}\n"
+    "void main()\n"
+    "{\n"   
+        "mat4 BoneTransform = gBones[gl_InstanceID * 50 + BoneIDs[0]] * Weights[0];\n"
+        "BoneTransform     += gBones[gl_InstanceID * 50 + BoneIDs[1]] * Weights[1];\n"
+        "BoneTransform     += gBones[gl_InstanceID * 50 + BoneIDs[2]] * Weights[2];\n"
+        "BoneTransform     += gBones[gl_InstanceID * 50 + BoneIDs[3]] * Weights[3];\n"
+        "vec4 fragPos = instanceMatrix * BoneTransform * vec4(aPos, 1.0);\n"
+        "if (shadowPass == 1) {\n"
+            "gl_Position = lightSpaceMatrix * fragPos;\n"
+            "return;\n"
+        "}\n"
+        "mat3 normalMatrix = transpose(inverse(mat3(instanceMatrix * BoneTransform)));\n"
+        "vec3 Normal = normalize(normalMatrix * aNormal);\n"
+        "color = colors[gl_InstanceID];\n"
+        "gl_Position = proj_view * fragPos;\n"
+        "TexCoord = aTexCoord;\n"
+        "vec3 lightDir = normalize(lightPos);\n"  
+        "diffuse =  max(dot(Normal, lightDir), 0.0);\n"
+        "normal = Normal;\n"
+        "FragPos = fragPos.xyz;\n"
+        "float d = distance(viewPos, FragPos);\n"
+        "alpha = getFogFactor(d, nearPlane, farPlane);\n"
+        "alpha2 = getFogFactorAlpha(d, nearPlane, farPlane);\n"
+        "_shadowPass = shadowPass;\n"
+        "_viewPos = viewPos;\n"
+        "_lightPos = lightPos;\n"
+    "}\n";
+const char *_fShader =
+    "#version 300 es\n"
+    "precision mediump float;\n"
+    "in vec2 TexCoord;\n"
+    "in float diffuse;\n"
+    "in vec4 color;\n"
+    "in float alpha;\n"
+    "in float alpha2;\n"
+    "in vec3 FragPos;\n"
+    "in vec3 normal;\n"
+    "flat in int _shadowPass;\n"  
+    "out vec4 FragColor;\n"
+    "uniform sampler2D texture_diffuse1;\n"
+    "uniform vec3 backgroundColor;\n"
+    "in vec3 _viewPos;\n"
+    "in vec3 _lightPos;\n"
+    "uniform float shininess;\n"
+    "uniform samplerCube skybox;\n"
+    "float ambient = 0.55;\n"           
+    "vec3 fresnelSchlick(float cosTheta, vec3 F0)\n"
+    "{\n"
+        "return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);\n"
+    "}\n"                                                
+    "void main()\n"
+    "{\n"    
+        "vec4 tex = texture(texture_diffuse1, TexCoord);\n"
+        "FragColor = (_shadowPass == 1 ? vec4(0,0,0,1) :  vec4(tex.rgb * (diffuse + ambient), tex.a));\n"
+        "FragColor = mix(FragColor, vec4(backgroundColor, 1.0), alpha);\n"
+        "FragColor.a = 1.0-alpha2;\n"
+        "vec3 F0 = vec3(0.04);\n"
+        "F0      = mix(F0, FragColor.rgb, 0.0f);\n"
+        "vec3 lightDir   = normalize(_lightPos - FragPos);\n"
+        "vec3 viewDir    = normalize(_viewPos - FragPos);\n"
+        "vec3 halfwayDir = normalize(lightDir + viewDir);\n"
+        "FragColor.rgb =  (color != vec4(-1.0,-1.0,-1.0,-1.0) ? FragColor.rgb + fresnelSchlick(dot(normal, viewDir), F0) * color.rgb : FragColor.rgb);\n"
+        "if (color.a != -1.0) {\n"
+            "FragColor.a = color.a;\n"
+        "}\n"
+        "vec3 I = normalize(FragPos - _viewPos);\n"
+        "vec3 R = reflect(I, normalize(normal));\n"
+        "FragColor = (shininess == 1.0f ? FragColor * vec4(texture(skybox, R).rgb,1.0) : FragColor);\n"
+    "}\n";
 
+    AnimatedModel::shader.setup(_vShader, _fShader);
 
     model = mat4(1.0);
     start_frame = 0.0f;

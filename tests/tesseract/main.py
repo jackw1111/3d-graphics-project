@@ -1,14 +1,13 @@
-import sys
-sys.path.append("../../engine/bin")
-sys.path.append("../../engine/utils")
-from console import *
-from axis_3d import *
+#import sys
+#sys.path.append("../../engine/bin")
+#sys.path.append("../../engine/utils")
+#from console import *
+#from axis_3d import *
 from engine.graphics import *
 from keys import *
 import random
 import time
 import math
-from OpenGL.GL import *
 
 WIDTH = 800
 HEIGHT = 600
@@ -245,5 +244,5 @@ class App(Application):
             self.v += 0.01   
 
 if __name__ == "__main__":
-    app = App("tesseract", WIDTH, HEIGHT, False, True)
+    app = App("tesseract", WIDTH, HEIGHT, False, False)
     run(app)

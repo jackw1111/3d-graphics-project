@@ -107,7 +107,7 @@ Particle::Particle(std::string _filePath, glm::mat4 _modelMatrix, unsigned int _
 
 	    if (data)
 	    {
-	        glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	        glGenerateMipmap(GL_TEXTURE_2D);
 	    }
 	    else

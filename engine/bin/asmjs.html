@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en-us">
+  <!-- Adapted from https://github.com/emscripten-core/emscripten/blob/master/src/shell_minimal.html -->
+  <head>
+    <script src="jszip.min.js" type="text/javascript"></script>
+    <script src="FileSaver.js" type="text/javascript"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Emscripten-Generated Code</title>
+    <style>
+      .emscripten { margin-left: auto; margin-right: auto; display: block; }
+      textarea.emscripten { font-family: monospace; width: 80%; }
+      input.emscripten { font-family: monospace; width: 80%; }
+      div.emscripten { text-align: center; }
+      div.emscripten_border { border: 1px solid black; }
+      /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
+      canvas.emscripten { border: 0px none; background-color: black; }
+
+      .spinner {
+        height: 50px;
+        width: 50px;
+        margin: 0px auto;
+        -webkit-animation: rotation .8s linear infinite;
+        -moz-animation: rotation .8s linear infinite;
+        -o-animation: rotation .8s linear infinite;
+        animation: rotation 0.8s linear infinite;
+        border-left: 10px solid rgb(0,150,240);
+        border-right: 10px solid rgb(0,150,240);
+        border-bottom: 10px solid rgb(0,150,240);
+        border-top: 10px solid rgb(100,0,200);
+        border-radius: 100%;
+        background-color: rgb(200,100,250);
+      }
+      @-webkit-keyframes rotation {
+        from {-webkit-transform: rotate(0deg);}
+        to {-webkit-transform: rotate(360deg);}
+      }
+      @-moz-keyframes rotation {
+        from {-moz-transform: rotate(0deg);}
+        to {-moz-transform: rotate(360deg);}
+      }
+      @-o-keyframes rotation {
+        from {-o-transform: rotate(0deg);}
+        to {-o-transform: rotate(360deg);}
+      }
+      @keyframes rotation {
+        from {transform: rotate(0deg);}
+        to {transform: rotate(360deg);}
+      }
+
+    </style>
+  </head>
+  <body>
+    <hr/>
+    <figure style="overflow:visible;" id="spinner"><div class="spinner"></div><center style="margin-top:0.5em"><strong>emscripten</strong></center></figure>
+    <div class="emscripten" id="status">Downloading...</div>
+    <div class="emscripten">
+      <progress value="0" max="100" id="progress" hidden=1></progress>  
+    </div>
+    <div class="emscripten_border">
+      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+    </div>
+    <hr/>
+    
+    <div class="emscripten"><a href="https://www.beuc.net/python-emscripten/python/dir?ci=tip">python-emscripten</a> bare-bones demo</div>
+    
+    <hr/>
+    <textarea class="emscripten" id="output" rows="8" readonly="readonly"></textarea>
+
+    <input type="text" class="emscripten" id="input" name="text" value="{'REPL':['press enter',2+2]}" />
+    <textarea class="emscripten" id="file" rows="8">import engine
+from engine.graphics import *
+import random
+import time
+import math
+
+PRESS = 1
+RELEASE = 0
+KEY_LEFT_SHIFT = 340
+
+KEY_W = 87
+KEY_A = 65
+KEY_S = 83
+KEY_D = 68
+
+WIDTH = 800
+HEIGHT = 600
+
+class App(Application):
+
+    def __init__(self, *args, **kwargs):
+        Application.__init__(self, *args, **kwargs)
+        make_context_current(self.window)
+        set_cursor_visible(self.window, True)
+
+        self.light = Light(vec3(0, 1, 4), vec3(1,1,1))
+        self.control_camera = False
+        self.active_camera.position = vec3(0,1,12)
+        self.heli = StaticObject("./data/heli.obj")
+        self.x = 0
+
+    def update(self):
+        self.process_input(self.window)
+        self.x += 0.02
+        self.heli.model_matrix = rotate(mat4(1.0), self.x, vec3(0,1,0))
+      
+    def process_input(self, window):
+
+        if (get_key(window, KEY_W) == PRESS):
+            self.active_camera.ProcessKeyboard(0, self.deltaTime)
+
+        if (get_key(window, KEY_S) == PRESS):
+            self.active_camera.ProcessKeyboard(1, self.deltaTime)
+
+        if (get_key(window, KEY_A) == PRESS):
+            self.active_camera.ProcessKeyboard(2, self.deltaTime)
+
+        if (get_key(window, KEY_D) == PRESS):
+            self.active_camera.ProcessKeyboard(3, self.deltaTime)
+
+        if (get_key(window, KEY_LEFT_SHIFT) == PRESS):
+            self.active_camera.MovementSpeed = 20.0
+
+        if (get_key(window, KEY_LEFT_SHIFT) == RELEASE):
+            self.active_camera.MovementSpeed = 4.0
+
+    def on_mouse_moved(self, xpos, ypos):
+        xoffset = xpos - self.lastX
+        yoffset = self.lastY - ypos #reversed since y-coordinates go from bottom to top
+
+        self.lastX = xpos
+        self.lastY = ypos
+        if self.control_camera:
+            self.active_camera.ProcessMouseMovement(xoffset, yoffset, True)
+
+        self.current_coord = vec3(self.lastX, HEIGHT-self.lastY, 0.0)
+
+    def on_mouse_clicked(self, button, action, mods):
+        if (button == 2 and action == 1):
+            self.control_camera = True
+            set_cursor_visible(self.window, False)
+        if (button == 2 and action == 0):
+            self.control_camera = False
+            set_cursor_visible(self.window, True)
+
+    def on_window_resized(self, width, height):
+        pass
+
+    def on_key_pressed(self, key, scancode, action, mods):
+        pass
+
+app = App("example", WIDTH, HEIGHT, False, False)
+run(app)
+</textarea>
+    <span id='controls'>
+      <span><input type="checkbox" id="resize">Resize canvas</span>
+      <span><input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer &nbsp;&nbsp;&nbsp;</span>
+      <input type="file" id="load" accept=".fbx,.dae,.obj,.mtl,.png,.jpg,.tga" />
+      <span><input type="button" value="Fullscreen" onclick="Module.requestFullscreen(Element.ALLOW_KEYBOARD_INPUT)">
+      </span>
+      <span><input type="button" value="download" onclick="download()">
+      </span>
+    </span>
+    <script type='text/javascript'>
+          document.addEventListener("fullscreenchange", function() {
+          if (document.fullscreenElement) {
+            Module.cwrap("toggleInput","number",["number"])(1)
+            document.getElementById('canvas').focus();
+          } else {
+            Module.cwrap("toggleInput","number",["number"])(0)
+          }
+    }); 
+    </script>
+
+    <button class="emscripten" id="execute" onclick="execute()">Execute</button>
+    <hr>
+
+    <script type='text/javascript'>
+      var statusElement = document.getElementById('status');
+      var progressElement = document.getElementById('progress');
+      var spinnerElement = document.getElementById('spinner');
+
+      var Module = {
+        preRun: [],
+        postRun: [],
+        print: (function() {
+          var element = document.getElementById('output');
+          if (element) element.value = ''; // clear browser cache
+          return function(text) {
+            if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+            // These replacements are necessary if you render to raw HTML
+            //text = text.replace(/&/g, "&amp;");
+            //text = text.replace(/</g, "&lt;");
+            //text = text.replace(/>/g, "&gt;");
+            //text = text.replace('\n', '<br>', 'g');
+            console.log(text);
+            if (element) {
+              element.value += text + "\n";
+              element.scrollTop = element.scrollHeight; // focus on bottom
+            }
+          };
+        })(),
+        printErr: function(text) {
+          if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+          console.error(text);
+        },
+        canvas: (function() {
+          var canvas = document.getElementById('canvas');
+
+          // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+          // application robust, you may want to override this behavior before shipping!
+          // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+          canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+
+          return canvas;
+        })(),
+        setStatus: function(text) {
+          if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+          if (text === Module.setStatus.last.text) return;
+          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+          var now = Date.now();
+          if (m && now - Module.setStatus.last.time < 30) return; // if this is a progress update, skip it if too soon
+          Module.setStatus.last.time = now;
+          Module.setStatus.last.text = text;
+          if (m) {
+            text = m[1];
+            progressElement.value = parseInt(m[2])*100;
+            progressElement.max = parseInt(m[4])*100;
+            progressElement.hidden = false;
+            spinnerElement.hidden = false;
+          } else {
+            progressElement.value = null;
+            progressElement.max = null;
+            progressElement.hidden = true;
+            if (!text) {
+              spinnerElement.hidden = true;
+              execute();
+            }
+          }
+          statusElement.innerHTML = text;
+        },
+        totalDependencies: 0,
+        monitorRunDependencies: function(left) {
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+        },
+        arguments: [document.getElementById('file').value]
+      };
+      
+      Module.setStatus('Downloading...');
+      window.onerror = function(message, url, line, column, e) {
+        if (typeof e != 'number') return;
+        var pointer = e;
+        Module.print('error message:' + Module.getExceptionMessage(pointer));
+        Module.setStatus('Exception thrown, see JavaScript console');
+        spinnerElement.style.display = 'none';
+        Module.setStatus = function(text) {
+          if (text) Module.printErr('[post-exception status] ' + text);
+        };
+      };
+
+    </script>
+
+    <!-- Python webprompt -->
+    <script type='text/javascript'>
+      Module['printErr'] = Module['print'];
+      var allText = "";
+      var byteArray = new Uint8Array();
+      var ready = false;
+      var fileContainer = [];
+      var dataContainer = [];
+      // Initialize Python if not already
+      Module['onRuntimeInitialized'] = function() {
+        // Module.cwrap('Py_Initialize', 'number', [])();  // done in webprompt-main.c
+        ready = true;
+
+        document.getElementById('load').addEventListener(
+        'change', 
+        function() {
+          console.log(load.files);
+
+          if (load.files.length == 0)
+            return;
+
+          var file = load.files[0];
+
+          var fr = new FileReader();
+          fr.onload = function () {
+              var data = new Uint8Array(fr.result);
+
+              Module['FS_createDataFile']('./data', file.name, data, true, true, true);
+              fileContainer.push(file);
+              dataContainer.push(data);
+              //load.value = '';
+          };
+          fr.readAsArrayBuffer(file);
+        },
+
+        false);
+
+        //document.getElementById('execute').click();
+      }
+
+      function readFile(filePath) {
+        var result = null;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", filePath, false);
+        xmlhttp.overrideMimeType("text/plain; charset=x-user-defined");
+        xmlhttp.send();
+        if (xmlhttp.status==200) {
+          result = xmlhttp.responseText;
+        }
+        return result;
+      }
+
+      var textFile = null,
+      makeTextFile = function (text) {
+        var data = new Blob([text], {type: 'text/plain'});
+
+        // If we are replacing a previously generated file we need to
+        // manually revoke the object URL to avoid memory leaks.
+        if (textFile !== null) {
+          window.URL.revokeObjectURL(textFile);
+        }
+
+        textFile = window.URL.createObjectURL(data);
+
+        // returns a URL you can use as a href
+        return textFile;
+      };
+
+      function download() {
+        console.log(fileContainer.length);
+        console.log("download clicked!");
+            var zip = new JSZip();
+            zip.file("./script.py", document.getElementById('file').value);
+            var fileList = '';
+            for (let i = 0; i < fileContainer.length; i++) {
+                console.log("got here1");
+                var file = fileContainer[i];
+                var data = dataContainer[i];
+                zip.folder("data").file(file.name, data);
+                fileList += file.name + '\n';
+
+                // const a = document.createElement('a');
+                // a.style = 'display:none';
+                // document.body.appendChild(a);
+                // const blob = new Blob([data], {
+                //   type: 'octet/stream'
+                // });
+
+                // const url = window.URL.createObjectURL(blob);
+                // a.href = url;
+                // a.download = file.name;
+                // a.click();
+                // window.URL.revokeObjectURL(url);
+                // document.body.removeChild(a);
+            }
+            zip.file("./filelist.txt", fileList);
+
+            var fileContents = readFile("./asmjs.js");
+            //var fileContents = localStorage.getItem("./asmjs.js");
+            //console.log("fileContents:");
+            //console.log(allText);
+            zip.file("./asmjs.js", fileContents);
+            fileContents = readFile("./index.html");
+            //fileContents = localStorage.getItem("./index.html");
+            zip.file("./index.html", fileContents);
+            fileContents = readFile("./asmjs.html");
+            //fileContents = localStorage.getItem("./asmjs.html");
+            zip.file("./asmjs.html", fileContents);
+            fileContents = readFile("./asmjs.data");
+            //fileContents = localStorage.getItem("./asmjs.data");
+            zip.file("./asmjs.data", fileContents, {binary:true});
+            fileContents = readFile("./asmjs.html.mem");
+            //fileContents = localStorage.getItem("./asmjs.html.mem");
+            zip.file("./asmjs.html.mem", fileContents, {binary:true});    
+            //fileContents = readFile("./script.py");
+            //fileContents = localStorage.getItem("./script.py");
+            //zip.file("./script.py", fileContents);  
+            fileContents = readFile("./pythonhome-data.js");
+            zip.file("./pythonhome-data.js", fileContents);  
+            fileContents = readFile("./pythonhome.data");
+            zip.file("./pythonhome.data", fileContents, {binary:true});  
+            //console.log("fileContents:");
+            //console.log(fileContents);
+            zip.generateAsync({type:"blob"})
+            .then(function(content) {
+                // see FileSaver.js
+                saveAs(content, "game.zip");
+            });
+      }
+
+      function execute() {
+        if (!ready) { Module.print('Python is loading, please wait...'); return; }
+        Module.print('>>> <textarea>');
+        source_code = document.getElementById('file').value;
+        var opts = {}
+        if (typeof Asyncify === 'object')
+            opts = { async: true };
+        const canvas = document.getElementById('canvas');
+        const gl = canvas.getContext('webgl2');
+        //resetToInitialState(gl);
+        Module.cwrap('resetState', 'number', ['string'])(source_code);
+        Module.cwrap('runPythonCode', 'number', ['string'])(source_code);
+        localStorage.setItem("script.py", document.getElementById('file').value);
+        //Module.cwrap('PyRun_SimpleString', 'number', ['string'])(source_code);
+        // or: Module.ccall('PyRun_SimpleString', 'number', ['string'], [source_code], opts);
+      }
+
+      var hist = [''];
+      var hist_index = 0;
+      var input = document.getElementById('input');
+      input.onkeydown = function(ev) {
+        if (!ready) { Module.print('Python is loading, please wait...'); return; }
+        if (ev.key === 'Enter') {
+          Module.print('>>> ' + input.value);
+
+          // Execute Python code with emulated stdin
+          FS.writeFile('/tmp/input.py', input.value + '\n');
+          var opts = {}
+          if (typeof Asyncify === 'object')
+              opts = { async: true };
+          Module.ccall('pyruni', 'undefined', [], [], opts);
+
+          hist[hist.length-1] = input.value;
+          hist.push('');
+          hist_index = hist.length - 1;
+          input.value = '';
+        } else if (ev.key === 'ArrowUp') {
+          hist[hist_index] = input.value;
+          hist_index = (hist_index > 0) ? hist_index-1 : hist_index;
+          input.value = hist[hist_index];
+        } else if (ev.key === 'ArrowDown') {
+          hist[hist_index] = input.value;
+          hist_index = (hist_index < hist.length-1) ? hist_index+1 : hist_index;
+          input.value = hist[hist_index];
+        }
+      };
+      input.focus();
+
+    </script>
+    <script type='text/javascript' src="pythonhome-data.js"></script>
+
+    <script async type="text/javascript" src="asmjs.js"></script>
+  </body>
+</html>
+
+

@@ -186,12 +186,16 @@ std::vector<float> getJoystickAxes() {
 int loadGL() {
     // Alternative use the builtin loader, e.g. if no other loader function is available
     
-    if (!gladLoadGL()) {
-        std::cout << "Failed to initialize OpenGL context" << std::endl;
-        return -1;
-    }
-    return 1;
+    // if (!gladLoadGL()) {
+    //     std::cout << "Failed to initialize OpenGL context" << std::endl;
+    //     return -1;
+    // }
+    return -1;
 }
+
+// GLFWusercontext* _glfwCreateUserContext(GLFWwindow* window) {
+
+// }
 
 glm::quat custom_deleter_quat::operator()(glm::quat* f) {
   return *f;
@@ -917,6 +921,7 @@ bool operator==(Data d1, const Data d2) {
   return &d1 == &d2;
 }
 
+
 void wrap_mathUtils() {
 
     python::def("dot", _dot2);
@@ -952,7 +957,7 @@ void wrap_mathUtils() {
     python::def("clear_depth_buffer", clearDepthBuffer);
     python::def("clear_color_buffer", clearColorBuffer);
     python::def("set_alpha_transparency", setAlphaTransparency);
-    python::def("load_GL", loadGL);
+    //python::def("load_GL", loadGL);
     python::def("set_cursor_visible", setCursorVisible);
     python::def("get_pixel", getPixel);
     python::def("unproject", _unproject, python::return_value_policy<python::manage_new_object>());
@@ -961,6 +966,8 @@ void wrap_mathUtils() {
     python::def("terminate", glfwTerminate);
     python::def("get_time", glfwGetTime);
     python::def("get_key", glfwGetKey);
+    python::def("get_position", getPosition);
+
     python::def("get_mouse_button", getMouseButton);
     python::def("set_input_mode", glfwSetInputMode);
     python::def("make_context_current", glfwMakeContextCurrent, boost::python::return_value_policy<boost::python::return_opaque_pointer>());

@@ -1,5 +1,5 @@
-#version 330 core
-
+#version 300 es
+precision mediump float;
 in vec3 Pos;
 in vec2 TexCoord;
 in float Alpha;

@@ -118,6 +118,8 @@ public:
     std::vector<unsigned short> meshIsOccluded = {};
     std::vector<unsigned int> meshOcclusionQueries = {};
     int toDraw = 1;
+    int toDrawShadow = 1;
+
     int renderToUI = 0;
 
     unsigned int modelID;
@@ -134,6 +136,9 @@ public:
     
     int getToDraw();
     void setToDraw(int b);
+
+    int getToDrawShadow();
+    void setToDrawShadow(int b);
 
     int getUseCustomShader();
     void setUseCustomShader(int b);
@@ -166,7 +171,8 @@ public:
 
 private:
 
-    static vector<mat4> getObjectTransforms(const vector<AnimatedObject> &objectStore);
+    static vector<mat4> getObjectTransforms(vector<AnimatedObject> &objectStore, bool shadowPass);
+    static vector<unsigned int> getObjectIndices(vector<AnimatedObject> &objectStore, bool shadowPass);
 
 
 };

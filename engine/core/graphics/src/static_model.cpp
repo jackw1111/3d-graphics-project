@@ -2,16 +2,19 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+
 // a collection of objects all of the same filePath
-vector<vector<StaticObject>> StaticObject::modelRegistry = {};
+std::vector<std::vector<StaticObject>> StaticObject::modelRegistry = {};
 unsigned int StaticObject::uniqueObjectCount = 0;
 StaticShader StaticModel::shader = StaticShader();
 
 StaticObject::StaticObject(const std::string &filePath) {
+    std::cout << "got here0" << std::endl;
     load(filePath);
 }
 
 int StaticObject::load(const std::string &filePath) {
+    std::cout << "got here1" << std::endl;
     // check if a registry for the filePath has been created
     bool found = false;
     for (unsigned int i = 0; i < StaticObject::modelRegistry.size(); i++) {
@@ -42,6 +45,8 @@ int StaticObject::load(const std::string &filePath) {
         }
     }
     if (!found) {
+        std::cout << "got here4" << std::endl;
+
         // object is unique, create an object store in the registry
         this->filePath = filePath;
         this->model = std::shared_ptr<StaticModel>(new StaticModel(filePath));
@@ -56,6 +61,8 @@ int StaticObject::load(const std::string &filePath) {
         this->boundingBox.setup(min, max);
 
         StaticObject::modelRegistry.push_back({*this});
+        std::cout << "got here3" << std::endl;
+
     }
     return 0;
 }
@@ -118,14 +125,25 @@ void StaticObject::setToDraw(int b) {
     StaticObject::modelRegistry.at(this->modelID).at(this->uniqueID).toDraw = b;
 }
 
-vector<mat4> StaticObject::getObjectTransforms(const vector<StaticObject> &currentObjects) {
+vector<mat4> StaticObject::getObjectTransforms(vector<StaticObject> &currentObjects) {
     vector<mat4> modelTransforms = {};
     for (unsigned int i = 0; i < currentObjects.size(); i++) {
-        if (currentObjects[i].toDraw) {
-            modelTransforms.push_back(currentObjects[i].modelMatrix);
+        if (currentObjects[i].getToDraw()) {
+            modelTransforms.push_back(currentObjects[i].getModelMatrix());
         }
     }
     return modelTransforms;
+}
+
+
+vector<unsigned int> StaticObject::getObjectIndices(vector<StaticObject> &currentObjects) {
+    vector<unsigned int> modelIndices = {};
+    for (unsigned int i = 0; i < currentObjects.size(); i++) {
+        if (currentObjects[i].getToDraw()) {
+            modelIndices.push_back(i);
+        }
+    }
+    return modelIndices;
 }
 
 int StaticObject::drawAllObjects(Camera &active_camera, StaticShader &shader) {
@@ -133,11 +151,19 @@ int StaticObject::drawAllObjects(Camera &active_camera, StaticShader &shader) {
     unsigned int totalMeshes = 0;
     unsigned int drawnMeshes = 0;
 
+    shader.use();
+    glBindAttribLocation(shader.ID, 0, "aPos");
+    glBindAttribLocation(shader.ID, 1, "aNormal");
+    glBindAttribLocation(shader.ID, 2, "aTexCoords");
+    glBindAttribLocation(shader.ID, 5, "instanceMatrix");
+
     // for every model in registry
     for (unsigned int index = 0; index <  StaticObject::modelRegistry.size(); index++) {
         vector<StaticObject> *currentObjects = &StaticObject::modelRegistry[index];
+
         // get the modelMatrices for current objects
         vector<mat4> modelTransforms = StaticObject::getObjectTransforms(*currentObjects);
+        vector<unsigned int> objectIndices = StaticObject::getObjectIndices(*currentObjects);
 
         // get a reference to the underlying model data
         StaticModel *pModel = (*currentObjects)[0].model.get();
@@ -149,9 +175,9 @@ int StaticObject::drawAllObjects(Camera &active_camera, StaticShader &shader) {
             vector<mat4> coloredVisibleModelTransforms = {};
             vector<vec4> colors = {};
             //for each transform
-            for (unsigned int j = 0; j < modelTransforms.size(); j++) {  
+            for (unsigned int j = 0; j < objectIndices.size(); j++) {  
                 // get the current object
-                StaticObject *object = &(*currentObjects)[j];
+                StaticObject *object = &(*currentObjects).at(objectIndices.at(j));
                 StaticMesh *currentMesh = &(object->model.get()->meshes[i]);
 
                 vector<float> AABB = currentMesh->getAABB();
@@ -162,7 +188,7 @@ int StaticObject::drawAllObjects(Camera &active_camera, StaticShader &shader) {
                 object->setAABBMax(max);
                 //std::cout << "c:" << glm::to_string(currentMesh->boundingBox.min)<< ", "<< glm::to_string(currentMesh->boundingBox.max) << std::endl;
                 if (object->drawBoundingBox) {
-                    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+                    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
                     glDisable(GL_CULL_FACE);
                     currentMesh->boundingBox.modelMatrix = object->getModelMatrix();
                     currentMesh->boundingBox.setMatrix("model", object->getModelMatrix());
@@ -170,14 +196,12 @@ int StaticObject::drawAllObjects(Camera &active_camera, StaticShader &shader) {
                     currentMesh->boundingBox.setMatrix("projection", active_camera.projection_matrix);
                     currentMesh->boundingBox.draw();
                     StaticModel::shader.use();
-                    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+                    //glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
                     glEnable(GL_CULL_FACE);
                 }
 
                 // check if object mesh is either not culled or not occluded
                 if (!object->meshIsCulled[i]) {
-
-
 
                     visibleModelTransforms.push_back(modelTransforms[j]);
 
@@ -198,16 +222,17 @@ int StaticObject::drawAllObjects(Camera &active_camera, StaticShader &shader) {
 
             // Sorting doesn't seem to make sense when the fragment shader is so cheap
             
-            std::map<float, glm::mat4> sorted;
-            for (unsigned int i = 0; i < visibleModelTransforms.size(); i++)
-            {
-                float distance = glm::length2(active_camera.Position - vec3(visibleModelTransforms[i][3]));
-                sorted[distance] = visibleModelTransforms[i];
-            }
-            std::vector<glm::mat4> sortedModelTransforms = {};
-            for (auto& x: sorted) {
-                sortedModelTransforms.push_back(x.second);
-            }
+            // std::map<float, glm::mat4> sorted;
+            // for (unsigned int i = 0; i < visibleModelTransforms.size(); i++)
+            // {
+            //     float distance = glm::length2(active_camera.Position - vec3(visibleModelTransforms[i][3]));
+            //     sorted[distance] = visibleModelTransforms[i];
+            // }
+            // std::vector<glm::mat4> sortedModelTransforms = {};
+            // for (auto& x: sorted) {
+            //     sortedModelTransforms.push_back(x.second);
+            // }
+            
             // TO DO
             // maybe export shininess into a field that can then
             // be parsed from ASSIMP into a material field
@@ -340,8 +365,140 @@ int StaticModel::loadModel(string path)
     // process ASSIMP's root node recursively
     processNode(scene->mRootNode, scene);
 
-    StaticModel::shader.setup("../../shaders/staticmodel_shader.vs","../../shaders/staticmodel_shader.fs");
+    const char* _vShader = 
+    "#version 300 es\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aNormal;\n"
+    "layout (location = 2) in vec2 aTexCoords;\n"
+    "layout (location = 5) in mat4 instanceMatrix;\n"
+    "out vec2 TexCoord;\n"
+    "out float diffuse;\n"
+    "out vec4 FragPosLightSpace;\n"
+    "out vec3 FragPos;\n"
+    "out vec3 Normal;\n"
+    "out vec4 color;\n"
+    "uniform mat4 proj_view;\n"
+    "uniform vec4 colors[1000];\n"
+    "uniform mat4 lightSpaceMatrix;\n"
+    "uniform vec3 viewPos;\n"
+    "uniform vec3 lightPos;\n"
+    "uniform float nearPlane;\n"
+    "uniform float farPlane;\n"
+    "out float alpha;\n"
+    "out float alpha2;\n"
+    "out vec3 _viewPos;\n"
+    "out vec3 _lightPos;\n"
+    "float getFogFactor(float d, float nearPlane, float farPlane)\n"
+    "{\n"
+    "    float FogMax = 1.0f * farPlane;\n"
+    "    float FogMin = 0.5f * farPlane;\n"
+    "    if (d>=FogMax) return 1.0f;\n"
+    "    if (d<=FogMin) return 0.0f;\n"
+    "    return 1.0f - (FogMax - d) / (FogMax - FogMin);\n"
+    "}\n"
+    "float getFogFactorAlpha(float d, float nearPlane, float farPlane)\n"
+    "{\n"
+    "    float FogMax = 1.0f * farPlane;\n"
+    "    float FogMin = 0.7f * farPlane;\n"
+    "    if (d>=FogMax) return 1.0f;\n"
+    "    if (d<=FogMin) return 0.0f;\n"
+    "    return 1.0f - (FogMax - d) / (FogMax - FogMin);\n"
+    "}\n"
+    "void main()\n"
+    "{\n"
+    "    vec4 fragPos = instanceMatrix * vec4(aPos, 1.0);\n"
+    "    TexCoord = aTexCoords;\n"
+    "    color = colors[gl_InstanceID];\n"
+    "    mat3 normalMatrix = transpose(inverse(mat3(instanceMatrix)));\n"
+    "    Normal = normalize(normalMatrix * aNormal);\n"
+    "    vec3 lightDir = normalize(lightPos);\n"  
+    "    diffuse =  max(dot(Normal, lightDir), 0.0);\n"
+    "    gl_Position = proj_view * fragPos;\n"
+    "    FragPosLightSpace = lightSpaceMatrix * fragPos;\n"
+    "    FragPos = fragPos.xyz;\n"
+    "    float d = distance(viewPos, FragPos);\n"
+    "    alpha = getFogFactor(d, nearPlane, farPlane);\n"
+    "    alpha2 = getFogFactorAlpha(d, nearPlane, farPlane);\n"
+    "    _viewPos = viewPos;\n"
+    "    _lightPos = lightPos;\n"
+    "}\n";
 
+    const char* _fShader =
+    "#version 300 es\n"
+    "precision mediump float;\n"
+    "in vec2 TexCoord;\n"
+    "in vec4 color;\n"
+    "in vec4 FragPosLightSpace;\n"
+    "in vec4 farFragPosLightSpace;\n"
+    "in vec3 FragPos;\n"
+    "in float alpha;\n"
+    "in float alpha2;\n"
+    "in vec3 Normal;\n"
+    "in vec3 _viewPos;\n"
+    "in vec3 _lightPos;\n"
+    "out vec4 FragColor;\n"
+
+    "uniform sampler2D texture_diffuse1;\n"
+    "uniform sampler2D depthMap;\n"
+    "uniform sampler2D ditherMap;\n"
+    "uniform vec3 backgroundColor;\n"
+    "uniform samplerCube skybox;\n"
+    "float ambient = 0.55;\n"
+    "in float diffuse;\n"
+    "uniform float shininess;\n"
+    "vec3 fresnelSchlick(float cosTheta, vec3 F0)\n"
+    "{\n"
+    "    return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);\n"
+    "}\n"                             
+    "float ShadowCalculation(vec4 fragPosLightSpace)\n"
+    "{\n"
+    "    // perform perspective divide\n"
+    "    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;\n"
+    "    // transform to [0,1] range\n"
+    "    projCoords = projCoords * 0.5 + 0.5;\n"
+    "    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)\n"
+    "    float closestDepth = texture(depthMap, projCoords.xy).r;\n" 
+    "    // get depth of current fragment from light's perspective\n"
+    "    float currentDepth = projCoords.z;\n"
+    "    // check whether current frag pos is in shadow\n"
+    "    float shadow = currentDepth > closestDepth  ? currentDepth - closestDepth: 0.0;\n"
+    "    // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.\n"
+    "    if(projCoords.z > 1.0)\n"
+    "        shadow = 0.0;\n"
+    "    return shadow;\n"
+    "}\n"
+    "void main()\n"
+    "{\n"    
+    "    //float dist = distance(FragPos, _viewPos);\n"
+    "    float shadow = ShadowCalculation(FragPosLightSpace);\n"
+    "    shadow = (shadow == 0.0 ? 1.0 : max(min(shadow, 1.0),0.35));\n"      
+    "    FragColor = texture(texture_diffuse1, TexCoord);\n"
+    "    if (FragColor.a < 0.5f) {\n"
+    "        discard;\n"
+    "    }\n"
+    "    //vec4 dither = vec4(texture2D(ditherMap, gl_FragCoord.xy / 8.0).r / 32.0 - (1.0 / 128.0));\n"
+    "    //vec3 lightDir = normalize(_lightPos - FragPos);\n"  
+    "    vec3 viewDir = normalize(_viewPos - FragPos);\n"
+    "    //vec3 reflectDir = reflect(-lightDir, Normal);\n"  
+    "    //float specular = pow(max(dot(viewDir, reflectDir), 0.0), 2);\n"
+    "    FragColor *= shadow;\n"
+    "    FragColor.rgb *= (diffuse + ambient); // + specular\n"
+    "    FragColor = mix(FragColor, vec4(backgroundColor, 1.0), alpha);\n"
+    "    FragColor.a = 1.0f-alpha2;\n"
+    "    //FragColor.rgb += dither.rgb*0.05;\n"
+    "    vec3 F0 = vec3(0.04);\n"
+    "    F0      = mix(F0, FragColor.rgb, 0.0f);\n"
+    "    FragColor.rgb =  (color != vec4(-1,-1,-1,-1) ? FragColor.rgb + fresnelSchlick(dot(Normal, viewDir), F0) * color.rgb : FragColor.rgb);\n"
+    "    if (color.a != -1.0f) {\n"
+    "        FragColor.a = color.a;\n"
+    "    }\n"
+    "    vec3 I = normalize(FragPos - _viewPos);\n"
+    "    vec3 R = reflect(I, normalize(Normal));\n"
+    "    FragColor = (shininess == 1.0f ? FragColor * vec4(texture(skybox, R).rgb,1.0) : FragColor);\n"
+    "}\n";
+    
+
+    StaticModel::shader.setup(_vShader, _fShader);
     model = mat4(1.0);
 
     isInitialized = true;
@@ -524,16 +681,16 @@ unsigned int TextureFromFile(const char *path, const string &directory)
         GLenum format = 0;
         GLenum format2 = 0;
 
-        if (nrComponents == 1) {
+        if (nrComponents == 1){
             format = GL_RED;
-            format2 = GL_RED;
-        } else if (nrComponents == 3) {
-            format = GL_SRGB8;
-            format2 = GL_RGB;
-        } else if (nrComponents == 4) {
-            format = GL_SRGB8_ALPHA8;
-            format2 = GL_RGBA;
         }
+        else if (nrComponents == 3){
+            format = GL_RGB;
+        }
+        else if (nrComponents == 4){
+            format = GL_RGBA;
+        }
+
         glBindTexture(GL_TEXTURE_2D, textureID);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -541,7 +698,7 @@ unsigned int TextureFromFile(const char *path, const string &directory)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format2, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
 
 

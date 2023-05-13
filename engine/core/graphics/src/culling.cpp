@@ -111,7 +111,7 @@ Query query_face_directions(const Body &hullA, const Body &hullB) {
     max_index.push_back(-1);
     max_index.push_back(-1);
     glm::vec3 best_axis;
-    for (unsigned i = 0; i < hullA.faces.size(); i++) {
+    for (int i = 0; i < hullA.faces.size(); i++) {
         Face f = hullA.faces.at(i);
         glm::vec3 support_point = get_support(hullB.vertices, f.normal * -1.0f);
         float dist = pointPlaneDistance(support_point, f.position, f.normal);
@@ -132,12 +132,12 @@ Query query_edge_directions(const Body &hullA, const Body &hullB) {
     max_index.push_back(-1);
     glm::vec3 best_axis;
 
-    for (unsigned i = 0; i < hullA.edges.size(); i++) {
+    for (int i = 0; i < hullA.edges.size(); i++) {
         Edge edge_a = hullA.edges.at(i);
         glm::vec3 edge_a_n1 = hullA.faces[edge_a.face_indices[0]].normal;
         glm::vec3 edge_a_n2 = hullA.faces[edge_a.face_indices[1]].normal;
 
-        for (unsigned j = 0; j < hullB.edges.size(); j++) {
+        for (int j = 0; j < hullB.edges.size(); j++) {
             Edge edge_b = hullB.edges.at(j);
             glm::vec3 edge_b_n1 = hullB.faces[edge_b.face_indices[0]].normal;
             glm::vec3 edge_b_n2 = hullB.faces[edge_b.face_indices[1]].normal;
@@ -216,99 +216,105 @@ std::vector<Query> SAT(const Body &hullA, const Body &hullB) {
 }
 
 Frustum::Frustum(float _fov, float _nearDist, float _farDist, float _WIDTH, float _HEIGHT, Camera camera) {
-    fov = _fov;
-    nearDist = _nearDist;
-    farDist = _farDist;
-    ar = (float)_WIDTH / (float)_HEIGHT;
+    if (_fov != 0.0f) {
+        fov = _fov;
+        nearDist = _nearDist;
+        farDist = _farDist;
+        ar = (float)_WIDTH / (float)_HEIGHT;
 
 
-    // float fov = 45.0f;
-    // float nearDist = 0.1f;
-    // float farDist = 1000.0f;
-    // float ar = (float)WIDTH / (float)HEIGHT;
+        // float fov = 45.0f;
+        // float nearDist = 0.1f;
+        // float farDist = 1000.0f;
+        // float ar = (float)WIDTH / (float)HEIGHT;
 
-    float Hnear;
-    float Wnear;
-    float Hfar;
-    float Wfar;
+        float Hnear;
+        float Wnear;
+        float Hfar;
+        float Wfar;
 
-    // ortho
-    if (fov == 0.0f) {
-        Wnear = _WIDTH;
-        Hnear = _HEIGHT;
-        Hfar = _HEIGHT;
-        Wfar = _WIDTH;
-
-    // perspective
-    } else {
+        // perspective
         Hnear = 2* tan(radians(fov/2)) * nearDist;
         Wnear = Hnear * ar;
         Hfar = 2* tan(radians(fov/2)) * farDist;
         Wfar = Hfar * ar; 
+
+
+        // calculate frustum data per frame
+        Cnear = camera.Position + glm::normalize(camera.Front) * nearDist;
+        Cfar = camera.Position + glm::normalize(camera.Front) * farDist;
+
+        topRightFar = Cfar + (camera.Up * (Hfar / 2)) + (camera.Right * (Wfar / 2));
+        bottomRightFar = Cfar - (camera.Up * (Hfar / 2)) + (camera.Right * (Wfar / 2));
+
+        topLeftFar =  Cfar + (camera.Up * (Hfar / 2)) - (camera.Right * (Wfar / 2));
+        bottomLeftFar =  Cfar - (camera.Up * (Hfar / 2)) - (camera.Right * (Wfar / 2));
+
+        topRightNear = Cnear + (camera.Up * (Hnear / 2)) + (camera.Right * (Wnear / 2));
+        topLeftNear =  Cnear + (camera.Up * (Hnear / 2)) - (camera.Right * (Wnear / 2));
+
+        bottomLeftNear = Cnear - (camera.Up * (Hnear /2)) - (camera.Right * (Wnear / 2));
+        bottomRightNear = Cnear - (camera.Up * (Hnear /2)) + (camera.Right * (Wnear / 2));
+
+        vec3 aux = glm::normalize((Cnear + camera.Right * (float)(Wnear / 2)) - camera.Position);
+        rightNormal = glm::normalize(glm::cross(aux, camera.Up));
+        aux = glm::normalize((Cnear - camera.Right * (float)(Wnear / 2)) - camera.Position);
+        leftNormal = glm::normalize(glm::cross(aux, camera.Up));
+
+        aux = glm::normalize((Cnear + camera.Up * (float)(Hnear / 2)) - camera.Position);
+        topNormal =  glm::normalize(glm::cross(aux, camera.Right));
+
+        aux = glm::normalize((Cnear - camera.Up * (float)(Hnear / 2)) - camera.Position);
+        bottomNormal =  glm::normalize(glm::cross(aux, camera.Right));
+
+        backNormal = camera.Front;
+        frontNormal = -1.0f * camera.Front;
+        std::vector<glm::vec2> screenPoints = { glm::vec2(0,0), glm::vec2(_WIDTH, 0),
+                                                glm::vec2(_WIDTH, _HEIGHT), glm::vec2(0, _HEIGHT)};
+
+        float fovx = glm::degrees(2.0f * atan(tan(radians(fov/2.0f)) * ar));
+        float diagonalNearDist = nearDist / (cos(radians(fovx/2.0f)) * cos(radians(fov/2.0f)));
+        float diagonalFarDist = farDist / (cos(radians(fovx/2.0f)) * cos(radians(fov/2.0f)));
+
+        std::vector<glm::vec3> frustumVertices = {};
+        for (unsigned int i = 0; i < screenPoints.size(); i++) {
+            glm::vec2 p = screenPoints.at(i);
+            glm::vec3 ray_wor = rayCast(p.x, _HEIGHT-p.y, camera.view_matrix, camera.projection_matrix, _WIDTH, _HEIGHT);
+            glm::vec3 coord1 = camera.Position + ray_wor * diagonalNearDist;
+            frustumVertices.push_back(coord1);
+        }
+        for (unsigned int i = 0; i < screenPoints.size(); i++) {
+            glm::vec2 p = screenPoints.at(i);
+            glm::vec3 ray_wor = rayCast(p.x, _HEIGHT-p.y, camera.view_matrix, camera.projection_matrix, _WIDTH, _HEIGHT);
+            glm::vec3 coord1 = camera.Position + ray_wor * diagonalFarDist;
+            frustumVertices.push_back(coord1);
+        }
+
+        bottomLeftNear = frustumVertices.at(0);
+        bottomRightNear = frustumVertices.at(1);
+        topRightNear = frustumVertices.at(2);
+        topLeftNear = frustumVertices.at(3);
+        bottomLeftFar = frustumVertices.at(4);
+        bottomRightFar = frustumVertices.at(5);
+        topRightFar = frustumVertices.at(6);
+        topLeftFar = frustumVertices.at(7);
+
+        frustum_body.update({topLeftNear, bottomLeftNear, bottomRightNear, topRightNear, topLeftFar, bottomLeftFar, bottomRightFar, topRightFar});
     }
+    //  else {
+    //     bottomLeftNear = frustumVertices.at(0);
+    //     bottomRightNear = frustumVertices.at(1);
+    //     topRightNear = frustumVertices.at(2);
+    //     topLeftNear = frustumVertices.at(3);
+    //     bottomLeftFar = frustumVertices.at(4);
+    //     bottomRightFar = frustumVertices.at(5);
+    //     topRightFar = frustumVertices.at(6);
+    //     topLeftFar = frustumVertices.at(7);
 
-    // calculate frustum data per frame
-    Cnear = camera.Position + glm::normalize(camera.Front) * nearDist;
-    Cfar = camera.Position + glm::normalize(camera.Front) * farDist;
+    //     frustum_body.update({topLeftNear, bottomLeftNear, bottomRightNear, topRightNear, topLeftFar, bottomLeftFar, bottomRightFar, topRightFar});
+    // }
 
-    topRightFar = Cfar + (camera.Up * (Hfar / 2)) + (camera.Right * (Wfar / 2));
-    bottomRightFar = Cfar - (camera.Up * (Hfar / 2)) + (camera.Right * (Wfar / 2));
-
-    topLeftFar =  Cfar + (camera.Up * (Hfar / 2)) - (camera.Right * (Wfar / 2));
-    bottomLeftFar =  Cfar - (camera.Up * (Hfar / 2)) - (camera.Right * (Wfar / 2));
-
-    topRightNear = Cnear + (camera.Up * (Hnear / 2)) + (camera.Right * (Wnear / 2));
-    topLeftNear =  Cnear + (camera.Up * (Hnear / 2)) - (camera.Right * (Wnear / 2));
-
-    bottomLeftNear = Cnear - (camera.Up * (Hnear /2)) - (camera.Right * (Wnear / 2));
-    bottomRightNear = Cnear - (camera.Up * (Hnear /2)) + (camera.Right * (Wnear / 2));
-
-    vec3 aux = glm::normalize((Cnear + camera.Right * (float)(Wnear / 2)) - camera.Position);
-    rightNormal = glm::normalize(glm::cross(aux, camera.Up));
-    aux = glm::normalize((Cnear - camera.Right * (float)(Wnear / 2)) - camera.Position);
-    leftNormal = glm::normalize(glm::cross(aux, camera.Up));
-
-    aux = glm::normalize((Cnear + camera.Up * (float)(Hnear / 2)) - camera.Position);
-    topNormal =  glm::normalize(glm::cross(aux, camera.Right));
-
-    aux = glm::normalize((Cnear - camera.Up * (float)(Hnear / 2)) - camera.Position);
-    bottomNormal =  glm::normalize(glm::cross(aux, camera.Right));
-
-    backNormal = camera.Front;
-    frontNormal = -1.0f * camera.Front;
-    std::vector<glm::vec2> screenPoints = { glm::vec2(0,0), glm::vec2(_WIDTH, 0),
-                                            glm::vec2(_WIDTH, _HEIGHT), glm::vec2(0, _HEIGHT)};
-
-    float fovx = glm::degrees(2.0f * atan(tan(radians(fov/2.0f)) * ar));
-    float diagonalNearDist = nearDist / (cos(radians(fovx/2.0f)) * cos(radians(fov/2.0f)));
-    float diagonalFarDist = farDist / (cos(radians(fovx/2.0f)) * cos(radians(fov/2.0f)));
-
-    std::vector<glm::vec3> frustumVertices = {};
-    for (unsigned int i = 0; i < screenPoints.size(); i++) {
-        glm::vec2 p = screenPoints.at(i);
-        glm::vec3 ray_wor = rayCast(p.x, _HEIGHT-p.y, camera.view_matrix, camera.projection_matrix, _WIDTH, _HEIGHT);
-        glm::vec3 coord1 = camera.Position + ray_wor * diagonalNearDist;
-        frustumVertices.push_back(coord1);
-    }
-    for (unsigned int i = 0; i < screenPoints.size(); i++) {
-        glm::vec2 p = screenPoints.at(i);
-        glm::vec3 ray_wor = rayCast(p.x, _HEIGHT-p.y, camera.view_matrix, camera.projection_matrix, _WIDTH, _HEIGHT);
-        glm::vec3 coord1 = camera.Position + ray_wor * diagonalFarDist;
-        frustumVertices.push_back(coord1);
-    }
-
-    bottomLeftNear = frustumVertices.at(0);
-    bottomRightNear = frustumVertices.at(1);
-    topRightNear = frustumVertices.at(2);
-    topLeftNear = frustumVertices.at(3);
-    bottomLeftFar = frustumVertices.at(4);
-    bottomRightFar = frustumVertices.at(5);
-    topRightFar = frustumVertices.at(6);
-    topLeftFar = frustumVertices.at(7);
-
-    frustum_body.update({topLeftNear, bottomLeftNear, bottomRightNear, topRightNear, topLeftFar, bottomLeftFar, bottomRightFar, topRightFar});
 }
-
 
 // @todo implement polymorphic behaviour to cull static and animated objects
 void Frustum::cullStaticObject(StaticObject &object) {

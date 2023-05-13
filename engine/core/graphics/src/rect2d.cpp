@@ -46,6 +46,41 @@ Rect2D::Rect2D(glm::vec2 pos, glm::vec2 sz, std::string _filePath, unsigned int 
 	bottomLeft = glm::vec4(x - hw,  y - hh, 0.0f, 1.0f);
 	topLeft = glm::vec4(x - hw,  y + hh, 0.0f, 1.0f);
 
+	const char *vertexShader = 
+	"#version 300 es\n"
+	"layout (location = 0) in vec3 aPos;\n"
+	"layout (location = 1) in vec2 aTexCoord;\n"
+	"layout (location = 2) in float aAlpha;\n"
+	"out vec3 Pos;\n"
+	"out vec2 TexCoord;\n"
+	"out float Alpha;\n"
+	"uniform mat4 viewProjection;\n"
+	"void main()\n"
+	"{\n"
+	"	gl_Position = viewProjection * vec4(aPos, 1.0);\n"
+	"	Pos = aPos;\n"
+	"	TexCoord = aTexCoord;\n"
+	"	Alpha = aAlpha;\n"
+	"}\n";
+
+	const char *fragmentShader = 
+	"#version 300 es\n"
+    "precision mediump float;\n"
+	"in vec3 Pos;\n"
+	"in vec2 TexCoord;\n"
+	"in float Alpha;\n"
+	"out vec4 FragColor;\n"
+	"uniform sampler2D texture1;\n"
+	"void main()\n"
+	"{\n"
+	"	if (texture(texture1, TexCoord).a == 0.0f) {\n"
+	"		discard;\n"
+	"	}\n"
+	"	FragColor = texture(texture1, TexCoord);\n"
+	"	FragColor.a *= Alpha;\n"
+	"}\n";
+
+
     if (!Rect2D::setup) {
 	    glGenVertexArrays(1, &Rect2D::VAO);
 	    glGenBuffers(1, &Rect2D::VBO);
@@ -92,8 +127,8 @@ Rect2D::Rect2D(glm::vec2 pos, glm::vec2 sz, std::string _filePath, unsigned int 
 	    glBindVertexArray(0); 
 
 	    // setup textures
-	    rectShader.setup("../../shaders/rect2d_shader.vs",
-	                     "../../shaders/rect2d_shader.fs"); 
+	    rectShader.setup(vertexShader,
+	                     fragmentShader); 
 
 	    Rect2D::setup = true;
 	}
@@ -133,7 +168,7 @@ Rect2D::Rect2D(glm::vec2 pos, glm::vec2 sz, std::string _filePath, unsigned int 
 
 	    if (data)
 	    {
-	        glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB_ALPHA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	        glGenerateMipmap(GL_TEXTURE_2D);
 	    }
 	    else

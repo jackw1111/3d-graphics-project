@@ -24,7 +24,7 @@ public:
 
 private:
 	vector<vector<mat4> > bonesMatrix;
-    GLuint m_boneLocation[MAX_MODELS][MAX_BONES];
+    GLuint m_boneLocation[MAX_MODELS * MAX_BONES];
 };
 
 

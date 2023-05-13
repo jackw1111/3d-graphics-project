@@ -35,7 +35,7 @@ class App(Application):
         self.use_normal_map = True
         self.start_time = time.time()
         self.active_camera.MovementSpeed = 10.0
-        self.active_camera.position = vec3(0.328692, -0.001445, -3.051301)
+        self.active_camera.position = vec3(-10, 3, -10)
         self.active_camera.yaw = 45.0
 
         self.all_models = []
@@ -58,14 +58,33 @@ class App(Application):
         self.x_val = 1.0
         self.y_val = 1.0
         self._offset = 0
+        self.drawing = True
 
+
+        ###########
+        self.tmp_model = StaticObject("./data/astroboy.dae")
+        self.tmp_model.shininess = 1.0
+        self.tmp_model.draw_bounding_box = True
+        self.tmp_model.set_to_draw = self.drawing
+        self.tmp_model.set_to_draw_shadow = True
+        # BUG: have to set color otherwise AnimatedObject doesnt draw!
+        self.tmp_model.color = vec4(random.randrange(0,2,1), random.randrange(0,2,1), random.randrange(0,2,1), 1.0)
+        self.tmp_transform = mat4(1.0)
+        self.tmp_transform = rotate(translate(self.tmp_transform, vec3(self.val,3,0)), math.radians(-90.0), vec3(1,0,0))
+        self.tmp_model.model_matrix = self.tmp_transform
+        offset = random.uniform(0, 10)
+        #self.tmp_model.offset = offset
+        #self.tmp_model.set_frames(0.0, 1.0, self.tmp_model.offset)
+        self.val += 3
+        #self.tmp_model.draw_bounding_box = True
+        self.all_models.append(self.tmp_model)
+
+        ###########
     def update(self):
         print (self.get_fps())
         self.x = 1
-        self.shadow_map_center = vec3(0,0,0)
         #self.light.position = vec3(math.cos(time.time()), 3, math.sin(time.time()))
         self.process_input(self.window)
-
 
         # for m in self.all_models:
         #     m.offset += 0.01
@@ -141,10 +160,18 @@ class App(Application):
 
         #self.console.on_key_pressed(key, scancode, action, mods)
         if (action == 1):
+            if (key == KEY_0):
+                if (self.drawing):
+                    self.drawing = False
+                else:
+                    self.drawing = True
+
             if (key == KEY_1):
                 self.tmp_model = AnimatedObject("./data/astroboy.dae")
                 self.tmp_model.shininess = 1.0
                 self.tmp_model.draw_bounding_box = True
+                self.tmp_model.set_to_draw = self.drawing
+                self.tmp_model.set_to_draw_shadow = True
                 # BUG: have to set color otherwise AnimatedObject doesnt draw!
                 self.tmp_model.color = vec4(random.randrange(0,2,1), random.randrange(0,2,1), random.randrange(0,2,1), 1.0)
                 self.tmp_transform = mat4(1.0)

@@ -12,9 +12,22 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_interpolation.hpp>
+#ifdef GAME_TOOL
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <emscripten/bind.h>
+using namespace emscripten;
+#define GL_GLEXT_PROTOTYPES
+#define EGL_EGLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GLES2/gl2.h>
+#endif
+#else
 #ifndef __GL_HEADERS
 #define __GL_HEADERS
 #include <glad/glad.h>
+#endif
 #endif
 
 using std::vector;

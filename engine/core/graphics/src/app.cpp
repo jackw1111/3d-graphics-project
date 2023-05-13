@@ -1,10 +1,3 @@
-#include "app.h"
-#include <chrono>
-
-std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
-
 /*
  * Application uses an unorthodox pattern where each callback has two functions
  * an internal implementation that simply calls a purely abstact function of the same callback.
@@ -14,9 +7,8 @@ std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
  * It's abit overkill, but it works.
  */
 
-// set default app size; is overwritten from Python call anyway
-unsigned int WIDTH = 800;
-unsigned int HEIGHT = 600;
+#include "app.h"
+#include <chrono>
 
 #include <math.h>
 
@@ -24,23 +16,20 @@ unsigned int HEIGHT = 600;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <boost/python.hpp>
-#include <boost/python/numpy.hpp>
-#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
-#include <boost/python/detail/operator_id.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/python.hpp>
-#include <boost/shared_ptr.hpp>
-
-using namespace boost;
-using namespace boost::python;
-
-
 #include <sstream>
 #include <vector>
 #include <iomanip>
+#include <set>
 
 #include "engine.h"
+
+std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+
+// set default app size; is overwritten from Python call anyway
+unsigned int WIDTH = 800;
+unsigned int HEIGHT = 600;
 
 
 // renderQuad() renders a 1x1 XY quad in NDC
@@ -123,52 +112,106 @@ Application::Application(std::string title, unsigned int _WIDTH, unsigned int _H
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    if (!MSAA) {
-        glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE );
-    }
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+    if (glfwGetCurrentContext() == NULL) {
 
-    if (MSAA) {
-        glfwWindowHint(GLFW_SAMPLES, 4);
-    }
-    if (!fullscreen) {
-        window = glfwCreateWindow(WIDTH, HEIGHT, title.c_str(), NULL, NULL);
-        std::cout << window << std::endl;
-        assert(window != NULL);
-    } else {
-        window = glfwCreateWindow(WIDTH, HEIGHT, title.c_str(), glfwGetPrimaryMonitor(), NULL);
-        std::cout << window << std::endl;
-        assert(window != NULL);
+        if (!MSAA) {
+            glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE );
+        }
+        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    }
+        if (MSAA) {
+            glfwWindowHint(GLFW_SAMPLES, 4);
+        }
+        if (!fullscreen) {
+            window = glfwCreateWindow(WIDTH, HEIGHT, title.c_str(), NULL, NULL);
+            std::cout << window << std::endl;
+            assert(window != NULL);
+        } else {
+            window = glfwCreateWindow(WIDTH, HEIGHT, title.c_str(), glfwGetPrimaryMonitor(), NULL);
+            std::cout << window << std::endl;
+            assert(window != NULL);
 
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-    }
-    glfwMakeContextCurrent(window);
-    if (!MSAA) {
-        glfwSwapInterval(0);
-    }
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-    } 
-    std::cout << glGetString ( GL_SHADING_LANGUAGE_VERSION ) << std::endl;
+        }
 
-    if (!GLAD_GL_ARB_arrays_of_arrays) {
-        std::cout << "GL_ARB_arrays_of_arrays not supported!" << std::endl; 
+        if (window == NULL)
+        {
+            std::cout << "Failed to create GLFW window" << std::endl;
+            glfwTerminate();
+        }
+        std::cout << "got here1" << std::endl;
+
+        glfwMakeContextCurrent(window);
+        std::cout << "got here2" << std::endl;
+
+        if (!MSAA) {
+            glfwSwapInterval(0);
+        }
+        #ifdef GAME_TOOL
+        //
+        #else
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        {
+            std::cout << "Failed to initialize GLAD" << std::endl;
+        } 
+        #endif
+        GLint no_of_extensions = 0;
+        glGetIntegerv(GL_NUM_EXTENSIONS, &no_of_extensions);
+
+        std::set<std::string> ogl_extensions;
+        for (int i = 0; i < no_of_extensions; i++) {
+            ogl_extensions.insert((const char*)glGetStringi(GL_EXTENSIONS, i));
+        }
+        bool texture_storage = 
+            ogl_extensions.find("GL_ARB_arrays_of_arrays") != ogl_extensions.end();
+        if (texture_storage) {
+             std::cout << "GL_ARB_arrays_of_arrays not supported!" << std::endl; 
+        }
+
+        texture_storage = 
+            ogl_extensions.find("GL_ARB_shader_storage_buffer_object") != ogl_extensions.end();
+        if (texture_storage) {
+             std::cout << "GL_ARB_shader_storage_buffer_object not supported!" << std::endl; 
+        }
+
+        texture_storage = 
+            ogl_extensions.find("GL_EXT_multi_draw_arrays") != ogl_extensions.end();
+        if (texture_storage) {
+             std::cout << "GL_EXT_multi_draw_arrays not supported!" << std::endl; 
+        }
+
+        texture_storage = 
+            ogl_extensions.find("GL_ARB_multi_draw_indirect") != ogl_extensions.end();
+        if (texture_storage) {
+             std::cout << "GL_ARB_multi_draw_indirect not supported!" << std::endl; 
+        }   
+        texture_storage = 
+            ogl_extensions.find("GL_OES_depth_texture extension") != ogl_extensions.end();
+        if (texture_storage) {
+             std::cout << "GL_OES_depth_texture extension not supported!" << std::endl; 
+        }   
+        // if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        // {
+        //     std::cout << "Failed to initialize GLAD" << std::endl;
+        // } 
+        std::cout << glGetString ( GL_SHADING_LANGUAGE_VERSION ) << std::endl;
+        std::cout << "got here2" << std::endl;
+
+        // if (!GLAD_GL_ARB_arrays_of_arrays) {
+        //     std::cout << "GL_ARB_arrays_of_arrays not supported!" << std::endl; 
+        // }
+        // if (!GLAD_GL_ARB_shader_storage_buffer_object) {
+        //     std::cout << "GL_ARB_shader_storage_buffer_object not supported!" << std::endl; 
+        // }
+        // if (!GLAD_GL_EXT_multi_draw_arrays) {
+        //     std::cout << "GL_EXT_multi_draw_arrays not supported!" << std::endl; 
+        // }
+        // if (!GLAD_GL_ARB_multi_draw_indirect) {
+        //     std::cout << "GLAD_GL_ARB_multi_draw_indirect not supported!" << std::endl; 
+        // }
+        // std::cout << "got here3" << std::endl;
     }
-    if (!GLAD_GL_ARB_shader_storage_buffer_object) {
-        std::cout << "GL_ARB_shader_storage_buffer_object not supported!" << std::endl; 
-    }
-    if (!GLAD_GL_EXT_multi_draw_arrays) {
-        std::cout << "GL_EXT_multi_draw_arrays not supported!" << std::endl; 
-    }
-    if (!GLAD_GL_ARB_multi_draw_indirect) {
-        std::cout << "GLAD_GL_ARB_multi_draw_indirect not supported!" << std::endl; 
-    }
+    
     setup(title, WIDTH, HEIGHT, fullscreen, _MSAA);
 
 }
@@ -184,17 +227,18 @@ void Application::createShadowFBO() {
 
     glGenTextures(1, &depthMap);
     glBindTexture(GL_TEXTURE_2D, depthMap);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowMapResolution, shadowMapResolution, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    //glTexStorage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadowMapResolution, shadowMapResolution);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, shadowMapResolution, shadowMapResolution, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);  
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); 
     // attach depth texture as FBO's depth buffer
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-    glDrawBuffer(GL_NONE);
+    const GLenum attachments[] = {GL_NONE};
+    glDrawBuffers(1, attachments);    // OK
+    //glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -204,19 +248,18 @@ void Application::createShadowFBO() {
 // useful for drawing to different contexts/windows of OpenGL
 
 int Application::setup(std::string title, unsigned int WIDTH, unsigned int HEIGHT, bool fullscreen, bool _MSAA) {
-
     lastX = WIDTH / 2.0f;
     lastY = HEIGHT / 2.0f;
     std::cout << "constructor in C++" << std::endl;
     MSAA = _MSAA;
-    
+
     if (MSAA){
         glEnable(GL_MULTISAMPLE);
     }
+
     // glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
     // glEnable(GL_LINE_SMOOTH);
-    
-    glEnable(GL_FRAMEBUFFER_SRGB);
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
@@ -230,7 +273,35 @@ int Application::setup(std::string title, unsigned int WIDTH, unsigned int HEIGH
     active_camera.projection_matrix = perspective(45.0f, float(WIDTH)/float(HEIGHT), active_camera.nearPlane, active_camera.farPlane);
 
     sky_box = Skybox();
-    sky_box_shader.setup("/home/me/Documents/3d-graphics-project/shaders/skybox_shader.vs","/home/me/Documents/3d-graphics-project/shaders/skybox_shader.fs");
+
+    const char* skybox_vShader =
+    "#version 300 es\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec3 aNormal;\n"
+    "layout (location = 2) in vec3 aTexCoords;\n"
+    "out vec3 TexCoords;\n"
+    "uniform mat4 model;\n"
+    "uniform mat4 view;\n"
+    "uniform mat4 projection;\n"
+    "void main()\n"
+    "{\n"
+    "    TexCoords = aPos;\n"
+    "    vec4 pos = projection * view * model * vec4(aPos, 1.0);\n"
+    "    gl_Position = pos.xyww;\n"
+    "}\n";  
+
+    const char* skybox_fShader =
+    "#version 300 es\n"
+    "precision mediump float;\n"
+    "out vec4 FragColor;\n"
+    "in vec3 TexCoords;\n"
+    "uniform samplerCube skybox;\n"
+    "void main()\n"
+    "{    \n"
+    "    FragColor = texture(skybox, TexCoords);\n"
+    "}\n";
+
+    sky_box_shader.setup(skybox_vShader, skybox_fShader);
     std::cout << "skybox loading finished." << std::endl;
 
     std::vector<std::string> faces = {
@@ -251,10 +322,10 @@ int Application::setup(std::string title, unsigned int WIDTH, unsigned int HEIGH
     createShadowFBO();
 
     // dither map
-    ditherMap = TextureFromFile("dither.png", "/home/me/Documents/3d-graphics-project/data");
+    //ditherMap = TextureFromFile("dither.png", "/home/me/Documents/3d-graphics-project/data");
 
     lastFrame = 0.0f;
-
+    
     return 0;
 }
 
@@ -280,7 +351,7 @@ void Application::drawScene(int shadowPass) {
         glm::vec3 _bottomLeftFar = frustum.bottomLeftFar;
         glm::vec3 _topLeftFar = frustum.topLeftFar;
 
-        std::array<glm::vec3, 8> frustumToLightView
+        std::array<glm::vec3, 8> frustumToLightView =
         {
             lightView * glm::vec4(_bottomRightNear, 1.0f),
             lightView * glm::vec4(_topRightNear, 1.0f),
@@ -337,8 +408,9 @@ void Application::drawScene(int shadowPass) {
             sky_box_shader.setMat4("model", mat4(1.0));
             sky_box.Draw(sky_box_shader);      
         }   
-        Particle::setCamera(proj_view);
-        Particle::drawAllParticles(active_camera, 0);      
+        /*Particle::setCamera(proj_view);
+        Particle::drawAllParticles(active_camera, 0);     
+        */ 
         if (StaticObject::modelRegistry.size() > 0) {
 
             if (frustumCullingEnabled) {
@@ -363,9 +435,9 @@ void Application::drawScene(int shadowPass) {
             StaticModel::shader.setInt("skybox", 13); 
 
 
-            glActiveTexture(GL_TEXTURE14);
-            glBindTexture(GL_TEXTURE_2D, ditherMap);
-            StaticModel::shader.setInt("ditherMap", 14); 
+            //glActiveTexture(GL_TEXTURE14);
+            //glBindTexture(GL_TEXTURE_2D, ditherMap);
+            //StaticModel::shader.setInt("ditherMap", 14); 
 
             glActiveTexture(GL_TEXTURE15);
             glBindTexture(GL_TEXTURE_2D, depthMap);
@@ -414,7 +486,7 @@ void Application::drawScene(int shadowPass) {
         Particle::setCamera(proj_view);
         Particle::drawAllParticles(active_camera, 1);  
 
-
+        
     } else {
         // TO DO cull from light position (implement frustum cull for ortho)
         for (unsigned int i = 0; i < AnimatedObject::modelRegistry.size(); i++) {
@@ -426,11 +498,11 @@ void Application::drawScene(int shadowPass) {
         if (AnimatedObject::modelRegistry.size() > 0) {
 
             // frustum cull objects
-            // for (unsigned int i = 0; i < AnimatedObject::modelRegistry.size(); i++) {
-            //     for (unsigned int j = 0; j < AnimatedObject::modelRegistry[i].size(); j++) {
-            //         frustum.cullAnimatedObject(AnimatedObject::modelRegistry[i][j]);
-            //     }
-            // }
+            for (unsigned int i = 0; i < AnimatedObject::modelRegistry.size(); i++) {
+                for (unsigned int j = 0; j < AnimatedObject::modelRegistry[i].size(); j++) {
+                    //frustum.cullAnimatedObject(AnimatedObject::modelRegistry[i][j]);
+                }
+            }
 
             // render scene from light's point of view
             AnimatedModel::shader.use();
@@ -440,7 +512,7 @@ void Application::drawScene(int shadowPass) {
             AnimatedObject::drawAllObjects(active_camera, currentFrame, shadowPass);     
         }
     }
-
+    
     
 }
 
@@ -454,7 +526,7 @@ void Application::setShadowMapResolution(unsigned int r) {
 }
 
 void Application::drawUI() {
-
+  
     // drawUI
     glm::mat4 ortho_proj = glm::ortho(0.0f, (float)WIDTH, 0.0f, (float)HEIGHT, -1.0f, 1.0f);  
     Rect2D::setCamera(ortho_proj);
@@ -483,12 +555,15 @@ void Application::drawUI() {
     }
 
     glEnable(GL_BLEND);
+  
 }
 
 void Application::update() {
+    std::cout << "update from C++" << std::endl;
 }
 
 int Application::gameLoop() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     currentFrame = (float)getTime::now().time_since_epoch().count()/1000000000.0f; // convert nanoseconds to seconds
     if (lastFrame == 0.0f) {
@@ -497,9 +572,9 @@ int Application::gameLoop() {
         deltaTime = (float)(currentFrame - lastFrame);
     }
     lastFrame = currentFrame;
-
-    update();
     
+    update();
+
     // // update scene cameras view matrix (ie. GetViewMatrix())
     if (!useCustomViewMatrix) {
         active_camera.view_matrix = lookAt(active_camera.Position, active_camera.Position + active_camera.Front, vec3(0,1,0));
@@ -512,13 +587,13 @@ int Application::gameLoop() {
         glClear(GL_DEPTH_BUFFER_BIT);
         glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
         glCullFace(GL_FRONT);
-        glEnable(GL_DEPTH_CLAMP);
+        //glEnable(GL_DEPTH_CLAMP);
         drawScene(1);
         if (!MSAA) {
             glFlush();
         }
         glCullFace(GL_BACK);
-        glDisable(GL_DEPTH_CLAMP);
+        //glDisable(GL_DEPTH_CLAMP);
         glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -530,18 +605,19 @@ int Application::gameLoop() {
         if (!MSAA) {
             glFlush();
         }
-        
+ 
     return 1;
 }
 int Application::draw() {
-
-
 
     return 1;
 }
 
 Application::~Application() {
-
+    std::cout << "deleting app" << std::endl;
+    // StaticObject::modelRegistry = {};
+    // StaticObject::uniqueObjectCount = 0;
+    // glfwTerminate();
 }
 
 void Application::onKeyPressed(int key, int scancode, int action, int mods){

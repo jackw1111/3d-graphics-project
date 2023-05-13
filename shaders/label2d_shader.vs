@@ -1,4 +1,4 @@
-#version 330 core
+#version 300 es
 layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
 out vec2 TexCoords;
 out vec3 Pos;

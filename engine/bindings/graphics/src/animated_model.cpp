@@ -53,6 +53,7 @@ void wrap_AnimatedModel() {
     .add_property("use_custom_shader", &AnimatedObject::getUseCustomShader, &AnimatedObject::setUseCustomShader)
     .def("set_frames", &AnimatedObject::setFrames)
     .add_property("set_to_draw", &AnimatedObject::getToDraw, &AnimatedObject::setToDraw)
+    .add_property("set_to_draw_shadow", &AnimatedObject::getToDrawShadow, &AnimatedObject::setToDrawShadow)
     .def_readwrite("bounding_box", &AnimatedObject::boundingBox)
     .add_property("draw_bounding_box",&AnimatedObject::getDrawBoundingBox, &AnimatedObject::setDrawBoundingBox)
     .def("remove", &AnimatedObject::remove);
